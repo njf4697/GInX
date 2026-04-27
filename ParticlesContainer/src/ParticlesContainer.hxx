@@ -36,9 +36,6 @@
 #include <sstream>
 #include <string>
 
-#include "AST_SuperposedBBH.hxx"
-#include "AST_Readtable.hxx"
-
 namespace GInX {
 
 // #############################################################################

@@ -10,11 +10,6 @@ USES INCLUDE HEADER: ParticlesContainer.hxx
 USES INCLUDE HEADER: loop_device.hxx
 USES INCLUDE HEADER: driver.hxx
 
-USES INCLUDE HEADER: AST_SuperposedBBH.hxx
-USES INCLUDE HEADER: AST_Readtable.hxx
-USES INCLUDE HEADER: AST_Helpers.hxx
-USES INCLUDE HEADER: tensor.hxx
-
 CCTK_INT FUNCTION DriverInterpolate(
   CCTK_POINTER_TO_CONST IN cctkGH,
   CCTK_INT IN N_dims,

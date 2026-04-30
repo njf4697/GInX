@@ -153,8 +153,8 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       const amrex::MultiFab &rho = *gd_rho.mfab[tl];
       
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
-      // along geodesic. Information for particle output on deletion also passed. CCTK_DELTA_TIME is inverted to have proper backwards-in-time propogation for raytracing.
-      pc->evolve(lapse, shift, metric, curv, rho, -CCTK_DELTA_TIME, lev, max_energy, output_final_data, final_data_file_name);
+      // along geodesic. Information for particle output on deletion also passed.
+      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, output_final_data, final_data_file_name);
     }
   }
 
@@ -224,74 +224,4 @@ extern "C" int R_ParticlesContainer_final_cleanup()
   amrex::Gpu::Device::synchronize();
   r_photons.clear();
   return 0;
-}
-
-int particles_remaining(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_PARAMETERS
-
-  auto &pc = r_photons.at(0);
-  int num_particles = pc->TotalNumberOfParticles(true, false);
-
-  return num_particles;
-}
-
-bool raytrace_here(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS;
-  DECLARE_CCTK_PARAMETERS;
-
-  if (raytrace_every > 0 && cctk_iteration % raytrace_every == 0) { return true; }
-  
-  if (num_raytrace_iterations > 0) {
-    for (int i = 0; i < num_raytrace_iterations; i++)
-      {
-        if (raytrace_at_iteration[i] == cctk_iteration)
-        {
-          return true;
-        }
-      }
-  }
-
-  if (num_raytrace_times > 0) {
-    for (int i = 0; i < num_raytrace_times; i++)
-      {
-        if (raytrace_at_time[i] >= cctk_time &&
-            raytrace_at_time[i] <  cctk_time + cctk_delta_time)
-        {
-          return true;
-        }
-      }
-  }
-
-  return false;
-}
-
-extern "C" void raytrace_image(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS;
-  DECLARE_CCTK_PARAMETERS;
-
-  if (!raytrace_here(CCTK_PASS_CTOC)) { return; }
-
-  R_ParticlesContainer_setup(CCTK_PASS_CTOC);
-
-  int iteration = 0;
-  int num_particles = particles_remaining(CCTK_PASS_CTOC);
-
-  while (num_particles > 0 && iteration <= max_iterations) {
-    CCTK_VINFO("Raytracing iteration %d, run time %d, %d particles remaining", iteration, CCTK_RunTime(), num_particles);
-
-    if (particle_plot_every > 0 || particle_tsv_every > 0) {
-      R_ParticlesContainer_print(CCTK_PASS_CTOC, iteration);
-    }
-
-    R_ParticlesContainer_evolve(CCTK_PASS_CTOC);
-
-    num_particles = particles_remaining(CCTK_PASS_CTOC);
-    iteration++;
-  }
-
-  CCTK_VINFO("Raytracing iteration %d, run time %d, %d particles remaining", iteration, CCTK_RunTime(), num_particles);
-
-  if (particle_plot_every > 0 || particle_tsv_every > 0) {
-    R_ParticlesContainer_print(CCTK_PASS_CTOC, iteration);
-  }
 }

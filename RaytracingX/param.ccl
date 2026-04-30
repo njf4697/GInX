@@ -7,36 +7,6 @@ BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
-INT raytrace_every "Perform raytrace every 'raytrace_every' iterations" STEERABLE=ALWAYS
-{
-    0:* :: "Any positive integer, 0 turns this feature off"
-} 0
-
-INT raytrace_at_iteration[100] "Raytrace at each iteration number in array" STEERABLE=ALWAYS
-{
-    0:* :: "Any positive integer"
-} 0
-
-INT num_raytrace_iterations "Number of specified iterations to raytrace at" STEERABLE=ALWAYS
-{
-    0:100 :: "Any positive integer, max 100"
-} 0
-
-CCTK_REAL raytrace_at_time[100] "Raytrace at each iteration number in array" STEERABLE=ALWAYS
-{
-    0:* :: "Any positive real number"
-} 0
-
-INT num_raytrace_times "Number of specified times to raytrace at" STEERABLE=ALWAYS
-{
-    0:100 :: "Any positive integer, max 100"
-} 0
-
-INT max_iterations "Maximum iterations for raytracing calculation" STEERABLE=ALWAYS
-{
-    0:* :: "Any positive integer"
-} 10000
-
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"

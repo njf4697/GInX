@@ -201,15 +201,11 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 /**
  * \brief Print out particle data.
  */
-extern "C" void R_ParticlesContainer_print(CCTK_ARGUMENTS, int it)
+extern "C" void R_ParticlesContainer_print(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
 
   //RaytracingX: Particle skip override moved to schedule.ccl.
-
-  if ((particle_plot_every > 0 && it % particle_plot_every == 0) || (particle_tsv_every > 0 && it % particle_tsv_every == 0)) {
-    CCTK_INFO("Printing particles to files");
-  }
   
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

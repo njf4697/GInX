@@ -269,7 +269,7 @@ extern "C" void raytrace_image(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if (!raytrace_here) { return; }
+  if (!raytrace_here(CCTK_PASS_CTOC)) { return; }
 
   R_ParticlesContainer_setup(CCTK_PASS_CTOC);
 

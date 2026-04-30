@@ -132,6 +132,9 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
+  CCTK_BARRIER(cctkGH);
+  CCTK_INFO("test1");
+
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
@@ -157,6 +160,9 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, output_final_data, final_data_file_name);
     }
   }
+
+  CCTK_BARRIER(cctkGH);
+  CCTK_INFO("test2");
 
   // Bounds check
   const CCTK_REAL regions_x[10] = {region_1_position[0], region_2_position[0],
@@ -196,6 +202,9 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     }
     pc->Redistribute();
   }
+
+  CCTK_BARRIER(cctkGH);
+  CCTK_INFO("test3");
 }
 
 /**

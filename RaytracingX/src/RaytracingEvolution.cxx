@@ -206,6 +206,7 @@ extern "C" void R_ParticlesContainer_print(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
 
   //RaytracingX: Particle skip override moved to schedule.ccl.
+  const int it = cctkGH->cctk_iteration;
   
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

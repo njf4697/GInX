@@ -132,9 +132,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  fprintf(stderr, "test1");
-  MPI_Barrier(MPI_COMM_WORLD);
-
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
@@ -160,9 +157,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, output_final_data, final_data_file_name);
     }
   }
-
-  fprintf(stderr, "test2");
-  MPI_Barrier(MPI_COMM_WORLD);
 
   // Bounds check
   const CCTK_REAL regions_x[10] = {region_1_position[0], region_2_position[0],
@@ -199,12 +193,12 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       //RaytracingX: Override created for check_banned_zones(). Banned zones are now given by the outer horizon of Kerr BHs as an approximation. Information for particle output on deletion also passed.
       pc->check_banned_zones(lev, banned_regions, regions_x, regions_y,
                              regions_z, regions_radius, regions_a, output_final_data, final_data_file_name);
+      
+      const int it = cctkGH->cctk_iteration;
+      if (it == 2022) { pc->outputParticlesPlot(it, particle_plot_every, std::string(out_dir)); }
     }
     pc->Redistribute();
   }
-
-  fprintf(stderr, "test3");
-  MPI_Barrier(MPI_COMM_WORLD);
 }
 
 /**

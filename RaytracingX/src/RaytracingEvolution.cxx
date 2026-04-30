@@ -132,7 +132,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  CCTK_BARRIER(cctkGH);
+  CCTK_Barrier(cctkGH);
   CCTK_INFO("test1");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -161,7 +161,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     }
   }
 
-  CCTK_BARRIER(cctkGH);
+  CCTK_Barrier(cctkGH);
   CCTK_INFO("test2");
 
   // Bounds check
@@ -203,7 +203,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     pc->Redistribute();
   }
 
-  CCTK_BARRIER(cctkGH);
+  CCTK_Barrier(cctkGH);
   CCTK_INFO("test3");
 }
 

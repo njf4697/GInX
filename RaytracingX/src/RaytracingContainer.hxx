@@ -194,6 +194,7 @@ namespace RaytracingX
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
             amrex::GpuArray<CCTK_REAL, 8>
             compute_rhs(
+                const amrex::Box &box,
                 const amrex::GpuArray<CCTK_REAL, 8> &u, const CCTK_REAL &t,
                 amrex::Array4<CCTK_REAL const> const &lapse,
                 const amrex::Array4<CCTK_REAL const> &shift,
@@ -211,7 +212,7 @@ namespace RaytracingX
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
             const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
 
-            assert(lapse.box().contains(i0, j0, k0));
+            assert(box.contains(i0, j0, k0));
 
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
@@ -360,6 +361,7 @@ namespace RaytracingX
             {
 
                 const int np = pti.numParticles();
+                const amrex::Box &box = pti.tilebox();
 
                 // Get the information relate to the velocities and energy.
                 auto &attribs = pti.GetAttributes();
@@ -396,7 +398,7 @@ namespace RaytracingX
 
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k_odd =
-          self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,
+          self->compute_rhs(box, U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
@@ -420,7 +422,7 @@ namespace RaytracingX
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       auto k_even =
-          self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
+          self->compute_rhs(box, U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
 
       // Update particles with the f1 and f2 from RK4
@@ -453,7 +455,7 @@ namespace RaytracingX
       }
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
+      k_odd = self->compute_rhs(box, U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       U_tmp[0] = U[0] + dt * k_odd[0];
@@ -476,7 +478,7 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
+      k_even = self->compute_rhs(box, U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       // Update particles with the f3 and f4 from RK4

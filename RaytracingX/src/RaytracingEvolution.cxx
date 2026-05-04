@@ -201,7 +201,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   {
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
-    for (int lev = 0; (lev < pd.leveldata.size()) & banned_regions; ++lev)
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     { 
       pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
     }

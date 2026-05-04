@@ -104,12 +104,11 @@ namespace RaytracingX
         void write_deleted_particle_data(const int &lev, std::string final_data_file_name) {
             std::ofstream file;
             file.open(final_data_file_name, std::ios::app);
+            
             if (!file.is_open()) {
                 CCTK_VERROR("Could not open file %s", final_data_file_name);
                 return;
             }
-
-            file << "test";
 
             for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
                  ++pti)

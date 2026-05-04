@@ -101,7 +101,7 @@ namespace RaytracingX
         ~RaytracingParticlesContainer() = default;
 
         //RaytracingX: Add method that writes particle information when the particle is deleted.
-        void write_deleted_particle_data(std::string final_data_file_name) {
+        void write_deleted_particle_data(const int &lev, std::string final_data_file_name) {
             for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
                  ++pti)
             {   
@@ -332,7 +332,7 @@ namespace RaytracingX
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
                     const CCTK_REAL &dt, const int &lev,
-                    const CCTK_REAL max_energy, bool output_final_data, std::string final_data_file_name) //RaytracingX: Add information for maximum energy for photons defining event horizon and output information.
+                    const CCTK_REAL max_energy) //RaytracingX: Add information for maximum energy for photons defining event horizon.
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();

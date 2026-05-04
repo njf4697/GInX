@@ -51,6 +51,15 @@
         out_of_bounds = true;    \
         deletion_reasons[i] = -6;\
     }
+#define ASSERT_BOUNDS(X)
+    const long int i0 = amrex::Math::floor((X[0] - plo0[0]) / dx[0]); \
+    const long int j0 = amrex::Math::floor((X[1] - plo0[1]) / dx[1]); \
+    const long int k0 = amrex::Math::floor((X[2] - plo0[2]) / dx[2]); \
+\
+    if (!pti.tilebox().contains(i0, j0, k0)) { \
+        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f)\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi[0], phi[1], phi[2]); \
+    } \
+    assert(pti.tilebox().contains(i0, j0, k0))
 
 namespace RaytracingX
 {
@@ -194,7 +203,6 @@ namespace RaytracingX
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
             amrex::GpuArray<CCTK_REAL, 8>
             compute_rhs(
-                const amrex::Box &box,
                 const amrex::GpuArray<CCTK_REAL, 8> &u, const CCTK_REAL &t,
                 amrex::Array4<CCTK_REAL const> const &lapse,
                 const amrex::Array4<CCTK_REAL const> &shift,
@@ -211,8 +219,6 @@ namespace RaytracingX
             const long int i0 = amrex::Math::floor((u[0] - plo[0]) / dx[0]);
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
             const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
-
-            assert(box.contains(i0, j0, k0));
 
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
@@ -361,7 +367,6 @@ namespace RaytracingX
             {
 
                 const int np = pti.numParticles();
-                const amrex::Box &box = pti.tilebox();
 
                 // Get the information relate to the velocities and energy.
                 auto &attribs = pti.GetAttributes();
@@ -397,8 +402,9 @@ namespace RaytracingX
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       // f1 = rhs(u , t) for the runge kutta 4 step
+      ASSERT_BOUNDS(U);
       auto k_odd =
-          self->compute_rhs(box, U, 0.0, lapse_array, shift_array, metric_array,
+          self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
@@ -421,8 +427,9 @@ namespace RaytracingX
       }
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
+      ASSERT_BOUNDS(U_tmp);
       auto k_even =
-          self->compute_rhs(box, U_tmp, 0.5 * dt, lapse_array, shift_array,
+          self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
 
       // Update particles with the f1 and f2 from RK4
@@ -455,7 +462,8 @@ namespace RaytracingX
       }
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      k_odd = self->compute_rhs(box, U_tmp, 0.5 * dt, lapse_array, shift_array,
+      ASSERT_BOUNDS(U_tmp);
+      k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       U_tmp[0] = U[0] + dt * k_odd[0];
@@ -478,7 +486,8 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k_even = self->compute_rhs(box, U_tmp, dt, lapse_array, shift_array,
+      ASSERT_BOUNDS(U_tmp);
+      k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       // Update particles with the f3 and f4 from RK4

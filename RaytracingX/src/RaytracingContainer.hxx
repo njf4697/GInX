@@ -527,8 +527,7 @@ namespace RaytracingX
                                 const CCTK_REAL (&x)[10], const CCTK_REAL (&y)[10],
                                 const CCTK_REAL (&z)[10],
                                 const CCTK_REAL (&radius)[10],
-                                const CCTK_REAL (&a)[10],
-                                bool output_final_data, std::string final_data_file_name) //RaytracingX: Add output data.
+                                const CCTK_REAL (&a)[10]) //RaytracingX: Add output data.
         {
 
             if (!zones)

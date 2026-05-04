@@ -132,16 +132,12 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  fprintf(stderr, "test1");
-
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     pc->Redistribute();
   }
-
-  fprintf(stderr, "test2");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -162,10 +158,15 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       const amrex::MultiFab &metric = *gd_metric.mfab[tl];
       const amrex::MultiFab &curv = *gd_curv.mfab[tl];
       const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      pc->write_all(lev, cctkGH->cctk_iterations, std::string(out_dir) + "/" + "write_all_pre_evol.tsv");
       
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
       pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+
+
+      pc->write_all(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "write_all_post_evol.tsv");
     }
   }
 
@@ -224,8 +225,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     pc->Redistribute();
   }
-
-  fprintf(stderr, "test3");
 }
 
 /**

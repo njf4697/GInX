@@ -108,6 +108,11 @@ namespace RaytracingX
                 std::ofstream file;
                 file.open(final_data_file_name, std::ios::app);
 
+                if (!file.is_open()) {
+                    std::cerr << "ERROR: Could not open file: " << filename << "\n";
+                    return;
+                }
+
                 const int np = pti.numParticles();
 
                 // Get the information relate to the velocities and energy.

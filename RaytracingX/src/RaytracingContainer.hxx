@@ -109,7 +109,7 @@ namespace RaytracingX
                 file.open(final_data_file_name, std::ios::app);
 
                 if (!file.is_open()) {
-                    CCTK_VERROR("Could not open file %s", final_data_file_name)
+                    CCTK_VERROR("Could not open file %s", final_data_file_name);
                     return;
                 }
 

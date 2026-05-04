@@ -104,7 +104,7 @@ namespace RaytracingX
         void write_deleted_particle_data(const int &lev, std::string final_data_file_name) {
             std::ofstream file;
             file.open(final_data_file_name, std::ios::app);
-            
+
             if (!file.is_open()) {
                 CCTK_VERROR("Could not open file %s", final_data_file_name);
                 return;
@@ -210,6 +210,10 @@ namespace RaytracingX
             const long int i0 = amrex::Math::floor((u[0] - plo[0]) / dx[0]);
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
             const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
+
+            assert(i0 >= 0 && i0 < lapse_array.size(0));
+            assert(j0 >= 0 && j0 < lapse_array.size(1));
+            assert(k0 >= 0 && k0 < lapse_array.size(2));
 
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;

@@ -195,7 +195,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
                              regions_z, regions_radius, regions_a, output_final_data, final_data_file_name);
       
       const int it = cctkGH->cctk_iteration;
-      if (it == 2022) { pc->outputParticlesPlot(it, particle_plot_every, std::string(out_dir)); }
+      if (it == 2022) { pc->outputParticlesPlot(it, it, std::string(out_dir)); }
     }
     pc->Redistribute();
   }

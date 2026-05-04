@@ -197,7 +197,9 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       const int it = cctkGH->cctk_iteration;
       pc->outputParticlesPlot(it, it, std::string(out_dir));
     }
+    fprintf(stderr, "test1\n");
     pc->Redistribute();
+    fprintf(stderr, "test2\n");
   }
 }
 

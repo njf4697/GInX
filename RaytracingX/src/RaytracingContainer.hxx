@@ -151,7 +151,7 @@ namespace RaytracingX
                 }            
         }}
 
-        void write_all(const int &lev, const int it, std::string final_data_file_name) {
+        void sanity_check(const int &lev, const int it, std::string final_data_file_name) {
             std::ofstream file;
             file.open(final_data_file_name, std::ios::app);
 

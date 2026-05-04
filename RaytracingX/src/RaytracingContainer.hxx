@@ -54,7 +54,7 @@
 #define ASSERT_BOUNDS(X)\
     if (plo0[0] > X[0] || pli0[0] <= X[0] ||\
         plo0[1] > X[1] || pli0[1] <= X[1] ||\
-        plo0[2] > X[2] || pli0[2] <= X[2] ||)\
+        plo0[2] > X[2] || pli0[2] <= X[2] )\
     { \
         fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f)\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2]); \
         assert(false);\

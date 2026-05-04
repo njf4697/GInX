@@ -167,27 +167,20 @@ namespace RaytracingX
 
                 // Get the information relate to the velocities and energy.
                 auto &attribs = pti.GetAttributes();
-                CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
-                CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
-                CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-                CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
-                CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data(); //RaytracingX: Add optical depth.
                 CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data(); //RaytracingX: Add pixel index.
-                CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); //RaytracingX: Add deletion reason.
                 auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
                 for (int i = 0; i < np; i++) {
-                    file << "it: " << it << "\t"
-                         << (int) index[i] << "\t"
-                         << particles[i].pos(0) << "\t"
-                         << particles[i].pos(1) << "\t"
-                         << particles[i].pos(2) << "\t"
-                         << vels_x[i] << "\t"
-                         << vels_y[i] << "\t"
-                         << vels_z[i] << "\t"
-                         << ln_alphaenergy[i] << "\t"
-                         << tau[i] << "\t"
-                         << (int) deletion_reasons[i] << std::endl;
+                    if (-64 > particles[i].pos(0) || 64 < particles[i].pos(0) || !std::isfinite(particles[i].pos(0)) ||
+                        -64 > particles[i].pos(1) || 64 < particles[i].pos(1) || !std::isfinite(particles[i].pos(1)) ||
+                        -64 > particles[i].pos(2) || 64 < particles[i].pos(2) || !std::isfinite(particles[i].pos(2)) ) {
+                            file << "it: " << it << "\t"
+                             << (int) index[i] << "\t"
+                             << particles[i].pos(0) << "\t"
+                             << particles[i].pos(1) << "\t"
+                             << particles[i].pos(2) << std::endl;
+                        }
+                    
                 }            
         }}
 

@@ -159,14 +159,14 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       const amrex::MultiFab &curv = *gd_curv.mfab[tl];
       const amrex::MultiFab &rho = *gd_rho.mfab[tl];
 
-      pc->write_all(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "write_all_pre_evol.tsv");
+      pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_pre_evol.tsv");
       
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
       pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
 
 
-      pc->write_all(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "write_all_post_evol.tsv");
+      pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_post_evol.tsv");
     }
   }
 

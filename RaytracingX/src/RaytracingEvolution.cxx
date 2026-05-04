@@ -132,12 +132,16 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
+  fprintf(stderr, "test1");
+
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     pc->Redistribute();
   }
+
+  fprintf(stderr, "test2");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -220,6 +224,8 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     pc->Redistribute();
   }
+
+  fprintf(stderr, "test3");
 }
 
 /**

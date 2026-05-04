@@ -211,9 +211,9 @@ namespace RaytracingX
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
             const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
 
-            assert(i0 >= 0 && i0 < lapse_array.size(0));
-            assert(j0 >= 0 && j0 < lapse_array.size(1));
-            assert(k0 >= 0 && k0 < lapse_array.size(2));
+            assert(i0 >= 0 && i0 < lapse.size(0));
+            assert(j0 >= 0 && j0 < lapse.size(1));
+            assert(k0 >= 0 && k0 < lapse.size(2));
 
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;

@@ -52,14 +52,10 @@
         deletion_reasons[i] = -6;\
     }
 #define ASSERT_BOUNDS(X)\
-    const long int i0 = amrex::Math::floor((X[0] - plo0[0]) / dx[0]); \
-    const long int j0 = amrex::Math::floor((X[1] - plo0[1]) / dx[1]); \
-    const long int k0 = amrex::Math::floor((X[2] - plo0[2]) / dx[2]); \
-\
-    if (!pti.tilebox().contains(i0, j0, k0)) { \
-        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f)\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi[0], phi[1], phi[2]); \
+    if (!pti.tilebox().contains(amrex::Math::floor((X[0] - plo0[0]) / dx[0]), amrex::Math::floor((X[1] - plo0[1]) / dx[1]), amrex::Math::floor((X[2] - plo0[2]) / dx[2]))) { \
+        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f)\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2]); \
     } \
-    assert(pti.tilebox().contains(i0, j0, k0))
+    assert(pti.tilebox().contains(amrex::Math::floor((X[0] - plo0[0]) / dx[0]), amrex::Math::floor((X[1] - plo0[1]) / dx[1]), amrex::Math::floor((X[2] - plo0[2]) / dx[2])))
 
 namespace RaytracingX
 {

@@ -51,7 +51,7 @@
         out_of_bounds = true;    \
         deletion_reasons[i] = -6;\
     }
-#define ASSERT_BOUNDS(X)
+#define ASSERT_BOUNDS(X)\
     const long int i0 = amrex::Math::floor((X[0] - plo0[0]) / dx[0]); \
     const long int j0 = amrex::Math::floor((X[1] - plo0[1]) / dx[1]); \
     const long int k0 = amrex::Math::floor((X[2] - plo0[2]) / dx[2]); \

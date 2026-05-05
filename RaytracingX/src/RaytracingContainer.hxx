@@ -51,12 +51,12 @@
         out_of_bounds = true;    \
         deletion_reasons[i] = -6;\
     }
-#define ASSERT_BOUNDS(X)\
-    if (plo0[0] > X[0] || phi0[0] <= X[0] ||\
-        plo0[1] > X[1] || phi0[1] <= X[1] ||\
-        plo0[2] > X[2] || phi0[2] <= X[2] )\
+#define ASSERT_BOUNDS(X,Y)\
+    if (plo0[0] > X[0] || phi0[0] <= X[0] || !std::isfinite(X[0]) || \
+        plo0[1] > X[1] || phi0[1] <= X[1] || !std::isfinite(X[0]) || \
+        plo0[2] > X[2] || phi0[2] <= X[2] || !std::isfinite(X[0])   )\
     { \
-        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f)\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2]); \
+        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f) at %s\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], Y); \
         assert(false);\
     } \
     
@@ -435,7 +435,7 @@ namespace RaytracingX
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       // f1 = rhs(u , t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U);
+      ASSERT_BOUNDS(U, "k1");
       auto k_odd =
           self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
@@ -460,7 +460,7 @@ namespace RaytracingX
       }
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp);
+      ASSERT_BOUNDS(U_tmp, "k2");
       auto k_even =
           self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
@@ -495,7 +495,7 @@ namespace RaytracingX
       }
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp);
+      ASSERT_BOUNDS(U_tmp, "k3");
       k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
@@ -519,7 +519,7 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp);
+      ASSERT_BOUNDS(U_tmp, "k4");
       k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 

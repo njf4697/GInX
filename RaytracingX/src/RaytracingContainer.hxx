@@ -537,11 +537,17 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_X(particles[i].pos(0))
       CHECK_OUT_OF_BOUNDS_Y(particles[i].pos(1))
       CHECK_OUT_OF_BOUNDS_Z(particles[i].pos(2))
-      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
-
+      
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
       
+      if (out_of_bounds) {
+          particles[i].id() = -1;
+          return;
+      } 
+      
+      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
+        
       //RaytracingX: Delete particle when geodesic reaches event horizon.
       const long int i0 = amrex::Math::floor((particles[i].pos(0) - plo[0]) / dx[0]);
       const long int j0 = amrex::Math::floor((particles[i].pos(1) - plo[1]) / dx[1]);

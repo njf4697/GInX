@@ -460,7 +460,7 @@ namespace RaytracingX
       }
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k2");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
@@ -495,7 +495,7 @@ namespace RaytracingX
       }
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k3");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
@@ -519,7 +519,7 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k4");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 

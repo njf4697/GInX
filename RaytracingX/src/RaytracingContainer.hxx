@@ -51,12 +51,12 @@
         out_of_bounds = true;    \
         deletion_reasons[i] = -6;\
     }
-#define ASSERT_BOUNDS(X,Y)\
-    if (plo0[0] > X[0] || phi0[0] <= X[0] || !std::isfinite(X[0]) || \
-        plo0[1] > X[1] || phi0[1] <= X[1] || !std::isfinite(X[0]) || \
-        plo0[2] > X[2] || phi0[2] <= X[2] || !std::isfinite(X[0])   )\
+#define ASSERT_BOUNDS(X,Y,Z,S)\
+    if (plo0[0] > X || phi0[0] <= X || !std::isfinite(X) || \
+        plo0[1] > Y || phi0[1] <= Y || !std::isfinite(Y) || \
+        plo0[2] > Z || phi0[2] <= Z || !std::isfinite(Z)   )\
     { \
-        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f) at %s\n", X[0], X[1], X[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], Y); \
+        fprintf(stderr, "(%f %f %f) not between (%f %f %f) and (%f %f %f) at %s\n", X, Y, Z, plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], S); \
         assert(false);\
     } \
     
@@ -435,7 +435,7 @@ namespace RaytracingX
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       // f1 = rhs(u , t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U, "k1");
+      ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
@@ -460,7 +460,7 @@ namespace RaytracingX
       }
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp, "k2");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k2");
       auto k_even =
           self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
@@ -495,7 +495,7 @@ namespace RaytracingX
       }
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp, "k3");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k3");
       k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
@@ -519,7 +519,7 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      ASSERT_BOUNDS(U_tmp, "k4");
+      ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2],, "k4");
       k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
@@ -537,6 +537,7 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_X(particles[i].pos(0))
       CHECK_OUT_OF_BOUNDS_Y(particles[i].pos(1))
       CHECK_OUT_OF_BOUNDS_Z(particles[i].pos(2))
+      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
 
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);

@@ -282,12 +282,12 @@ namespace RaytracingX
                                          u[2], dx, plo);
 
             ASSERT_FINITE(lapse_x)
-            ASSERT_FINITE(d_lapse_x, 3)
-            ASSERT_FINITE(shift_x, 3)
-            ASSERT_FINITE(d_shift_x, 3, 3)
-            ASSERT_FINITE(gamma_x, 6)
-            ASSERT_FINITE(d_gamma_x, 6, 3)
-            ASSERT_FINITE(curv_x, 6)
+            ASSERT_FINITE1(d_lapse_x, 3)
+            ASSERT_FINITE1(shift_x, 3)
+            ASSERT_FINITE2(d_shift_x, 3, 3)
+            ASSERT_FINITE1(gamma_x, 6)
+            ASSERT_FINITE2(d_gamma_x, 6, 3)
+            ASSERT_FINITE1(curv_x, 6)
                                          
             // Compute the inverse of the metric.
             const CCTK_REAL inv_det_gamma =
@@ -307,7 +307,7 @@ namespace RaytracingX
                 (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
                 (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
 
-            ASSERT_FINITE(gamma_inv_x, 6)
+            ASSERT_FINITE1(gamma_inv_x, 6)
 
             const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
@@ -317,7 +317,7 @@ namespace RaytracingX
                 gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
                 gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
 
-            ASSERT_FINITE(V_up, 6)
+            ASSERT_FINITE1(V_up, 6)
 
             // Compute the rhs for position
             rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -351,7 +351,7 @@ namespace RaytracingX
                                  2.0 * dx[1] * dx[2] * gamma_inv_x[4];
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
-            ASSERT_FINITE(rhs, 8)
+            ASSERT_FINITE1(rhs, 8)
 
             return rhs;
 

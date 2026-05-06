@@ -384,6 +384,8 @@ namespace RaytracingX
                                           deletion_reasons[i] = -7;
                                         }
                                    });
+            
+            }                    
         }
 
         /**

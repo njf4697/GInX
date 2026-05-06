@@ -487,6 +487,8 @@ namespace RaytracingX
                                    {
         if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i]) + " top") }
 
+        if (index[i] == 5029) { DEBUG("test1") }
+
       const amrex::GpuArray<CCTK_REAL, 8> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
@@ -501,12 +503,16 @@ namespace RaytracingX
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+      if (index[i] == 5029) { DEBUG("test2") }
+
       // f1 = rhs(u , t) for the runge kutta 4 step
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "pre rk4");
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
+
+    if (index[i] == 5029) { DEBUG("test3") }
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -527,11 +533,15 @@ namespace RaytracingX
         return;
       }
 
+      if (index[i] == 5029) { DEBUG("test4") }
+
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
+
+    if (index[i] == 5029) { DEBUG("test5") }
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -543,6 +553,8 @@ namespace RaytracingX
       U_tmp[6] = U[6] + 0.5 * dt * k_even[6];
       U_tmp[7] = U[7] + 0.5 * dt * k_even[7]; //RaytracingX: Add optical depth.
 
+      if (index[i] == 5029) { DEBUG("test6") }
+
       particles[i].pos(0) += (1. / 6.) * dt * (k_odd[0] + 2. * k_even[0]);
       particles[i].pos(1) += (1. / 6.) * dt * (k_odd[1] + 2. * k_even[1]);
       particles[i].pos(2) += (1. / 6.) * dt * (k_odd[2] + 2. * k_even[2]);
@@ -551,6 +563,8 @@ namespace RaytracingX
       vels_z[i] += (1. / 6.) * dt * (k_odd[5] + 2. * k_even[5]);
       ln_alphaenergy[i] += (1. / 6.) * dt * (k_odd[6] + 2. * k_even[6]);
       tau[i] += (1. / 6.) * dt * (k_odd[7] + 2. * k_even[7]); //RaytracingX: Add optical depth.
+
+      if (index[i] == 5029) { DEBUG("test7") }
       
       //RaytracingX: Change bounds check for debug information.
       CHECK_OUT_OF_BOUNDS_X(U_tmp[0])
@@ -562,10 +576,14 @@ namespace RaytracingX
         return;
       }
 
+      if (index[i] == 5029) { DEBUG("test8") }
+
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
+
+     if (index[i] == 5029) { DEBUG("test9") }
 
       U_tmp[0] = U[0] + dt * k_odd[0];
       U_tmp[1] = U[1] + dt * k_odd[1];
@@ -581,19 +599,27 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_Y(U_tmp[1])
       CHECK_OUT_OF_BOUNDS_Z(U_tmp[2])
 
+      if (index[i] == 5029) { DEBUG("testA") }
+
       if (out_of_bounds) {
         particles[i].id() = -1;
         return;
       }
+
+      if (index[i] == 5029) { DEBUG("testB") }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
+      if (index[i] == 5029) { DEBUG("testC") }
+
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));
       assert(std::isfinite(k_even[2]));
+
+      if (index[i] == 5029) { DEBUG("testD") }
 
       // Update particles with the f3 and f4 from RK4
       particles[i].pos(0) += (1. / 6.) * dt * (2. * k_odd[0] + k_even[0]);
@@ -612,6 +638,8 @@ namespace RaytracingX
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
+
+      if (index[i] == 5029) { DEBUG("testE") }
 
       
       if (out_of_bounds) {

@@ -282,6 +282,23 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                                          u[2], dx, plo);
 
+            assert(std::isfinite(lapse_x));
+            assert(std::isfinite(shift_x[0]));
+            assert(std::isfinite(shift_x[1]));
+            assert(std::isfinite(shift_x[2]));
+            assert(std::isfinite(gamma_x[0]));
+            assert(std::isfinite(gamma_x[1]));
+            assert(std::isfinite(gamma_x[2]));
+            assert(std::isfinite(gamma_x[3]));
+            assert(std::isfinite(gamma_x[4]));
+            assert(std::isfinite(gamma_x[5]));
+            assert(std::isfinite(curv_x[0]));
+            assert(std::isfinite(curv_x[1]));
+            assert(std::isfinite(curv_x[2]));
+            assert(std::isfinite(curv_x[3]));
+            assert(std::isfinite(curv_x[4]));
+            assert(std::isfinite(curv_x[5]));
+
             // Compute the inverse of the metric.
             const CCTK_REAL inv_det_gamma =
                 1.0 / (gamma_x[0] * gamma_x[3] * gamma_x[5] +

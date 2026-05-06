@@ -245,6 +245,7 @@ namespace RaytracingX
                 const amrex::GpuArray<double, 3> &dx, const int lev,
                 const amrex::GpuArray<double, 3> &plo)
         {
+            fprintf(stderr, "test1");
 
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
@@ -384,6 +385,8 @@ namespace RaytracingX
                                  2.0 * dx[0] * dx[2] * gamma_inv_x[2] +
                                  2.0 * dx[1] * dx[2] * gamma_inv_x[4];
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
+
+            fprintf(stderr, "test2");
 
             return rhs;
 

@@ -590,12 +590,14 @@ namespace RaytracingX
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
 
-      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
-
+      
       if (out_of_bounds) {
-        particles[i].id() = -1;
-        return;
-      } });
+          particles[i].id() = -1;
+          return;
+      }
+
+      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
+      });
             }
         } // RaytracingParticlesContainer::evolve
 

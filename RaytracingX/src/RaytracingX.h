@@ -12,6 +12,10 @@
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
 #define ASSERT_FINITE2(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[jj][ii]); } }
+#define DEBUGP(I, X) fprintf(stderr, ("pidx " + std::to_string(I) + ", proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str());
+#define ASSERT_FINITEP(I, X) if (!std::isfinite(X)) { DEBUGP(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
+#define ASSERT_FINITE1P(I, X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(X[ii]); }
+#define ASSERT_FINITE2P(I, X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(X[jj][ii]); } }
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

@@ -236,6 +236,7 @@ namespace RaytracingX
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
             amrex::GpuArray<CCTK_REAL, 8>
             compute_rhs(
+                const int index,
                 const amrex::GpuArray<CCTK_REAL, 8> &u, const CCTK_REAL &t,
                 amrex::Array4<CCTK_REAL const> const &lapse,
                 const amrex::Array4<CCTK_REAL const> &shift,
@@ -281,13 +282,13 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                                          u[2], dx, plo);
 
-            ASSERT_FINITE(lapse_x)
-            ASSERT_FINITE1(d_lapse_x, 3)
-            ASSERT_FINITE1(shift_x, 3)
-            ASSERT_FINITE2(d_shift_x, 3, 3)
-            ASSERT_FINITE1(gamma_x, 6)
-            ASSERT_FINITE2(d_gamma_x, 6, 3)
-            ASSERT_FINITE1(curv_x, 6)
+            ASSERT_FINITEP(index, lapse_x)
+            ASSERT_FINITE1P(index, d_lapse_x, 3)
+            ASSERT_FINITE1P(index, shift_x, 3)
+            ASSERT_FINITEP2(index, d_shift_x, 3, 3)
+            ASSERT_FINITE1P(index, gamma_x, 6)
+            ASSERT_FINITEP2(index, d_gamma_x, 6, 3)
+            ASSERT_FINITE1P(index, curv_x, 6)
                                          
             // Compute the inverse of the metric.
             const CCTK_REAL inv_det_gamma =
@@ -297,7 +298,7 @@ namespace RaytracingX
                        gamma_x[4] * gamma_x[4] * gamma_x[0] -
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
             
-            ASSERT_FINITE(inv_det_gamma)
+            ASSERT_FINITEP(index, inv_det_gamma)
 
             const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
                 (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
@@ -307,7 +308,7 @@ namespace RaytracingX
                 (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
                 (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
 
-            ASSERT_FINITE1(gamma_inv_x, 6)
+            ASSERT_FINITE1P(index, gamma_inv_x, 6)
 
             const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
@@ -317,7 +318,7 @@ namespace RaytracingX
                 gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
                 gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
 
-            ASSERT_FINITE1(V_up, 3)
+            ASSERT_FINITE1P(index, V_up, 3)
 
             // Compute the rhs for position
             rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -351,7 +352,7 @@ namespace RaytracingX
                                  2.0 * dx[1] * dx[2] * gamma_inv_x[4];
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
-            ASSERT_FINITE1(rhs, 8)
+            ASSERT_FINITE1P(index, rhs, 8)
 
             return rhs;
 
@@ -502,7 +503,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "pre rk4");
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
-          self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,
+          self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
@@ -527,7 +528,7 @@ namespace RaytracingX
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
-          self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
+          self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
 
       // Update particles with the f1 and f2 from RK4
@@ -561,7 +562,7 @@ namespace RaytracingX
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
-      k_odd = self->compute_rhs(U_tmp, 0.5 * dt, lapse_array, shift_array,
+      k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       U_tmp[0] = U[0] + dt * k_odd[0];
@@ -585,7 +586,7 @@ namespace RaytracingX
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
-      k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
+      k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
       assert(std::isfinite(k_even[0]));

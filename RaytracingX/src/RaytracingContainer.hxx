@@ -342,6 +342,50 @@ namespace RaytracingX
 
         } // RaytracingParticlesContainer::compute_rhs
 
+        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
+        {
+            const auto plo0 = this->Geom(0).ProbLoArray();
+            const auto phi0 = this->Geom(0).ProbHiArray();
+
+            const auto dx = this->Geom(lev).CellSizeArray();
+            const auto plo = this->Geom(lev).ProbLoArray();
+
+            for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
+                 ++pti)
+            {
+
+                const int np = pti.numParticles();
+
+                // Get the information relate to the velocities and energy.
+                auto &attribs = pti.GetAttributes();
+                CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+                CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); //RaytracingX: Add deletion reason.
+                auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
+
+                // Get the array of each parameter.
+                auto const lapse_array = lapse.array(pti);
+
+                // Needed for GPU
+                auto self = this;
+
+                amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
+                                   {
+                                        //RaytracingX: Delete particle when geodesic reaches event horizon.
+                                        const long int i0 = amrex::Math::floor((particles[i].pos(0) - plo[0]) / dx[0]);
+                                        const long int j0 = amrex::Math::floor((particles[i].pos(1) - plo[1]) / dx[1]);
+                                        const long int k0 = amrex::Math::floor((particles[i].pos(2) - plo[2]) / dx[2]);
+                                        // Interpolate lapse & partial lapse at \vect{x}
+                                        CCTK_REAL lapse_x;
+                                        amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
+                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                                                     particles[i].pos(2), dx, plo);
+                                        if (exp(ln_alphaenergy[i]) / lapse_x > max_energy) {
+                                          particles[i].id() =-1;
+                                          deletion_reasons[i] = -7;
+                                        }
+                                   });
+        }
+
         /**
          *  \brief Evolving using Runge-Kutta 4.
          *
@@ -378,8 +422,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev,
-                    const CCTK_REAL max_energy) //RaytracingX: Add information for maximum energy for photons defining event horizon.
+                    const CCTK_REAL &dt, const int &lev)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();
@@ -430,6 +473,10 @@ namespace RaytracingX
           ln_alphaenergy[i], tau[i]}; //RaytracingX: Add density for optical depth.
 
       bool out_of_bounds = false;
+
+      if (particles[i].id() == -1) {
+        return;
+      }
 
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -540,27 +587,8 @@ namespace RaytracingX
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
-      
-      if (out_of_bounds) {
-          particles[i].id() = -1;
-          return;
-      } 
-      
+
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
-        
-      //RaytracingX: Delete particle when geodesic reaches event horizon.
-      const long int i0 = amrex::Math::floor((particles[i].pos(0) - plo[0]) / dx[0]);
-      const long int j0 = amrex::Math::floor((particles[i].pos(1) - plo[1]) / dx[1]);
-      const long int k0 = amrex::Math::floor((particles[i].pos(2) - plo[2]) / dx[2]);
-      // Interpolate lapse & partial lapse at \vect{x}
-      CCTK_REAL lapse_x;
-      amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-      GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                   particles[i].pos(2), dx, plo);
-      if (exp(ln_alphaenergy[i]) / lapse_x > max_energy) {
-        out_of_bounds = true;
-        deletion_reasons[i] = -7;
-      }
 
       if (out_of_bounds) {
         particles[i].id() = -1;

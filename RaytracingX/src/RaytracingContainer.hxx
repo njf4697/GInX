@@ -484,7 +484,7 @@ namespace RaytracingX
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       // f1 = rhs(u , t) for the runge kutta 4 step
-      ASSERT_BOUNDS(particle[i].pos(0), particle[i].pos(1), particle[i].pos(2), "pre rk4");
+      ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "pre rk4");
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(U, 0.0, lapse_array, shift_array, metric_array,

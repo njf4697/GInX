@@ -9,6 +9,9 @@
 #define RAYTRACINGX
 
 #define DEBUG(X) fprintf(stderr, ("proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str());
+#define ASSERT_FINITE(X) assert(std::isfinite(X));
+#define ASSERT_FINITE(X, Y) for (int ii = 0; ii < Y; i++) { assert(std::isfinite(X[ii])); }
+#define ASSERT_FINITE(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; i++) { assert(std::isfinite(X[jj][ii])); } }
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

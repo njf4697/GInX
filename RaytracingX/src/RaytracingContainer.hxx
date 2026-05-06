@@ -281,53 +281,14 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                                          u[2], dx, plo);
 
-            assert(std::isfinite(lapse_x));
-            assert(std::isfinite(shift_x[0]));
-            assert(std::isfinite(shift_x[1]));
-            assert(std::isfinite(shift_x[2]));
-            assert(std::isfinite(gamma_x[0]));
-            assert(std::isfinite(gamma_x[1]));
-            assert(std::isfinite(gamma_x[2]));
-            assert(std::isfinite(gamma_x[3]));
-            assert(std::isfinite(gamma_x[4]));
-            assert(std::isfinite(gamma_x[5]));
-            assert(std::isfinite(d_lapse_x[0]));
-            assert(std::isfinite(d_shift_x[0][0]));
-            assert(std::isfinite(d_shift_x[0][1]));
-            assert(std::isfinite(d_shift_x[0][2]));
-            assert(std::isfinite(d_gamma_x[0][0]));
-            assert(std::isfinite(d_gamma_x[0][1]));
-            assert(std::isfinite(d_gamma_x[0][2]));
-            assert(std::isfinite(d_gamma_x[0][3]));
-            assert(std::isfinite(d_gamma_x[0][4]));
-            assert(std::isfinite(d_gamma_x[0][5]));
-            assert(std::isfinite(d_lapse_x[1]));
-            assert(std::isfinite(d_shift_x[1][0]));
-            assert(std::isfinite(d_shift_x[1][1]));
-            assert(std::isfinite(d_shift_x[1][2]));
-            assert(std::isfinite(d_gamma_x[1][0]));
-            assert(std::isfinite(d_gamma_x[1][1]));
-            assert(std::isfinite(d_gamma_x[1][2]));
-            assert(std::isfinite(d_gamma_x[1][3]));
-            assert(std::isfinite(d_gamma_x[1][4]));
-            assert(std::isfinite(d_gamma_x[1][5]));
-            assert(std::isfinite(d_lapse_x[2]));
-            assert(std::isfinite(d_shift_x[2][0]));
-            assert(std::isfinite(d_shift_x[2][1]));
-            assert(std::isfinite(d_shift_x[2][2]));
-            assert(std::isfinite(d_gamma_x[2][0]));
-            assert(std::isfinite(d_gamma_x[2][1]));
-            assert(std::isfinite(d_gamma_x[2][2]));
-            assert(std::isfinite(d_gamma_x[2][3]));
-            assert(std::isfinite(d_gamma_x[2][4]));
-            assert(std::isfinite(d_gamma_x[2][5]));
-            assert(std::isfinite(curv_x[0]));
-            assert(std::isfinite(curv_x[1]));
-            assert(std::isfinite(curv_x[2]));
-            assert(std::isfinite(curv_x[3]));
-            assert(std::isfinite(curv_x[4]));
-            assert(std::isfinite(curv_x[5]));
-
+            ASSERT_FINITE(lapse_x)
+            ASSERT_FINITE(d_lapse_x, 3)
+            ASSERT_FINITE(shift_x, 3)
+            ASSERT_FINITE(d_shift_x, 3, 3)
+            ASSERT_FINITE(gamma_x, 6)
+            ASSERT_FINITE(d_gamma_x, 6, 3)
+            ASSERT_FINITE(curv_x, 6)
+                                         
             // Compute the inverse of the metric.
             const CCTK_REAL inv_det_gamma =
                 1.0 / (gamma_x[0] * gamma_x[3] * gamma_x[5] +
@@ -335,6 +296,8 @@ namespace RaytracingX
                        gamma_x[2] * gamma_x[2] * gamma_x[3] -
                        gamma_x[4] * gamma_x[4] * gamma_x[0] -
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
+            
+            ASSERT_FINITE(inv_det_gamma)
 
             const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
                 (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
@@ -344,6 +307,8 @@ namespace RaytracingX
                 (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
                 (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
 
+            ASSERT_FINITE(gamma_inv_x, 6)
+
             const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
             // Compute the upper index velocity terms.
@@ -351,6 +316,8 @@ namespace RaytracingX
                 gamma_inv_x[0] * u[3] + gamma_inv_x[1] * u[4] + gamma_inv_x[2] * u[5],
                 gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
                 gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
+
+            ASSERT_FINITE(V_up, 6)
 
             // Compute the rhs for position
             rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -383,6 +350,8 @@ namespace RaytracingX
                                  2.0 * dx[0] * dx[2] * gamma_inv_x[2] +
                                  2.0 * dx[1] * dx[2] * gamma_inv_x[4];
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
+
+            ASSERT_FINITE(rhs, 8)
 
             return rhs;
 

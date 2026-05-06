@@ -395,7 +395,7 @@ namespace RaytracingX
                                         amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
                                         GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                                                      particles[i].pos(2), dx, plo);
-                                        if (exp(ln_alphaenergy[i]) / lapse_x > max_energy) {
+                                        if (exp(-ln_alphaenergy[i]) / lapse_x > max_energy) {
                                           particles[i].id() =-1;
                                           deletion_reasons[i] = -7;
                                         }
@@ -485,6 +485,8 @@ namespace RaytracingX
 
                 amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                                    {
+        if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i]) + " top") }
+
       const amrex::GpuArray<CCTK_REAL, 8> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
@@ -617,7 +619,7 @@ namespace RaytracingX
           return;
       }
       
-      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i])) }
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i]) + " bottom") }
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
       });
             }

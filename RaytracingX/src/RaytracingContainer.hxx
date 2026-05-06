@@ -616,7 +616,8 @@ namespace RaytracingX
           particles[i].id() = -1;
           return;
       }
-
+      
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i])) }
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
       });
             }

@@ -647,7 +647,6 @@ namespace RaytracingX
           return;
       }
 
-      DEBUG("test3")
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "post rk4")
       });
             }

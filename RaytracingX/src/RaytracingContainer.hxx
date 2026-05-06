@@ -573,6 +573,10 @@ namespace RaytracingX
       k_even = self->compute_rhs(U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
+      assert(std::isfinite(k_even[0]));
+      assert(std::isfinite(k_even[1]));
+      assert(std::isfinite(k_even[2]));
+
       // Update particles with the f3 and f4 from RK4
       particles[i].pos(0) += (1. / 6.) * dt * (2. * k_odd[0] + k_even[0]);
       particles[i].pos(1) += (1. / 6.) * dt * (2. * k_odd[1] + k_even[1]);

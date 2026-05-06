@@ -285,9 +285,9 @@ namespace RaytracingX
             ASSERT_FINITEP(index, lapse_x)
             ASSERT_FINITE1P(index, d_lapse_x, 3)
             ASSERT_FINITE1P(index, shift_x, 3)
-            ASSERT_FINITEP2(index, d_shift_x, 3, 3)
+            ASSERT_FINITE2P(index, d_shift_x, 3, 3)
             ASSERT_FINITE1P(index, gamma_x, 6)
-            ASSERT_FINITEP2(index, d_gamma_x, 6, 3)
+            ASSERT_FINITE2P(index, d_gamma_x, 6, 3)
             ASSERT_FINITE1P(index, curv_x, 6)
                                          
             // Compute the inverse of the metric.

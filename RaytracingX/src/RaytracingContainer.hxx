@@ -317,7 +317,7 @@ namespace RaytracingX
                 gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
                 gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
 
-            ASSERT_FINITE1(V_up, 6)
+            ASSERT_FINITE1(V_up, 3)
 
             // Compute the rhs for position
             rhs[0] = lapse_x * V_up[0] - shift_x[0];

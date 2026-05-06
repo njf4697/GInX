@@ -522,8 +522,6 @@ namespace RaytracingX
 
       bool out_of_bounds = false;
 
-      DEBUG("test1")
-
       if (particles[i].id() == -1) {
         return;
       }
@@ -591,8 +589,6 @@ namespace RaytracingX
         particles[i].id() = -1;
         return;
       }
-
-      DEBUG("test2")
 
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");

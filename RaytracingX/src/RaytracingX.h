@@ -12,11 +12,7 @@
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
 #define ASSERT_FINITE2(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[jj][ii]); } }
-#define DEBUGP(I, X) fprintf(stderr, ("pidx " + std::to_string(I) + ", proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str()); fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f", gamma_x[0], gamma_x[3], gamma_x[5],
-                       gamma_x[1], gamma_x[2], gamma_x[4],
-                       gamma_x[2], gamma_x[2], gamma_x[3],
-                       gamma_x[4], gamma_x[4], gamma_x[0],
-                       gamma_x[1], gamma_x[1], gamma_x[5]);
+#define DEBUGP(I, X) fprintf(stderr, ("pidx " + std::to_string(I) + ", proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str()); fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f", gamma_x[0], gamma_x[3], gamma_x[5], gamma_x[1], gamma_x[2], gamma_x[4], gamma_x[2], gamma_x[2], gamma_x[3], gamma_x[4], gamma_x[4], gamma_x[0], gamma_x[1], gamma_x[1], gamma_x[5]);
 #define ASSERT_FINITEP(I, X) if (!std::isfinite(X)) { DEBUGP(I, std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1P(I, X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(I, X[ii]); }
 #define ASSERT_FINITE2P(I, X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(I, X[jj][ii]); } }

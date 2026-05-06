@@ -8,7 +8,7 @@
 #ifndef RAYTRACINGX
 #define RAYTRACINGX
 
-#define DEBUG(X) fprintf(stderr, X + std::endl);
+#define DEBUG(X) fprintf(stderr, std::string(X) + "\n");
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

@@ -250,7 +250,7 @@ namespace RaytracingX
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
 
             if (index == 5029) { DEBUG("test2") }
-            if (index == 4771) { DEBUG(std::to_string(u[0]) + " " +  std::to_string(u[1]) + " " + std::to_string(u[2])) }
+            if (index == 4771) { DEBUG(std::to_string(u[0]) + " " +  std::to_string(u[1]) + " " + std::to_string(u[2])) fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f", gamma_x[0], gamma_x[3], gamma_x[5], gamma_x[1], gamma_x[2], gamma_x[4], gamma_x[2], gamma_x[2], gamma_x[3], gamma_x[4], gamma_x[4], gamma_x[0], gamma_x[1], gamma_x[1], gamma_x[5]); }
 
             const long int i0 = amrex::Math::floor((u[0] - plo[0]) / dx[0]);
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);

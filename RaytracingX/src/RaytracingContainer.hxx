@@ -285,7 +285,7 @@ namespace RaytracingX
                 u[2], dx, plo);
                             
             if (index == 5029) { DEBUG("test3") }
-            if (index == 4771) { fprintf(stderr, "%f %f %f\n%f %f %f\n%f %f %f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); fprintf(stderr, "at %f %f %f\n", u[0], u[1], u[2])}
+            if (index == 4771) { fprintf(stderr, "%f %f %f\n%f %f %f\n%f %f %f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); fprintf(stderr, "at %f %f %f\n", u[0], u[1], u[2]); }
 
             ASSERT_FINITEP(index, lapse_x)
             ASSERT_FINITE1P(index, d_lapse_x, 3)

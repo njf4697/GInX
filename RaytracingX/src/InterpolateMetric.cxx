@@ -131,9 +131,9 @@ void interpolateMetricAtPoint2(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REA
     const int nPoints = (CCTK_MyProc(cctkGH) == 0) ? 1 : 0;
 
     std::array<std::vector<CCTK_REAL>, 3> location_;
-    location_[0].push_back(camera_pos[0]);
-    location_[1].push_back(camera_pos[1]);
-    location_[2].push_back(camera_pos[2]);
+    location_[0].push_back(x);
+    location_[1].push_back(y);
+    location_[2].push_back(z);
 
     std::array<std::vector<CCTK_REAL>, 10> metric_;
     metric_[0].resize(1);

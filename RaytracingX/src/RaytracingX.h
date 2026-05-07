@@ -13,7 +13,7 @@
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
 #define ASSERT_FINITE2(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[jj][ii]); } }
 #define DEBUGP(I, X) fprintf(stderr, ("pidx " + std::to_string(I) + ", proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str()); fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f", gamma_x[0], gamma_x[3], gamma_x[5], gamma_x[1], gamma_x[2], gamma_x[4], gamma_x[2], gamma_x[2], gamma_x[3], gamma_x[4], gamma_x[4], gamma_x[0], gamma_x[1], gamma_x[1], gamma_x[5]);
-#define ASSERT_FINITEP(I, X) if (!std::isfinite(X)) { DEBUGP(I, u[0]); DEBUGP(I, u[1]); DEBUGP(I, u[2]); DEBUGP(I, std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
+#define ASSERT_FINITEP(I, X) if (!std::isfinite(X)) { DEBUGP(I, std::to_string(u[0]) + " " +  std::to_string(u[0]) + " " + std::to_string(u[0])); DEBUGP(I, std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1P(I, X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(I, X[ii]); }
 #define ASSERT_FINITE2P(I, X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITEP(I, X[jj][ii]); } }
 
@@ -66,7 +66,7 @@ struct Metric { //struct that contains information about the metric interpolated
 
 void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL* e2, CCTK_REAL* e3, Metric* metric); //Utilities.cc
 void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point); //InterpolateMetric.cc
-void interpolateMetricAtPoint2(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z)
+void interpolateMetricAtPoint2(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z);
 CCTK_REAL innerProduct(const CCTK_REAL* U, const CCTK_REAL* V, const Metric* m); //utilities.cc
 void generalizedCrossProduct(CCTK_REAL* X, const CCTK_REAL* U, const CCTK_REAL* V, const CCTK_REAL* W, const Metric* m); //Utilities.cc
 void oneFormToVector(CCTK_REAL* X_vector, const CCTK_REAL* X_oneform, const Metric* m); //Utilities.cc

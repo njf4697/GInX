@@ -261,31 +261,31 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
-                // Interpolate shift & partial shift at \vect{x}
-                amrex::GpuArray<CCTK_REAL, 3> shift_x;
-                amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
-                GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
-                    u[2], dx, plo);
-                    
-                    // Interpolate metric & partial metric at \vect{x}
-                    amrex::GpuArray<CCTK_REAL, 6> gamma_x;
-                    amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
-                    GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
-                        u[2], dx, plo);
-                        
-                        // Interpolate Curvature at \vect{x}
-                        amrex::GpuArray<CCTK_REAL, 6> curv_x;
-                        GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
-                        
-                        //RaytracingX: Interpolate density for optical depth calculation.
-                        // Interpolate rho at \vect{x}
-                        CCTK_REAL rho_x;
-                        amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
-                        GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
-                            u[2], dx, plo);
+            // Interpolate shift & partial shift at \vect{x}
+            amrex::GpuArray<CCTK_REAL, 3> shift_x;
+            amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
+            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
+                u[2], dx, plo);
+                
+            // Interpolate metric & partial metric at \vect{x}
+            amrex::GpuArray<CCTK_REAL, 6> gamma_x;
+            amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
+            GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
+                u[2], dx, plo);
+                
+            // Interpolate Curvature at \vect{x}
+            amrex::GpuArray<CCTK_REAL, 6> curv_x;
+            GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
+            
+            //RaytracingX: Interpolate density for optical depth calculation.
+            // Interpolate rho at \vect{x}
+            CCTK_REAL rho_x;
+            amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
+            GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
+                u[2], dx, plo);
                             
             if (index == 5029) { DEBUG("test3") }
-            if (index == 4771) { fprintf(stderr, "%f %f %f\n%f %f %f\n%f%f%f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); }
+            if (index == 4771) { fprintf(stderr, "%f %f %f\n%f %f %f\n%f %f %f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); fprintf(stderr, "at %f %f %f\n", u[0], u[1], u[2])}
 
             ASSERT_FINITEP(index, lapse_x)
             ASSERT_FINITE1P(index, d_lapse_x, 3)

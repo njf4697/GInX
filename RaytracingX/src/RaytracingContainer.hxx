@@ -110,8 +110,8 @@ namespace RaytracingX
 
         ~RaytracingParticlesContainer() = default;
 
-        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper) {
-            return i0 = amrex::Math::floor(amrex::Clamp(point, lower, upper));
+        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx) {
+            return amrex::Math::floor((amrex::Clamp(point, lower, upper) - lower) / dx);
         }
 
         //RaytracingX: Add method that writes particle information when the particle is deleted.
@@ -257,9 +257,9 @@ namespace RaytracingX
 
             if (index == 5029) { DEBUG("test2") }
             
-            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0]);
-            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1]);
-            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2]);
+            const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
+            const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
+            const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;

@@ -249,6 +249,9 @@ namespace RaytracingX
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
 
+            if (index == 5029) { DEBUG("test2") }
+            if (index == 4771) { std::to_string(u[0]) + " " +  std::to_string(u[1]) + " " + std::to_string(u[2]) }
+
             const long int i0 = amrex::Math::floor((u[0] - plo[0]) / dx[0]);
             const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
             const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
@@ -282,6 +285,8 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                                          u[2], dx, plo);
 
+            if (index == 5029) { DEBUG("test3") }
+
             ASSERT_FINITEP(index, lapse_x)
             ASSERT_FINITE1P(index, d_lapse_x, 3)
             ASSERT_FINITE1P(index, shift_x, 3)
@@ -299,6 +304,7 @@ namespace RaytracingX
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
             
             ASSERT_FINITEP(index, inv_det_gamma)
+            if (index == 5029) { DEBUG("test4") }
 
             const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
                 (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
@@ -309,6 +315,7 @@ namespace RaytracingX
                 (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
 
             ASSERT_FINITE1P(index, gamma_inv_x, 6)
+            if (index == 5029) { DEBUG("test5") }
 
             const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
@@ -319,6 +326,7 @@ namespace RaytracingX
                 gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
 
             ASSERT_FINITE1P(index, V_up, 3)
+            if (index == 5029) { DEBUG("test6") }
 
             // Compute the rhs for position
             rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -337,6 +345,8 @@ namespace RaytracingX
                     VecVecMul(V_down, d_shift_x[i]);
             }
 
+            if (index == 5029) { DEBUG("test7") }
+
             // Compute the rhs for energy
             rhs[3 + StructType::ln_alphaE] =
                 lapse_x * VecVecMul(SMatVecMul(curv_x, V_up), V_up) -
@@ -353,6 +363,7 @@ namespace RaytracingX
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
             ASSERT_FINITE1P(index, rhs, 8)
+            if (index == 5029) { DEBUG("test8") }
 
             return rhs;
 
@@ -487,8 +498,6 @@ namespace RaytracingX
                                    {
         if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i]) + " top") }
 
-        if (index[i] == 5029) { DEBUG("test1") }
-
       const amrex::GpuArray<CCTK_REAL, 8> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
@@ -503,16 +512,12 @@ namespace RaytracingX
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-      if (index[i] == 5029) { DEBUG("test2") }
-
       // f1 = rhs(u , t) for the runge kutta 4 step
       ASSERT_BOUNDS(particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), "pre rk4");
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
-
-    if (index[i] == 5029) { DEBUG("test3") }
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -533,15 +538,11 @@ namespace RaytracingX
         return;
       }
 
-      if (index[i] == 5029) { DEBUG("test4") }
-
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0);
-
-    if (index[i] == 5029) { DEBUG("test5") }
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -553,8 +554,6 @@ namespace RaytracingX
       U_tmp[6] = U[6] + 0.5 * dt * k_even[6];
       U_tmp[7] = U[7] + 0.5 * dt * k_even[7]; //RaytracingX: Add optical depth.
 
-      if (index[i] == 5029) { DEBUG("test6") }
-
       particles[i].pos(0) += (1. / 6.) * dt * (k_odd[0] + 2. * k_even[0]);
       particles[i].pos(1) += (1. / 6.) * dt * (k_odd[1] + 2. * k_even[1]);
       particles[i].pos(2) += (1. / 6.) * dt * (k_odd[2] + 2. * k_even[2]);
@@ -563,8 +562,6 @@ namespace RaytracingX
       vels_z[i] += (1. / 6.) * dt * (k_odd[5] + 2. * k_even[5]);
       ln_alphaenergy[i] += (1. / 6.) * dt * (k_odd[6] + 2. * k_even[6]);
       tau[i] += (1. / 6.) * dt * (k_odd[7] + 2. * k_even[7]); //RaytracingX: Add optical depth.
-
-      if (index[i] == 5029) { DEBUG("test7") }
       
       //RaytracingX: Change bounds check for debug information.
       CHECK_OUT_OF_BOUNDS_X(U_tmp[0])
@@ -576,15 +573,15 @@ namespace RaytracingX
         return;
       }
 
-      if (index[i] == 5029) { DEBUG("test8") }
+      if (index[i] == 5029) { DEBUG("test0") }
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
-      if (index[i] == 5029) { DEBUG("test8.5") }
+      if (index[i] == 5029) { DEBUG("test1") }
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
-     if (index[i] == 5029) { DEBUG("test9") }
+     if (index[i] == 5029) { DEBUG("testfinal") }
 
       U_tmp[0] = U[0] + dt * k_odd[0];
       U_tmp[1] = U[1] + dt * k_odd[1];
@@ -600,27 +597,19 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_Y(U_tmp[1])
       CHECK_OUT_OF_BOUNDS_Z(U_tmp[2])
 
-      if (index[i] == 5029) { DEBUG("testA") }
-
       if (out_of_bounds) {
         particles[i].id() = -1;
         return;
       }
-
-      if (index[i] == 5029) { DEBUG("testB") }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
 
-      if (index[i] == 5029) { DEBUG("testC") }
-
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));
       assert(std::isfinite(k_even[2]));
-
-      if (index[i] == 5029) { DEBUG("testD") }
 
       // Update particles with the f3 and f4 from RK4
       particles[i].pos(0) += (1. / 6.) * dt * (2. * k_odd[0] + k_even[0]);
@@ -639,8 +628,6 @@ namespace RaytracingX
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
-
-      if (index[i] == 5029) { DEBUG("testE") }
 
       
       if (out_of_bounds) {

@@ -112,6 +112,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTS;
 
   Metric m;
+  interpolateMetricAtPoint2(CCTK_PASS_CTOC, &m, -1.853942, 15.130371, -0.154485);
   interpolateMetricAtPoint2(CCTK_PASS_CTOC, &m, -32.010824, -31.163003, 16.099812);
   if (CCTK_MyProc(cctkGH) == 0) { DEBUG(m.to_string()) }
 

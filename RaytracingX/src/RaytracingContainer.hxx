@@ -285,7 +285,7 @@ namespace RaytracingX
                             u[2], dx, plo);
                             
             if (index == 5029) { DEBUG("test3") }
-            if (index == 4771) { DEBUG(std::to_string(u[0]) + " " +  std::to_string(u[1]) + " " + std::to_string(u[2])) fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f", gamma_x[0], gamma_x[3], gamma_x[5], gamma_x[1], gamma_x[2], gamma_x[4], gamma_x[2], gamma_x[2], gamma_x[3], gamma_x[4], gamma_x[4], gamma_x[0], gamma_x[1], gamma_x[1], gamma_x[5]); }
+            if (index == 4771) { DEBUG(std::to_string(u[0]) + " " +  std::to_string(u[1]) + " " + std::to_string(u[2])) fprintf(stderr, "%f*%f*%f + 2*%f*%f*%f - %f*%f*%f - %f*%f*%f - %f*%f*%f\n", gamma_x[0], gamma_x[3], gamma_x[5], gamma_x[1], gamma_x[2], gamma_x[4], gamma_x[2], gamma_x[2], gamma_x[3], gamma_x[4], gamma_x[4], gamma_x[0], gamma_x[1], gamma_x[1], gamma_x[5]); }
 
             ASSERT_FINITEP(index, lapse_x)
             ASSERT_FINITE1P(index, d_lapse_x, 3)

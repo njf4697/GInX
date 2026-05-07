@@ -92,6 +92,7 @@ namespace RaytracingX
      * are similar to those found in ParticlesContainer/ParticlesContainer.hxx, so changes will be prefaced with 
      * 'RaytraingX:'.
      */
+
     protected:
         CCTK_REAL mass = 0.;
 
@@ -108,6 +109,10 @@ namespace RaytracingX
             : Base(amr_core), mass{m} { };
 
         ~RaytracingParticlesContainer() = default;
+
+        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper) {
+            return i0 = amrex::Math::floor(amrex::Clamp(point, lower, upper));
+        }
 
         //RaytracingX: Add method that writes particle information when the particle is deleted.
         void write_deleted_particle_data(const int &lev, std::string final_data_file_name) {
@@ -244,44 +249,45 @@ namespace RaytracingX
                 const amrex::Array4<CCTK_REAL const> &curv,
                 const amrex::Array4<CCTK_REAL const> &rho, const CCTK_REAL dt,
                 const amrex::GpuArray<double, 3> &dx, const int lev,
-                const amrex::GpuArray<double, 3> &plo)
+                const amrex::GpuArray<double, 3> &plo, 
+                const amrex::GpuArray<double, 3> &phi, const int interpolation_order)
         {
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
 
             if (index == 5029) { DEBUG("test2") }
             
-            const long int i0 = amrex::Math::floor((u[0] - plo[0]) / dx[0]);
-            const long int j0 = amrex::Math::floor((u[1] - plo[1]) / dx[1]);
-            const long int k0 = amrex::Math::floor((u[2] - plo[2]) / dx[2]);
+            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0]);
+            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1]);
+            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
             amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-            GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<interpolation_order>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate shift & partial shift at \vect{x}
             amrex::GpuArray<CCTK_REAL, 3> shift_x;
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
-            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<interpolation_order>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate metric & partial metric at \vect{x}
             amrex::GpuArray<CCTK_REAL, 6> gamma_x;
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
-            GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<interpolation_order>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate Curvature at \vect{x}
             amrex::GpuArray<CCTK_REAL, 6> curv_x;
-            GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
+            GInX::interpolate_array<interpolation_order>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
             
             //RaytracingX: Interpolate density for optical depth calculation.
             // Interpolate rho at \vect{x}
             CCTK_REAL rho_x;
             amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
-            GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<interpolation_order>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                             
             if (index == 5029) { DEBUG("test3") }
@@ -375,7 +381,6 @@ namespace RaytracingX
             const auto phi0 = this->Geom(0).ProbHiArray();
 
             const auto dx = this->Geom(lev).CellSizeArray();
-            const auto plo = this->Geom(lev).ProbLoArray();
 
             for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
                  ++pti)
@@ -398,13 +403,13 @@ namespace RaytracingX
                 amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                                    {
                                         //RaytracingX: Delete particle when geodesic reaches event horizon.
-                                        const long int i0 = amrex::Math::floor((particles[i].pos(0) - plo[0]) / dx[0]);
-                                        const long int j0 = amrex::Math::floor((particles[i].pos(1) - plo[1]) / dx[1]);
-                                        const long int k0 = amrex::Math::floor((particles[i].pos(2) - plo[2]) / dx[2]);
+                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0]);
+                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1]);
+                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2]);
                                         // Interpolate lapse & partial lapse at \vect{x}
                                         CCTK_REAL lapse_x;
                                         amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                        GInX::d_interpolate_array<interpolation_order>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                                                      particles[i].pos(2), dx, plo);
                                         if (abs(exp(abs(ln_alphaenergy[i])) / lapse_x) > max_energy) {
                                           particles[i].id() =-1;
@@ -451,7 +456,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev)
+                    const CCTK_REAL &dt, const int &lev, const int n_ghost_zones, const int interpolation_order)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();
@@ -517,7 +522,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -542,7 +547,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, dt, dx, lev, plo0);
+                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order);
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -579,7 +584,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       if (index[i] == 5029) { DEBUG("test1") }
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
+                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add optical depth.
 
      if (index[i] == 5029) { DEBUG("testfinal") }
 
@@ -605,7 +610,7 @@ namespace RaytracingX
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0); //RaytracingX: Add optical depth.
+                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add optical depth.
 
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));
@@ -628,7 +633,6 @@ namespace RaytracingX
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
-
       
       if (out_of_bounds) {
           particles[i].id() = -1;
@@ -755,13 +759,13 @@ namespace RaytracingX
                 // Generate a random position
                 const auto &p = p_struct[i];
                 
-                const int i0 = amrex::Math::floor((p.pos(0) - p_lo[0]) / dx[0]);
-                const int j0 = amrex::Math::floor((p.pos(1) - p_lo[1]) / dx[1]);
-                const int k0 = amrex::Math::floor((p.pos(2) - p_lo[2]) / dx[2]);
+                const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0]);
+                const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1]);
+                const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2]);
                 
                 // Interpolate metric
                 amrex::GpuArray<CCTK_REAL, 6> gamma_x;
-                GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
+                GInX::interpolate_array<interpolation_order>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
                                      p.pos(1), p.pos(2), dx, p_lo);
                 
                 const CCTK_REAL inv_det_gamma =

@@ -115,6 +115,11 @@ RESTRICTED: REAL region_10_a "Spin of region 10" STEERABLE=always
     -1:1 :: "Any positive value between -1 and 1"
 } 0.0
 
+INT RK4_interpolation_order "Interpolation order for grid values inside RK4" STEERABLE = ALWAYS
+{
+    (0:* :: "Any positive integer"
+} 5
+
 SHARES: BaseParticlesContainer
 
 # Base Output Variables

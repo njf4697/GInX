@@ -37,6 +37,7 @@
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
+int interp_order;
 
 /**
  * \brief Initialize particles' data
@@ -56,6 +57,9 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   {
     CCTK_INFO("R_ParticlesContainer_setup");
   }
+
+  assert(grid.ndim == 3);
+  interp_order = MAX(MIN(MIN(grid.nghostzones[0], grid.nghostzones[1]), grid.nghostzones[2]), RK4_interpolation_order);
 
   //RaytracingX: Particle skip override moved to schedule.ccl
 
@@ -167,11 +171,11 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_pre_evol.tsv");
 
-      pc->check_horizon(lapse, lev, max_energy);
+      pc->check_horizon(lapse, lev, max_energy, interp_order);
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev);
+      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, interp_order);
 
       pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_post_evol.tsv");
     }

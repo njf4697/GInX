@@ -111,6 +111,10 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  Metric m;
+  interpolateMetricAtPoint2(CCTK_PASS_CTOC, m, 0.0, 15.0, 0.0);
+  print(m.to_string());
+
   //RaytracingX: Add debug print statement.
   if (verbose)
   {

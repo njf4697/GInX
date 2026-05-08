@@ -609,6 +609,7 @@ namespace RaytracingX
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
+      if (index == 4771) { fprintf(stderr, "4771 at %f %f %f\n", U_tmp[0], U_tmp[1], U_tmp[2]); }
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
 

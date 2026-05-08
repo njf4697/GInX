@@ -262,8 +262,6 @@ namespace RaytracingX
             const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
             const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
             const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
-
-            fprintf(stderr, "%d %d %d\n", lbnd[0], i0, ubnd[0]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
@@ -374,6 +372,8 @@ namespace RaytracingX
 
             ASSERT_FINITE1P(index, rhs, 8)
             if (index == 5029) { DEBUG("test8") }
+
+            if (index == 4771) { DEBUG(std::string(rhs[0]) + " " + std::string(rhs[1])+ " " + std::string(rhs[2])) }
 
             return rhs;
 

@@ -456,7 +456,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev)
+                    const CCTK_REAL &dt, const int &lev, const amrex::IntVect &lbnd, const amrex::IntVect &ubnd)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();
@@ -522,7 +522,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -547,7 +547,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
+                            metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd);
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -584,7 +584,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       if (index[i] == 5029) { DEBUG("test1") }
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
+                                metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add optical depth.
 
      if (index[i] == 5029) { DEBUG("testfinal") }
 
@@ -611,7 +611,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       if (index[i] == 4771) { fprintf(stderr, "(%f %f %f) should be between (%f %f %f) and (%f %f %f)s\n", U_tmp[0], U_tmp[1], U_tmp[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], U_tmp[0], U_tmp[1], U_tmp[2]); }
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
+                                 metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add optical depth.
 
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));

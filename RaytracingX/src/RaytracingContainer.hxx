@@ -375,7 +375,7 @@ namespace RaytracingX
 
         } // RaytracingParticlesContainer::compute_rhs
 
-        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
+        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy, const int interpolation_order)
         {
             const auto plo0 = this->Geom(0).ProbLoArray();
             const auto phi0 = this->Geom(0).ProbHiArray();
@@ -456,7 +456,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev, const int n_ghost_zones, const int interpolation_order)
+                    const CCTK_REAL &dt, const int &lev, const int interpolation_order)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();

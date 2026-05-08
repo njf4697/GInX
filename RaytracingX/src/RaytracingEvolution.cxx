@@ -58,8 +58,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
-  assert(grid.ndim == 3);
-  interp_order = MAX(MIN(MIN(grid.nghostzones[0], grid.nghostzones[1]), grid.nghostzones[2]), RK4_interpolation_order);
+  assert(CCTK_ndims(cctkGH); == 3);
+  interp_order = MAX(MIN(MIN(ghost_size_x, ghost_size_y), ghost_size_z), RK4_interpolation_order);
 
   //RaytracingX: Particle skip override moved to schedule.ccl
 

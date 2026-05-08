@@ -250,7 +250,7 @@ namespace RaytracingX
                 const amrex::Array4<CCTK_REAL const> &rho, const CCTK_REAL dt,
                 const amrex::GpuArray<double, 3> &dx, const int lev,
                 const amrex::GpuArray<double, 3> &plo, 
-                const amrex::GpuArray<double, 3> &phi
+                const amrex::GpuArray<double, 3> &phi,
                 const amrex::IntVect &lbnd,
                 const amrex::IntVect &ubnd)
         {

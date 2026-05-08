@@ -59,7 +59,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   }
 
   assert(cctk_dim == 3);
-  int[3] gh;
+  int gh[3];
   CCTK_GroupnghostzonesVN(
     cctkGH,
     3,

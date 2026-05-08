@@ -251,8 +251,8 @@ namespace RaytracingX
                 const amrex::GpuArray<double, 3> &dx, const int lev,
                 const amrex::GpuArray<double, 3> &plo, 
                 const amrex::GpuArray<double, 3> &phi,
-                const int &lbnd,
-                const int &ubnd)
+                const int *lbnd,
+                const int *ubnd)
         {
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
@@ -458,7 +458,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev, const int &lbnd, const int &ubnd)
+                    const CCTK_REAL &dt, const int &lev, const int *lbnd, const int *ubnd)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();

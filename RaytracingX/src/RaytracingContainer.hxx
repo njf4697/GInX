@@ -111,7 +111,7 @@ namespace RaytracingX
         ~RaytracingParticlesContainer() = default;
 
         static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx) {
-            return amrex::Math::floor((amrex::Clamp(point, lower, upper) - lower) / dx);
+            return amrex::Math::floor((amrex::Clamp(point, lower, upper - dx/4) - lower) / dx);
         }
 
         //RaytracingX: Add method that writes particle information when the particle is deleted.

@@ -373,7 +373,7 @@ namespace RaytracingX
             ASSERT_FINITE1P(index, rhs, 8)
             if (index == 5029) { DEBUG("test8") }
 
-            if (index == 4771) { DEBUG(std::string(rhs[0]) + " " + std::string(rhs[1])+ " " + std::string(rhs[2])) }
+            if (index == 4771) { DEBUG(std::to_string(rhs[0]) + " " + std::to_string(rhs[1])+ " " + std::to_string(rhs[2])) }
 
             return rhs;
 

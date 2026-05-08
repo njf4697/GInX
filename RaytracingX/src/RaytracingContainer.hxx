@@ -403,9 +403,9 @@ namespace RaytracingX
                 amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                                    {
                                         //RaytracingX: Delete particle when geodesic reaches event horizon.
-                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0]);
-                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1]);
-                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2]);
+                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
+                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
+                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
                                         // Interpolate lapse & partial lapse at \vect{x}
                                         CCTK_REAL lapse_x;
                                         amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
@@ -456,7 +456,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev, const int interpolation_order)
+                    const CCTK_REAL &dt, const int &lev)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();

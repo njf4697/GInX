@@ -64,7 +64,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     cctkGH,
     3,
     gh,
-    "ADMBaseX::lapse");
+    "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3);
 
   //RaytracingX: Particle skip override moved to schedule.ccl

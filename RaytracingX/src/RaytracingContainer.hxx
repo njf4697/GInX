@@ -250,7 +250,7 @@ namespace RaytracingX
                 const amrex::Array4<CCTK_REAL const> &rho, const CCTK_REAL dt,
                 const amrex::GpuArray<double, 3> &dx, const int lev,
                 const amrex::GpuArray<double, 3> &plo, 
-                const amrex::GpuArray<double, 3> &phi, const int interpolation_order)
+                const amrex::GpuArray<double, 3> &phi)
         {
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
@@ -264,30 +264,30 @@ namespace RaytracingX
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
             amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-            GInX::d_interpolate_array<interpolation_order>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate shift & partial shift at \vect{x}
             amrex::GpuArray<CCTK_REAL, 3> shift_x;
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
-            GInX::d_interpolate_array<interpolation_order>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate metric & partial metric at \vect{x}
             amrex::GpuArray<CCTK_REAL, 6> gamma_x;
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
-            GInX::d_interpolate_array<interpolation_order>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                 
             // Interpolate Curvature at \vect{x}
             amrex::GpuArray<CCTK_REAL, 6> curv_x;
-            GInX::interpolate_array<interpolation_order>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
+            GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
             
             //RaytracingX: Interpolate density for optical depth calculation.
             // Interpolate rho at \vect{x}
             CCTK_REAL rho_x;
             amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
-            GInX::d_interpolate_array<interpolation_order>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
+            GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
                             
             if (index == 5029) { DEBUG("test3") }
@@ -375,7 +375,7 @@ namespace RaytracingX
 
         } // RaytracingParticlesContainer::compute_rhs
 
-        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy, const int interpolation_order)
+        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
         {
             const auto plo0 = this->Geom(0).ProbLoArray();
             const auto phi0 = this->Geom(0).ProbHiArray();
@@ -409,7 +409,7 @@ namespace RaytracingX
                                         // Interpolate lapse & partial lapse at \vect{x}
                                         CCTK_REAL lapse_x;
                                         amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-                                        GInX::d_interpolate_array<interpolation_order>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                                                      particles[i].pos(2), dx, plo);
                                         if (abs(exp(abs(ln_alphaenergy[i])) / lapse_x) > max_energy) {
                                           particles[i].id() =-1;
@@ -759,13 +759,13 @@ namespace RaytracingX
                 // Generate a random position
                 const auto &p = p_struct[i];
                 
-                const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0]);
-                const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1]);
-                const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2]);
+                const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0]);
+                const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1]);
+                const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2]);
                 
                 // Interpolate metric
                 amrex::GpuArray<CCTK_REAL, 6> gamma_x;
-                GInX::interpolate_array<interpolation_order>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
+                GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
                                      p.pos(1), p.pos(2), dx, p_lo);
                 
                 const CCTK_REAL inv_det_gamma =

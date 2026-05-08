@@ -263,7 +263,7 @@ namespace RaytracingX
             const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
             const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
 
-            fprintf(stderr, "%d %d %d\n", lbnd[i], i0, ubnd[0]);
+            fprintf(stderr, "%d %d %d\n", lbnd[0], i0, ubnd[0]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;

@@ -547,7 +547,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order);
+                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -584,7 +584,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       if (index[i] == 5029) { DEBUG("test1") }
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add optical depth.
+                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
 
      if (index[i] == 5029) { DEBUG("testfinal") }
 
@@ -610,7 +610,7 @@ namespace RaytracingX
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add optical depth.
+                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
 
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));

@@ -250,16 +250,18 @@ namespace RaytracingX
                 const amrex::Array4<CCTK_REAL const> &rho, const CCTK_REAL dt,
                 const amrex::GpuArray<double, 3> &dx, const int lev,
                 const amrex::GpuArray<double, 3> &plo, 
-                const amrex::GpuArray<double, 3> &phi)
+                const amrex::GpuArray<double, 3> &phi
+                const amrex::IntVect &lbnd,
+                const amrex::IntVect &ubnd)
         {
             //RaytracingX: Add space for optical depth variable.
             amrex::GpuArray<CCTK_REAL, 8> rhs = {0., 0., 0., 0., 0., 0., 0., 0.};
 
             if (index == 5029) { DEBUG("test2") }
             
-            const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
-            const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
-            const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
+            const long int i0 = amrex::Clamp(get_interpolation_center(u[0], plo[0], phi[0], dx[0]), lbnd[0], ubnd[0]);
+            const long int j0 = amrex::Clamp(get_interpolation_center(u[1], plo[1], phi[1], dx[1]), lbnd[1], ubnd[1]);
+            const long int k0 = amrex::Clamp(get_interpolation_center(u[2], plo[2], phi[2], dx[2]), lbnd[2], ubnd[2]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
@@ -522,7 +524,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0, lbnd, ubnd); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -547,7 +549,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k2");
       auto k_even =
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd);
+                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lbnd, ubnd);
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -584,7 +586,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k3");
       if (index[i] == 5029) { DEBUG("test1") }
       k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add optical depth.
+                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lbnd, ubnd); //RaytracingX: Add optical depth.
 
      if (index[i] == 5029) { DEBUG("testfinal") }
 
@@ -611,7 +613,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U_tmp[0], U_tmp[1], U_tmp[2], "k4");
       if (index[i] == 4771) { fprintf(stderr, "(%f %f %f) should be between (%f %f %f) and (%f %f %f)s\n", U_tmp[0], U_tmp[1], U_tmp[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], U_tmp[0], U_tmp[1], U_tmp[2]); }
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, dt, dx, lev, lbnd, ubnd); //RaytracingX: Add optical depth.
+                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lbnd, ubnd); //RaytracingX: Add optical depth.
 
       assert(std::isfinite(k_even[0]));
       assert(std::isfinite(k_even[1]));

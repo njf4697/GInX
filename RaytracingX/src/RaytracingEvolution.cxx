@@ -181,7 +181,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      const auto box = pc->MakeMFIter(level).validbox();
+      const auto box = pc->MakeMFIter(lev).validbox();
       const auto lbnd = box.smallEnd();
       const auto ubnd = box.bigEnd();
 

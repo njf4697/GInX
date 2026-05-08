@@ -259,9 +259,11 @@ namespace RaytracingX
 
             if (index == 5029) { DEBUG("test2") }
             
-            const long int i0 = amrex::Clamp(get_interpolation_center(u[0], plo[0], phi[0], dx[0]), lbnd[0], ubnd[0]);
-            const long int j0 = amrex::Clamp(get_interpolation_center(u[1], plo[1], phi[1], dx[1]), lbnd[1], ubnd[1]);
-            const long int k0 = amrex::Clamp(get_interpolation_center(u[2], plo[2], phi[2], dx[2]), lbnd[2], ubnd[2]);
+            const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
+            const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
+            const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
+
+            fprintf(stderr, "%d %d %d\n", lbnd[i], i0, ubnd[0]);
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;

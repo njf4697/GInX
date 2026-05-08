@@ -410,7 +410,7 @@ namespace RaytracingX
                                         CCTK_REAL lapse_x;
                                         amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
                                         GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                                                     particles[i].pos(2), dx, plo);
+                                                                     particles[i].pos(2), dx, plo0);
                                         if (abs(exp(abs(ln_alphaenergy[i])) / lapse_x) > max_energy) {
                                           particles[i].id() =-1;
                                           deletion_reasons[i] = -7;
@@ -522,7 +522,7 @@ namespace RaytracingX
       ASSERT_BOUNDS(U[0], U[1], U[2], "k1");
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0, phi0, interpolation_order); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];

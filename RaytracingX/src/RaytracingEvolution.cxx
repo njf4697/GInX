@@ -59,7 +59,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   }
 
   assert(cctk_dim == 3);
-  assert(MIN(MIN(ghost_size_x, ghost_size_y), ghost_size_z) >= 3);
+  assert(MIN(MIN(cctk_ghost_size_x, cctk_ghost_size_y), cctk_ghost_size_z) >= 3);
 
   //RaytracingX: Particle skip override moved to schedule.ccl
 

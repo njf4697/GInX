@@ -353,7 +353,7 @@ namespace RaytracingX
                                         2.0 * rhs[0] * rhs[2] * gamma_inv_x[2] +
                                         2.0 * rhs[1] * rhs[2] * gamma_inv_x[4];
             const CCTK_REAL v = std::sqrt(v_squared);
-            const CCTK_REAL alpha_over_v = std::sqrt(1. - m * m / (2*std::exp(3 + StructType::ln_alphaE))) / v;
+            const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(3 + StructType::ln_alphaE))) / v;
             rhs[0] *= alpha_over_v;
             rhs[1] *= alpha_over_v;
             rhs[2] *= alpha_over_v;
@@ -767,7 +767,7 @@ namespace RaytracingX
                                             2.0 * ratio[1] * ratio[2] * gamma_inv_x[4];
                 
                 const CCTK_REAL v = std::sqrt(v_squared);
-                const CCTK_REAL alpha = std::sqrt(1. - this.m * this.m / (E * E));
+                const CCTK_REAL alpha = std::sqrt(1. - m * m / (E * E));
 
                 arrdata[StructType::vx][i] = ratio[0] * alpha / v;
                 arrdata[StructType::vy][i] = ratio[1] * alpha / v;

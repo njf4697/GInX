@@ -52,9 +52,9 @@
         deletion_reasons[i] = -6;\
     }
 #define CHECK_VELOCITY(I, VX, VY, VZ) \
-    if (VX*VX+VY*VY+VZ*VZ>25)         \
+    if (VX*VX+VY*VY+VZ*VZ>4)          \
     {                                 \
-        CCTK_VWARN(CCTK_WARN_ALERT, "Particle %d has velocity (%f, %f, %f) >> 1 indicating that the evolution may be unstable!", I, VX, VY, VZ);\
+        CCTK_VWARN(CCTK_WARN_ALERT, "Particle %d has velocity (%f, %f, %f) >= 2 indicating that the evolution may be unstable!", I, VX, VY, VZ);\
     }                                 
 #define ASSERT_BOUNDS(X,Y,Z,S)\
     if (plo0[0] > X || phi0[0] <= X || !std::isfinite(X) || \

@@ -52,7 +52,7 @@
         deletion_reasons[i] = -6;\
     }
 #define CHECK_VELOCITY(I, VX, VY, VZ) \
-    if (VX*VX+VY*VY+VZ*VZ>100)        \
+    if (VX*VX+VY*VY+VZ*VZ>25)         \
     {                                 \
         CCTK_VWARN(CCTK_WARN_ALERT, "Particle %d has velocity (%f, %f, %f) >> 1 indicating that the evolution may be unstable!", I, VX, VY, VZ);\
     }                                 

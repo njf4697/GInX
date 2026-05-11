@@ -362,51 +362,6 @@ namespace RaytracingX
 
         } // RaytracingParticlesContainer::compute_rhs
 
-        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
-        {
-            const auto plo0 = this->Geom(0).ProbLoArray();
-            const auto phi0 = this->Geom(0).ProbHiArray();
-
-            const auto dx = this->Geom(lev).CellSizeArray();
-
-            for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
-                 ++pti)
-            {
-
-                const int np = pti.numParticles();
-
-                // Get the information relate to the velocities and energy.
-                auto &attribs = pti.GetAttributes();
-                CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
-                CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); //RaytracingX: Add deletion reason.
-                auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
-
-                // Get the array of each parameter.
-                auto const lapse_array = lapse.array(pti);
-
-                // Needed for GPU
-                auto self = this;
-
-                amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
-                                   {
-                                        //RaytracingX: Delete particle when geodesic reaches event horizon.
-                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
-                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
-                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
-                                        // Interpolate lapse & partial lapse at \vect{x}
-                                        CCTK_REAL lapse_x;
-                                        amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                                                     particles[i].pos(2), dx, plo0);
-                                        if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
-                                          particles[i].id() =-1;
-                                          deletion_reasons[i] = -7;
-                                        }
-                                   });
-            
-            }                    
-        }
-
         /**
          *  \brief Evolving using Runge-Kutta 4.
          *
@@ -619,6 +574,51 @@ namespace RaytracingX
       });
             }
         } // RaytracingParticlesContainer::evolve
+
+                void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
+        {
+            const auto plo0 = this->Geom(0).ProbLoArray();
+            const auto phi0 = this->Geom(0).ProbHiArray();
+
+            const auto dx = this->Geom(lev).CellSizeArray();
+
+            for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
+                 ++pti)
+            {
+
+                const int np = pti.numParticles();
+
+                // Get the information relate to the velocities and energy.
+                auto &attribs = pti.GetAttributes();
+                CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+                CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); //RaytracingX: Add deletion reason.
+                auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
+
+                // Get the array of each parameter.
+                auto const lapse_array = lapse.array(pti);
+
+                // Needed for GPU
+                auto self = this;
+
+                amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
+                                   {
+                                        //RaytracingX: Delete particle when geodesic reaches event horizon.
+                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
+                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
+                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
+                                        // Interpolate lapse & partial lapse at \vect{x}
+                                        CCTK_REAL lapse_x;
+                                        amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
+                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                                                     particles[i].pos(2), dx, plo0);
+                                        if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
+                                          particles[i].id() =-1;
+                                          deletion_reasons[i] = -7;
+                                        }
+                                   });
+            
+            }                    
+        }
 
         /**
          * The check banned zones function check for user defined invalid particles

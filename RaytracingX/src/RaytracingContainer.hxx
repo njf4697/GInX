@@ -463,7 +463,7 @@ namespace RaytracingX
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
                     const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev, const int *lbnd, const int *ubnd)
+                    const CCTK_REAL &dt, const int &lev)
         {
 
             const auto plo0 = this->Geom(0).ProbLoArray();

@@ -181,7 +181,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, cctk_lbnd, cctk_ubnd);
+      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev);
 
       pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_post_evol.tsv");
     }

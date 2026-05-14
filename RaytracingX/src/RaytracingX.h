@@ -62,6 +62,14 @@ struct Metric { //struct that contains information about the metric interpolated
     }
 };
 
+struct ptclRK4data{
+    int U[8];
+    int U_tmp[8];
+    int k_odd[8];
+    int k_even[8];
+};
+
+
 void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL* e2, CCTK_REAL* e3, Metric* metric); //Utilities.cc
 void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point); //InterpolateMetric.cc
 void interpolateMetricAtPoint2(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z);

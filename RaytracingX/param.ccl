@@ -7,6 +7,10 @@ BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
+BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
+{
+} true
+
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"

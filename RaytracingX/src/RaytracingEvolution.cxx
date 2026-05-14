@@ -38,6 +38,7 @@ using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
 int interp_order;
+ptclRK4data ptclRK4data;
 
 /**
  * \brief Initialize particles' data
@@ -88,6 +89,20 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       
       //RaytracingX: Change particle initialization function to that of the camera.
       auto &pc = r_photons.at(patch);
+
+      if (!fast_light) {
+        for (int i = 0; i < 8; i++) {
+          ptclRK4data.U[i] = pc->numRealComps();
+          pc->AddRealComp();
+          ptclRK4data.U_tmp[i] = pc->numRealComps();
+          pc->AddRealComp();
+          ptclRK4data.k_odd[i] = pc->numRealComps();
+          pc->AddRealComp();
+          ptclRK4data.k_even[i] = pc->numRealComps();
+          pc->AddRealComp();
+        }
+      }
+
       pc->initialize(camera_initializer<ParticleData, PC>,
                      real_params, int_params);
     }
@@ -173,7 +188,13 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev);
+      if (fast_light) { pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev); }
+      else {
+        pc->evolve_k1(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, ptclRK4data);
+        pc->evolve_k2(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, ptclRK4data);
+        pc->evolve_k3(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, ptclRK4data);
+        pc->evolve_k4(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, ptclRK4data);
+      }
     }
   }
 

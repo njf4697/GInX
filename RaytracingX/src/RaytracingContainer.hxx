@@ -177,7 +177,7 @@ namespace RaytracingX
                 recv_buffer.resize(total);
             }
 
-            MPI_Gatherv(output_str.data(), output_size, MPI_CHAR, recv_buffer.data(), recv_sizes.data(), displacements.data(), MPI_CHAR, amrex::ParallelDescriptor::IOProcessorNumber(), ParallelDescriptor::Communicator());
+            MPI_Gatherv(output_str.data(), output_size, MPI_CHAR, recv_buffer.data(), recv_sizes.data(), displacements.data(), MPI_CHAR, amrex::ParallelDescriptor::IOProcessorNumber(), amrex::ParallelDescriptor::Communicator());
 
             if (proc_id == amrex::ParallelDescriptor::IOProcessorNumber()) {
                 std::ofstream file;

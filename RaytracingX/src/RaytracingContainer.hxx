@@ -16,6 +16,7 @@
 #include <AMReX_MultiFab.H>
 #include <AMReX_MultiFabUtil.H>
 #include <AMReX_MFIter.H>
+#include "sstream"
 
 //Macros that check if the position is out of bounds, and each one sets the optical depth to a specific value for debugging purposes.
 #define CHECK_OUT_OF_BOUNDS_X(X) \
@@ -117,13 +118,7 @@ namespace RaytracingX
 
         //RaytracingX: Add method that writes particle information when the particle is deleted.
         void write_deleted_particle_data(const int &lev, std::string final_data_file_name) {
-            std::ofstream file;
-            file.open(final_data_file_name, std::ios::app);
-
-            if (!file.is_open()) {
-                CCTK_VERROR("Could not open file %s", final_data_file_name);
-                return;
-            }
+            std::stringstream output;
 
             for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
                  ++pti)
@@ -144,18 +139,61 @@ namespace RaytracingX
                 for (int i = 0; i < np; i++) {
                     if (particles[i].id() != -1) continue;
 
-                    file << (int) index[i] << "\t"
-                         << particles[i].pos(0) << "\t"
-                         << particles[i].pos(1) << "\t"
-                         << particles[i].pos(2) << "\t"
-                         << vels_x[i] << "\t"
-                         << vels_y[i] << "\t"
-                         << vels_z[i] << "\t"
-                         << ln_alphaenergy[i] << "\t"
-                         << tau[i] << "\t"
-                         << (int) deletion_reasons[i] << std::endl;
+                    output << (int) index[i] << "\t"
+                           << particles[i].pos(0) << "\t"
+                           << particles[i].pos(1) << "\t"
+                           << particles[i].pos(2) << "\t"
+                           << vels_x[i] << "\t"
+                           << vels_y[i] << "\t"
+                           << vels_z[i] << "\t"
+                           << ln_alphaenergy[i] << "\t"
+                           << tau[i] << "\t"
+                           << (int) deletion_reasons[i] << "\n";
                 }            
-        }}
+            }
+
+            const int proc_id = amrex::ParallelDescriptor::MyProc();
+            const int nprocs = amrex::ParallelDescriptor::NProcs();
+            const std::string output_str = output.str();
+            const int output_size = output_str.size();
+
+            std::vector<int> recv_sizes;
+            if (proc_id == amrex::ParallelDescriptor::IOProcessorNumber()) { recv_sizes.resize(nprocs); }
+
+            amrex::ParallelDescriptor::Gather(&output_size, 1, recv_sizes.data(), 1, amrex::ParallelDescriptor::IOProcessorNumber());
+
+            std::vector<int> displacements;
+            std::vector<char> recv_buffer;
+                
+            if (proc_id == amrex::ParallelDescriptor::IOProcessorNumber()) {
+                displacements.resize(nprocs);
+            
+                int total = 0;
+                for (int i = 0; i < nprocs; ++i) {
+                    displacements[i] = total;
+                    total += recv_sizes[i];
+                }
+            
+                recv_buffer.resize(total);
+            }
+
+            MPI_Gatherv(output_str.data(), output_size, MPI_CHAR, recv_buffer.data(), recv_sizes.data(), displacements.data(), MPI_CHAR, amrex::ParallelDescriptor::IOProcessorNumber(), ParallelDescriptor::Communicator());
+
+            if (proc_id == amrex::ParallelDescriptor::IOProcessorNumber()) {
+                std::ofstream file;
+                file.open(final_data_file_name, std::ios::app);
+
+                if (!file.is_open()) {
+                    CCTK_VERROR("Could not open file %s", final_data_file_name.c_str());
+                    return;
+                }
+
+                for (int i = 0; i < nprocs; i++) {
+                    file.write(recv_buffer.data() + displacements[i], recv_sizes[i]);
+                }
+            }
+
+        }
 
         void sanity_check(const int &lev, const int it, std::string final_data_file_name) {
             std::ofstream file;
@@ -443,8 +481,6 @@ namespace RaytracingX
 
                 amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                                    {
-        if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG(std::to_string(index[i]) + " top") }
-
       const amrex::GpuArray<CCTK_REAL, 8> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
@@ -544,7 +580,6 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      if (index[i] == 4771) { fprintf(stderr, "(%f %f %f) should be between (%f %f %f) and (%f %f %f)s\n", U_tmp[0], U_tmp[1], U_tmp[2], plo0[0], plo0[1], plo0[2], phi0[0], phi0[1], phi0[2], U_tmp[0], U_tmp[1], U_tmp[2]); }
       k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])

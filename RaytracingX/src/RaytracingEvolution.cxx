@@ -121,12 +121,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  Metric m;
-  interpolateMetricAtPoint2(CCTK_PASS_CTOC, &m, -1.853942, 15.130371, -0.154485);
-  if (CCTK_MyProc(cctkGH) == 0) { fprintf(stderr, (m.to_string() + "interp. at (%f, %f, %f)\n").c_str(), -1.853942, 15.130371, -0.154485); }
-  interpolateMetricAtPoint2(CCTK_PASS_CTOC, &m, -22.763434, -19.609059, 15.202548);
-  if (CCTK_MyProc(cctkGH) == 0) { fprintf(stderr, (m.to_string() + "interp. at (%f, %f, %f)\n").c_str(), -22.763434, -19.609059, 15.202548); }
-
   //RaytracingX: Add debug print statement.
   if (verbose)
   {
@@ -175,15 +169,11 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       const amrex::MultiFab &curv = *gd_curv.mfab[tl];
       const amrex::MultiFab &rho = *gd_rho.mfab[tl];
 
-      pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_pre_evol.tsv");
-
       pc->check_horizon(lapse, lev, max_energy);
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
       pc->evolve(lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev);
-
-      pc->sanity_check(lev, cctkGH->cctk_iteration, std::string(out_dir) + "/" + "sanity_check_post_evol.tsv");
     }
   }
 

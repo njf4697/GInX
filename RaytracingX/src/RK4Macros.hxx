@@ -149,6 +149,6 @@
                             amrex::GpuArray<CCTK_REAL, 8> k_odd  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
                             amrex::GpuArray<CCTK_REAL, 8> k_even = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-#define SKIP_DELETED_PARTICLES if (particles.id() == -1) { return; }
+#define SKIP_DELETED_PARTICLES if (particles[i].id() == -1) { return; }
 
 #endif

@@ -45,38 +45,38 @@
         return;                       \
     }
 
-#define DEFINE_RK4_VARS CCTK_REAL *AMREX_RESTRICT U0 = attribs[ptclRK4data::U[0]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U1 = attribs[ptclRK4data::U[1]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U2 = attribs[ptclRK4data::U[2]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U3 = attribs[ptclRK4data::U[3]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U4 = attribs[ptclRK4data::U[4]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U5 = attribs[ptclRK4data::U[5]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U6 = attribs[ptclRK4data::U[6]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U7 = attribs[ptclRK4data::U[7]].data();         \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp0 = attribs[ptclRK4data::U_tmp[0]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp1 = attribs[ptclRK4data::U_tmp[1]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp2 = attribs[ptclRK4data::U_tmp[2]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp3 = attribs[ptclRK4data::U_tmp[3]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp4 = attribs[ptclRK4data::U_tmp[4]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp5 = attribs[ptclRK4data::U_tmp[5]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp6 = attribs[ptclRK4data::U_tmp[6]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT U_tmp7 = attribs[ptclRK4data::U_tmp[7]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_odd0 = attribs[ptclRK4data::k_odd[0]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd1 = attribs[ptclRK4data::k_odd[1]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd2 = attribs[ptclRK4data::k_odd[2]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd3 = attribs[ptclRK4data::k_odd[3]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd4 = attribs[ptclRK4data::k_odd[4]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd5 = attribs[ptclRK4data::k_odd[5]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd6 = attribs[ptclRK4data::k_odd[6]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_odd7 = attribs[ptclRK4data::k_odd[7]].data();   \
-                        CCTK_REAL *AMREX_RESTRICT k_even0 = attribs[ptclRK4data::k_even[0]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even1 = attribs[ptclRK4data::k_even[1]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even2 = attribs[ptclRK4data::k_even[2]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even3 = attribs[ptclRK4data::k_even[3]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even4 = attribs[ptclRK4data::k_even[4]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even5 = attribs[ptclRK4data::k_even[5]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even6 = attribs[ptclRK4data::k_even[6]].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k_even7 = attribs[ptclRK4data::k_even[7]].data();
+#define DEFINE_RK4_VARS CCTK_REAL *AMREX_RESTRICT U0 = attribs[ptclRK4data.U[0]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U1 = attribs[ptclRK4data.U[1]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U2 = attribs[ptclRK4data.U[2]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U3 = attribs[ptclRK4data.U[3]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U4 = attribs[ptclRK4data.U[4]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U5 = attribs[ptclRK4data.U[5]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U6 = attribs[ptclRK4data.U[6]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U7 = attribs[ptclRK4data.U[7]].data();         \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp0 = attribs[ptclRK4data.U_tmp[0]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp1 = attribs[ptclRK4data.U_tmp[1]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp2 = attribs[ptclRK4data.U_tmp[2]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp3 = attribs[ptclRK4data.U_tmp[3]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp4 = attribs[ptclRK4data.U_tmp[4]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp5 = attribs[ptclRK4data.U_tmp[5]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp6 = attribs[ptclRK4data.U_tmp[6]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT U_tmp7 = attribs[ptclRK4data.U_tmp[7]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_odd0 = attribs[ptclRK4data.k_odd[0]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd1 = attribs[ptclRK4data.k_odd[1]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd2 = attribs[ptclRK4data.k_odd[2]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd3 = attribs[ptclRK4data.k_odd[3]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd4 = attribs[ptclRK4data.k_odd[4]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd5 = attribs[ptclRK4data.k_odd[5]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd6 = attribs[ptclRK4data.k_odd[6]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_odd7 = attribs[ptclRK4data.k_odd[7]].data();   \
+                        CCTK_REAL *AMREX_RESTRICT k_even0 = attribs[ptclRK4data.k_even[0]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even1 = attribs[ptclRK4data.k_even[1]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even2 = attribs[ptclRK4data.k_even[2]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even3 = attribs[ptclRK4data.k_even[3]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even4 = attribs[ptclRK4data.k_even[4]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even5 = attribs[ptclRK4data.k_even[5]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even6 = attribs[ptclRK4data.k_even[6]].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k_even7 = attribs[ptclRK4data.k_even[7]].data();
 
 #define LOAD_RK4_VARS U[0] = U0[i];           \
                       U[1] = U1[i];           \
@@ -149,6 +149,6 @@
                             amrex::GpuArray<CCTK_REAL, 8> k_odd  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
                             amrex::GpuArray<CCTK_REAL, 8> k_even = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-#define SKIP_DELETED_PARTICLES if (particles.id() == -1) { continue; }
+#define SKIP_DELETED_PARTICLES if (particles.id() == -1) { return; }
 
 #endif

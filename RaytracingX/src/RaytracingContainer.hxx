@@ -128,7 +128,7 @@ namespace RaytracingX
             //get sizes of each string
             std::vector<int> recv_sizes;
             if (proc_id == amrex::ParallelDescriptor::IOProcessorNumber()) { recv_sizes.resize(nprocs); }
-            amrex::ParallelDescriptor::Gather(&output_size, 1, recv_sizes.data(), 1, amrex::ParallelDescriptor::IOProcessorNumber());
+            amrex::ParallelDescriptor::Gather(&data_size, 1, recv_sizes.data(), 1, amrex::ParallelDescriptor::IOProcessorNumber());
             
             //get displacements of each string and set size for recieving buffer
             std::vector<int> displacements;
@@ -185,16 +185,16 @@ namespace RaytracingX
                 for (int i = 0; i < np; i++) {
                     if (particles[i].id() != -1) continue;
 
-                    output_str + std::string((int) index[i]) + "\t"
-                               + std::string(particles[i].pos(0)) + "\t"
-                               + std::string(particles[i].pos(1)) + "\t"
-                               + std::string(particles[i].pos(2)) + "\t"
-                               + std::string(vels_x[i]) + "\t"
-                               + std::string(vels_y[i]) + "\t"
-                               + std::string(vels_z[i]) + "\t"
-                               + std::string(ln_alphaenergy[i]) + "\t"
-                               + std::string(tau[i]) + "\t"
-                               + std::string((int) deletion_reasons[i]) + "\n";
+                    output_str + std::to_string((int) index[i]) + "\t"
+                               + std::to_string(particles[i].pos(0)) + "\t"
+                               + std::to_string(particles[i].pos(1)) + "\t"
+                               + std::to_string(particles[i].pos(2)) + "\t"
+                               + std::to_string(vels_x[i]) + "\t"
+                               + std::to_string(vels_y[i]) + "\t"
+                               + std::to_string(vels_z[i]) + "\t"
+                               + std::to_string(ln_alphaenergy[i]) + "\t"
+                               + std::to_string(tau[i]) + "\t"
+                               + std::to_string((int) deletion_reasons[i]) + "\n";
                 }            
             }
 

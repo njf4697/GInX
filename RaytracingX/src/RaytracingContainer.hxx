@@ -272,7 +272,7 @@ namespace RaytracingX
                        gamma_x[2] * gamma_x[2] * gamma_x[3] -
                        gamma_x[4] * gamma_x[4] * gamma_x[0] -
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
-            if (!std::isfinite(inv_det_gamma)) { fprintf(stderr, "the following spatial metric has an invalid determinant:\n%f %f %f\n %f %f %f\n%f %f %f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); }
+            if (!std::isfinite(inv_det_gamma)) { fprintf(stderr, "the following spatial metric at (%f, %f, %f) has an invalid determinant:\n%f %f %f\n %f %f %f\n%f %f %f\n", u[0], u[1], u[2], gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); }
             ASSERT_FINITE(inv_det_gamma)
 
             const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {

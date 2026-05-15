@@ -258,7 +258,8 @@ namespace RaytracingX
             amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
-
+            
+            ASSERT_FINITE1(u,3)
             ASSERT_FINITE(lapse_x)
             ASSERT_FINITE1(d_lapse_x, 3)
             ASSERT_FINITE1(shift_x, 3)

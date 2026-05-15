@@ -324,17 +324,17 @@ namespace RaytracingX
             rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
             // Normalizing the velocity.
-            const CCTK_REAL v_squared = rhs[0] * rhs[0] * gamma_inv_x[0] +
-                                        rhs[1] * rhs[1] * gamma_inv_x[3] +
-                                        rhs[2] * rhs[2] * gamma_inv_x[5] +
-                                        2.0 * rhs[0] * rhs[1] * gamma_inv_x[1] +
-                                        2.0 * rhs[0] * rhs[2] * gamma_inv_x[2] +
-                                        2.0 * rhs[1] * rhs[2] * gamma_inv_x[4];
+            const CCTK_REAL v_squared = rhs[3] * rhs[3] * gamma_inv_x[0] +
+                                        rhs[4] * rhs[4] * gamma_inv_x[3] +
+                                        rhs[5] * rhs[5] * gamma_inv_x[5] +
+                                        2.0 * rhs[3] * rhs[4] * gamma_inv_x[1] +
+                                        2.0 * rhs[3] * rhs[5] * gamma_inv_x[2] +
+                                        2.0 * rhs[4] * rhs[5] * gamma_inv_x[4];
             const CCTK_REAL v = std::sqrt(v_squared);
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(3 + StructType::ln_alphaE))) / v;
-            rhs[0] *= alpha_over_v;
-            rhs[1] *= alpha_over_v;
-            rhs[2] *= alpha_over_v;
+            rhs[3] *= alpha_over_v;
+            rhs[4] *= alpha_over_v;
+            rhs[5] *= alpha_over_v;
 
             return rhs;
 

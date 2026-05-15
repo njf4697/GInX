@@ -69,7 +69,9 @@ namespace RaytracingX
         ~RaytracingParticlesContainer() = default;
 
         static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx) {
-            return amrex::Math::floor((amrex::Clamp(point, lower, upper - dx/4) - lower) / dx);
+            int i = amrex::Math::floor((amrex::Clamp(point, lower, upper - dx/4) - lower) / dx);
+            ASSERT_FINITE(i)
+            return i;
         }
 
         static void write_to_one_file(std::string filename, std::string data) {
@@ -272,6 +274,8 @@ namespace RaytracingX
                        gamma_x[2] * gamma_x[2] * gamma_x[3] -
                        gamma_x[4] * gamma_x[4] * gamma_x[0] -
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
+            
+        
             if (!std::isfinite(inv_det_gamma)) { fprintf(stderr, "the following spatial metric at (%f, %f, %f) has an invalid determinant:\n%f %f %f\n %f %f %f\n%f %f %f\n", u[0], u[1], u[2], gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); }
             ASSERT_FINITE(inv_det_gamma)
 
@@ -337,7 +341,6 @@ namespace RaytracingX
             rhs[2] *= alpha_over_v;
 
             return rhs;
-
         } // RaytracingParticlesContainer::compute_rhs
 
         /**

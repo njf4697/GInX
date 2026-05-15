@@ -256,6 +256,14 @@ namespace RaytracingX
             amrex::GpuArray<CCTK_REAL, 3> d_rho_x;
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
+
+            ASSERT_FINITE(lapse_x)
+            ASSERT_FINITE1(d_lapse_x, 3)
+            ASSERT_FINITE1(shift_x, 3)
+            ASSERT_FINITE2(d_shift_x, 3, 3)
+            ASSERT_FINITE1(gamma_x, 6)
+            ASSERT_FINITE2(d_gamma_x, 6, 3)
+            ASSERT_FINITE1(curv_x, 6)
                                          
             // Compute the inverse of the metric.
             const CCTK_REAL inv_det_gamma =
@@ -264,6 +272,8 @@ namespace RaytracingX
                        gamma_x[2] * gamma_x[2] * gamma_x[3] -
                        gamma_x[4] * gamma_x[4] * gamma_x[0] -
                        gamma_x[1] * gamma_x[1] * gamma_x[5]);
+            if (!std::isfinite(inv_det_gamma)) { fprintf(stderr, "the following spatial metric has an invalid determinant:\n%f %f %f\n %f %f %f\n%f %f %f\n", gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]); }
+            ASSERT_FINITE(inv_det_gamma)
 
             const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
                 (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
@@ -422,8 +432,6 @@ namespace RaytracingX
         return;
       }
 
-       if (amrex::ParallelDescriptor::MyProc() == 13) DEBUG(std::to_string(i) + ": pos=(" + std::to_string(particles[i].pos(0)) + ", " + std::to_string(particles[i].pos(1)) + ", " + std::to_string(particles[i].pos(2)) + ") at start")
-
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
@@ -446,8 +454,6 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_X(U_tmp[0])
       CHECK_OUT_OF_BOUNDS_Y(U_tmp[1])
       CHECK_OUT_OF_BOUNDS_Z(U_tmp[2])
-
-       if (amrex::ParallelDescriptor::MyProc() == 13) DEBUG(std::to_string(i) + ": pos=(" + std::to_string(U_tmp[0]) + ", " + std::to_string(U_tmp[1]) + ", " + std::to_string(U_tmp[2]) + ") at k1")
 
       if (out_of_bounds) {
         particles[i].id() = -1;
@@ -484,8 +490,6 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_Y(U_tmp[1])
       CHECK_OUT_OF_BOUNDS_Z(U_tmp[2])
 
-       if (amrex::ParallelDescriptor::MyProc() == 13) DEBUG(std::to_string(i) + ": pos=(" + std::to_string(U_tmp[0]) + ", " + std::to_string(U_tmp[1]) + ", " + std::to_string(U_tmp[2]) + ") at k2")
-
       if (out_of_bounds) {
         particles[i].id() = -1;
         return;
@@ -509,8 +513,6 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_X(U_tmp[0])
       CHECK_OUT_OF_BOUNDS_Y(U_tmp[1])
       CHECK_OUT_OF_BOUNDS_Z(U_tmp[2])
-
-       if (amrex::ParallelDescriptor::MyProc() == 13) DEBUG(std::to_string(i) + ": pos=(" + std::to_string(U_tmp[0]) + ", " + std::to_string(U_tmp[1]) + ", " + std::to_string(U_tmp[2]) + ") at k3")
 
       if (out_of_bounds) {
         particles[i].id() = -1;
@@ -536,8 +538,6 @@ namespace RaytracingX
       CHECK_OUT_OF_BOUNDS_X(particles[i].pos(0))
       CHECK_OUT_OF_BOUNDS_Y(particles[i].pos(1))
       CHECK_OUT_OF_BOUNDS_Z(particles[i].pos(2))
-
-       if (amrex::ParallelDescriptor::MyProc() == 13) DEBUG(std::to_string(i) + ": pos=(" + std::to_string(U_tmp[0]) + ", " + std::to_string(U_tmp[1]) + ", " + std::to_string(U_tmp[2]) + ") at k4")
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);

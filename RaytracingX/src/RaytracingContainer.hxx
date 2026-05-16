@@ -229,6 +229,8 @@ namespace RaytracingX
             const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
             const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
             const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
+
+            ASSERT_FINITE1(u,3)
             
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
@@ -259,7 +261,6 @@ namespace RaytracingX
             GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                 u[2], dx, plo);
             
-            ASSERT_FINITE1(u,3)
             ASSERT_FINITE(lapse_x)
             ASSERT_FINITE1(d_lapse_x, 3)
             ASSERT_FINITE1(shift_x, 3)

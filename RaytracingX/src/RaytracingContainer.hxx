@@ -342,8 +342,12 @@ namespace RaytracingX
             assert(v_squared >= 0);
 
             ASSERT_FINITE(u[3 + StructType::ln_alphaE])
+            ASSERT_FINITE(std::exp(u[3 + StructType::ln_alphaE]))
 
             const CCTK_REAL v = std::sqrt(v_squared);
+
+            ASSERT_FINITE(v)
+
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;
 
 

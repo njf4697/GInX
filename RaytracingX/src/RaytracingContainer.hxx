@@ -440,11 +440,15 @@ namespace RaytracingX
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 8> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("pre rk4: " + std::to_string(i)) }
+
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k_odd =
           self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
+
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("k1") }
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -470,6 +474,8 @@ namespace RaytracingX
           self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
+
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("k2") }
 
       // Update particles with the f1 and f2 from RK4
       U_tmp[0] = U[0] + 0.5 * dt * k_even[0];
@@ -505,6 +511,8 @@ namespace RaytracingX
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
 
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("k3") }
+
       U_tmp[0] = U[0] + dt * k_odd[0];
       U_tmp[1] = U[1] + dt * k_odd[1];
       U_tmp[2] = U[2] + dt * k_odd[2];
@@ -529,6 +537,8 @@ namespace RaytracingX
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("k4") }
+
       // Update particles with the f3 and f4 from RK4
       particles[i].pos(0) += (1. / 6.) * dt * (2. * k_odd[0] + k_even[0]);
       particles[i].pos(1) += (1. / 6.) * dt * (2. * k_odd[1] + k_even[1]);
@@ -546,6 +556,8 @@ namespace RaytracingX
       
       //RaytracingX: Delete particle (i.e. stop evolving geodesic) when geodesic hits photosphere (tau=1).
       out_of_bounds |= (tau[i] > 1.);
+
+      if (amrex::ParallelDescriptor::MyProc() == 13) { DEBUG("post rk4") }
       
       if (out_of_bounds) {
           particles[i].id() = -1;

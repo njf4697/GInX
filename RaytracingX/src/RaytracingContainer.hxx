@@ -17,7 +17,8 @@
 #include <AMReX_MultiFabUtil.H>
 #include <AMReX_MFIter.H>
 
-#include "RK4Macros.hxx"                   
+#include "RK4Macros.hxx"       
+//12053            
 
 namespace RaytracingX
 {
@@ -339,6 +340,8 @@ namespace RaytracingX
 
             ASSERT_FINITE(v_squared)
             assert(v_squared >= 0);
+
+            ASSERT_FINITE(u[3 + StructType::ln_alphaE])
 
             const CCTK_REAL v = std::sqrt(v_squared);
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;

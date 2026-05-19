@@ -141,8 +141,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       int i = pidx % num_pixels_width;
       int j = pidx / num_pixels_width;
 
-      if (pidx != 12053) { continue; }
-
       //Calculate offset per pixel. The offset can be thought of as $/Delta\theta$ and $\Delta\phi$ with respect to camera facing direction,
       //but is calculated by finding a vector in the equivalent direction. This also gives the direction corresponding to the center of the pixels.
       CCTK_REAL a_adj = ((2.0 * i) / num_pixels_width - 1.0) * tan(alpha_h / 2.0);  // a_{adj} = (2a-1)tan(\alpha_h/2)

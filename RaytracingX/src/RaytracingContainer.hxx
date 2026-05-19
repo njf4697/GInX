@@ -347,6 +347,7 @@ namespace RaytracingX
             const CCTK_REAL v = std::sqrt(v_squared);
 
             ASSERT_FINITE(v)
+            ASSERT_FINITE(this->mass)
 
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;
 

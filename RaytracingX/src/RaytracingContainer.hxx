@@ -349,6 +349,8 @@ namespace RaytracingX
             ASSERT_FINITE(v)
             ASSERT_FINITE(this->mass)
 
+            if (index == 12053) { fprintf("%f %f %f\n", this->mass, std::exp(u[3 + StructType::ln_alphaE]), v); }
+
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;
 
 

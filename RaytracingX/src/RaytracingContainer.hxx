@@ -362,7 +362,7 @@ namespace RaytracingX
                     )
             }
 
-            if (abs(std::exp(u[3 + StructType::ln_alphaE]) / lapse_x) > 5) {rhs[0] = 1000000, rhs[1] = 1000000, rhs[2] = 1000000, return rhs; }
+            if (abs(std::exp(u[3 + StructType::ln_alphaE]) / lapse_x) > 5) {rhs[0] = 1000000; rhs[1] = 1000000; rhs[2] = 1000000; return rhs; }
 
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;
 
@@ -587,6 +587,7 @@ namespace RaytracingX
             }
         } // RaytracingParticlesContainer::evolve
 
+/*
         /**
          *  \brief Evolving using Runge-Kutta 4.
          *
@@ -1109,6 +1110,7 @@ namespace RaytracingX
       });
             }
         } // RaytracingParticlesContainer::evolve_k4
+*/
 
         void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
         {

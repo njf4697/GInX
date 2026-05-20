@@ -213,6 +213,7 @@ namespace RaytracingX
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
             amrex::GpuArray<CCTK_REAL, 8>
             compute_rhs(
+                const int iteration,
                 const int index,
                 const amrex::GpuArray<CCTK_REAL, 8> &u, const CCTK_REAL &t,
                 amrex::Array4<CCTK_REAL const> const &lapse,
@@ -394,7 +395,8 @@ namespace RaytracingX
          *  @param lev Refinement level.
          *  @param max_energy RaytracingX: Maximum energy threshold for event horizon detection.
          */
-        void evolve(const amrex::MultiFab &lapse,
+        void evolve(const int iteration,
+                    const amrex::MultiFab &lapse,
                     const amrex::MultiFab &shift,
                     const amrex::MultiFab &metric,
                     const amrex::MultiFab &curv,
@@ -460,7 +462,7 @@ namespace RaytracingX
 
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k_odd =
-          self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
+          self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
 
@@ -485,7 +487,7 @@ namespace RaytracingX
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       auto k_even =
-          self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+          self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 
@@ -519,7 +521,7 @@ namespace RaytracingX
       }
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+      k_odd = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
 
@@ -543,7 +545,7 @@ namespace RaytracingX
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
+      k_even = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 
@@ -673,7 +675,7 @@ namespace RaytracingX
 
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k_odd =
-          self->compute_rhs(index[i], U, 0.0, lapse_array, shift_array, metric_array,
+          self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
 
@@ -792,7 +794,7 @@ namespace RaytracingX
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       k_even =
-          self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+          self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 
@@ -920,7 +922,7 @@ namespace RaytracingX
       UNLOAD_RK4_VARS
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      k_odd = self->compute_rhs(index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+      k_odd = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_odd[0], k_odd[1], k_odd[2])
 
@@ -946,7 +948,7 @@ namespace RaytracingX
       LOAD_RK4_VARS
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
+      k_even = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 
@@ -1066,7 +1068,7 @@ namespace RaytracingX
       UNLOAD_RK4_VARS
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k_even = self->compute_rhs(index[i], U_tmp, dt, lapse_array, shift_array,
+      k_even = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,
                                  metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
       CHECK_VELOCITY(i, k_even[0], k_even[1], k_even[2])
 

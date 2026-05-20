@@ -359,7 +359,7 @@ namespace RaytracingX
                     UNPACKV(V_down), v,
                     UNPACKV(u),
                     UNPACK4M_COMP(lapse_x, shift_x, gamma_x)
-                    )
+                    );
             }
 
             if (abs(std::exp(u[3 + StructType::ln_alphaE]) / lapse_x) > 5) {rhs[0] = 1000000; rhs[1] = 1000000; rhs[2] = 1000000; return rhs; }

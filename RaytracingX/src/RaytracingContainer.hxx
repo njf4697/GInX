@@ -350,7 +350,19 @@ namespace RaytracingX
             ASSERT_FINITE(v)
             ASSERT_FINITE(this->mass)
 
-            if (amrex::ParallelDescriptor::MyProc() == 13) { fprintf(stderr, "%f %f %f %f\n", this->mass, std::exp(u[3 + StructType::ln_alphaE]), v, this->mass * this->mass / (2.0*std::exp(u[3 + StructType::ln_alphaE]))); }
+            if (iteration >= 1170 && iteration <= 1173 && amrex::ParallelDescriptor::MyProc() == 13) { 
+                fprintf(stderr, "it: %d, alphaE: %f, dx/dt=(%f, %f, %f), vup=(%f, %f, %f), vvec=(%f, %f, %f)->%f, x=(%f, %f, %f)\nmet: %f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
+                    iteration,
+                    std::exp(u[3 + StructType::ln_alphaE]),
+                    UNPACKV(rhs),
+                    UNPACKV(V_up),
+                    UNPACKV(V_down), v,
+                    UNPACKV(u),
+                    UNPACK4M_COMP(lapse_x, shift_x, gamma_x)
+                    )
+            }
+
+            if (abs(std::exp(u[3 + StructType::ln_alphaE]) / lapse_x) > 5) {rhs[0] = 1000000, rhs[1] = 1000000, rhs[2] = 1000000, return rhs; }
 
             const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2*std::exp(u[3 + StructType::ln_alphaE]))) / v;
 

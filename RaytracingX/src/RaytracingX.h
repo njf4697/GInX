@@ -14,6 +14,19 @@
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
 #define ASSERT_FINITE2(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[jj][ii]); } }
+#define UNPACKV(X) X[0], X[1], X[2]
+#define UNPACK4V(X) X[0], X[1], X[2], X[3]
+#define UNPACKM(X) X[0], X[1], X[2], \
+                   X[1], X[3], X[4], \
+                   X[2], X[4], X[5]
+#define UNPACK4M(X) X[0], X[1], X[2], X[3], \
+                    X[1], X[4], X[5], X[6], \
+                    X[2], X[5], X[7], X[8], \
+                    X[3], X[6], X[8], X[9]
+#define UNPACK4M_COMP(A, B, G) A   , B[1], B[2], B[3], \
+                               B[1], G[0], G[1], G[2], \
+                               B[2], G[1], G[3], G[4], \
+                               B[3], G[2], G[4], G[5]
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

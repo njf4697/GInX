@@ -68,11 +68,8 @@ namespace RaytracingX
 
         ~RaytracingParticlesContainer() = default;
 
-        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx) {
-            int i = amrex::Math::floor((amrex::Clamp(point, lower, upper - dx/4) - lower) / dx);
-            ASSERT_FINITE(i)
-            return i;
-        }
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx);
 
         static void write_to_one_file(std::string filename, std::string data) {
             const int proc_id = amrex::ParallelDescriptor::MyProc();
@@ -1334,5 +1331,7 @@ namespace RaytracingX
         }
     };
 }
+
+#include "RaytracingContainerUtils.inc"
 
 #endif

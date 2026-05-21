@@ -39,7 +39,7 @@
     if (VX*VX+VY*VY+VZ*VZ>4)         \
     {                                 \
         CCTK_VWARN(CCTK_WARN_ALERT,   \
-            "Particle %d has velocity (%f, %f, %f) with mag. >= 2 indicating that the evolution may be unstable! Particle deleted.", I, VX, VY, VZ);\
+            "Particle %d has velocity (%f, %f, %f) with mag. >= 2 indicating that the evolution may be unstable! Particle deleted.\n", I, VX, VY, VZ);\
         particles[i].id() = -1;       \
         deletion_reasons[i] = -998;   \
         return;                       \

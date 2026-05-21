@@ -349,14 +349,16 @@ namespace RaytracingX
             ASSERT_FINITE(v)
             ASSERT_FINITE(this->mass)
 
-            if (iteration >= 1170 && iteration <= 1200 && amrex::ParallelDescriptor::MyProc() == 13) { 
-                fprintf(stderr, "it: %d, alphaE: %f, dx/dt=(%f, %f, %f), vup=(%f, %f, %f), vvec=(%f, %f, %f)->%f, x=(%f, %f, %f)\nmet: %f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
+            if (iteration >= 1170 && iteration <= 1200 && amrex::ParallelDescriptor::MyProc() == 24) { 
+                fprintf(stderr, "it: %d, pidx: %d, alphaE: %f, dx/dt=(%f, %f, %f), vup=(%f, %f, %f), vvec=(%f, %f, %f)->%f, x=(%f, %f, %f), dx=(%f, %f, %f)\nmet: %f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
+                    index,
                     iteration,
                     std::exp(u[3 + StructType::ln_alphaE]),
                     UNPACKV(rhs),
                     UNPACKV(V_up),
                     UNPACKV(V_down), v,
                     UNPACKV(u),
+                    UNPACKV(dx),
                     UNPACK4M_COMP(lapse_x, shift_x, gamma_x)
                     );
             }

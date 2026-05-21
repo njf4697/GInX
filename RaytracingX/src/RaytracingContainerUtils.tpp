@@ -67,6 +67,7 @@ void RaytracingParticlesContainer<StructType>::write_to_one_file(std::string fil
     }
 }
 
+template <typename StructType>
 void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(const int &lev, std::string final_data_file_name)
 {
     std::string output_str;

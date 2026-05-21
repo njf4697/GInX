@@ -1332,6 +1332,6 @@ namespace RaytracingX
     };
 }
 
-#include "RaytracingContainerUtils.inc"
+#include "RaytracingContainerUtils.tpp"
 
 #endif

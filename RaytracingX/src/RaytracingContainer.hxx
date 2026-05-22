@@ -84,10 +84,10 @@ namespace RaytracingX
             std::string final_data_file_name);
 
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        amrex::GpuArray<CCTK_REAL, 8> compute_rhs(
+        amrex::GpuArray<CCTK_REAL, 9> compute_rhs(
             const int iteration,
             const int index,
-            const amrex::GpuArray<CCTK_REAL, 8> &u,
+            const amrex::GpuArray<CCTK_REAL, 9> &u,
             const CCTK_REAL &t,
             amrex::Array4<CCTK_REAL const> const &lapse,
             const amrex::Array4<CCTK_REAL const> &shift,
@@ -98,7 +98,7 @@ namespace RaytracingX
             const amrex::GpuArray<double, 3> &dx,
             const int lev,
             const amrex::GpuArray<double, 3> &plo, 
-            const amrex::GpuArray<double, 3> &phi
+            const amrex::GpuArray<double, 3> &phi,
             const CCTK_REAL max_energy);
 
         void evolve(
@@ -109,7 +109,7 @@ namespace RaytracingX
             const amrex::MultiFab &curv,
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
-            const int &lev
+            const int &lev,
             const CCTK_REAL max_energy);
 
         void evolve_k1(

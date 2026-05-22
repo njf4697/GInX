@@ -1,7 +1,10 @@
 using namespace RaytracingX;
 
 template <typename StructType>
-void RaytracingParticlesContainer<StructType>::check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy)
+void RaytracingParticlesContainer<StructType>::check_horizon(
+    const amrex::MultiFab &lapse,
+    const int &lev,
+    const CCTK_REAL max_energy)
 {
     const auto plo0 = this->Geom(0).ProbLoArray();
     const auto phi0 = this->Geom(0).ProbHiArray();
@@ -27,20 +30,21 @@ void RaytracingParticlesContainer<StructType>::check_horizon(const amrex::MultiF
         auto self = this;
 
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
-                           {
-                                        //RaytracingX: Delete particle when geodesic reaches event horizon.
-                                        const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
-                                        const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
-                                        const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
-                                        // Interpolate lapse & partial lapse at \vect{x}
-                                        CCTK_REAL lapse_x;
-                                        amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
-                                        GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                                                     particles[i].pos(2), dx, plo0);
-                                        if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
-                                          particles[i].id() =-1;
-                                          deletion_reasons[i] = -7;
-                                        } });
+        {
+            //RaytracingX: Delete particle when geodesic reaches event horizon.
+            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
+            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
+            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
+            // Interpolate lapse & partial lapse at \vect{x}
+            CCTK_REAL lapse_x;
+            amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
+            GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
+            if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
+              particles[i].id() =-1;
+              deletion_reasons[i] = -7;
+            } 
+        });
     }
 }
 
@@ -57,11 +61,14 @@ void RaytracingParticlesContainer<StructType>::check_horizon(const amrex::MultiF
  * @param radius Radius array for each region
  */
 template <typename StructType>
-void RaytracingParticlesContainer<StructType>::check_banned_zones(const int &level, const CCTK_INT4 &zones,
-                        const CCTK_REAL (&x)[10], const CCTK_REAL (&y)[10],
-                        const CCTK_REAL (&z)[10],
-                        const CCTK_REAL (&radius)[10],
-                        const CCTK_REAL (&a)[10]) // RaytracingX: Add output data.
+void RaytracingParticlesContainer<StructType>::check_banned_zones(
+    const int &level,
+    const CCTK_INT4 &zones,
+    const CCTK_REAL (&x)[10],
+    const CCTK_REAL (&y)[10],
+    const CCTK_REAL (&z)[10],
+    const CCTK_REAL (&radius)[10],
+    const CCTK_REAL (&a)[10]) // RaytracingX: Add output data.
 {
 
     if (!zones)
@@ -94,7 +101,7 @@ void RaytracingParticlesContainer<StructType>::check_banned_zones(const int &lev
           
           if (r <= (radius[check] + sqrt(radius[check]*radius[check]-4*a[check]*a[check])) / 2.0) {
             particles[i].id() = -1;
-            deletion_reasons[i] = -check - 8;
+            deletion_reasons[i] = -check - 9;
           }
         } });
     }
@@ -150,53 +157,54 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
         const CCTK_REAL m = this->mass;
 
         amrex::ParallelFor(current_size, [=] AMREX_GPU_DEVICE(int i) noexcept
-                           {
-                // Start a for loop with Random Number evolution for the velocity
-                const CCTK_REAL ratio[3] = {arrdata[StructType::vx][i],
-                                            arrdata[StructType::vy][i],
-                                            arrdata[StructType::vz][i]};
-                const CCTK_REAL E = std::exp(arrdata[StructType::ln_alphaE][i]);
+        {
+            // Start a for loop with Random Number evolution for the velocity
+            const CCTK_REAL ratio[3] = {arrdata[StructType::vx][i],
+                                        arrdata[StructType::vy][i],
+                                        arrdata[StructType::vz][i]};
+            const CCTK_REAL E = std::exp(arrdata[StructType::ln_alphaE][i]);
+            
+            // Generate a random position
+            const auto &p = p_struct[i];
+            
+            const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0]);
+            const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1]);
+            const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2]);
+            
+            // Interpolate metric
+            amrex::GpuArray<CCTK_REAL, 6> gamma_x;
+            GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
+                                 p.pos(1), p.pos(2), dx, p_lo);
+            
+            const CCTK_REAL inv_det_gamma =
+                1.0 / (gamma_x[0] * gamma_x[3] * gamma_x[5] +
+                       2. * gamma_x[1] * gamma_x[2] * gamma_x[4] -
+                       gamma_x[2] * gamma_x[2] * gamma_x[3] -
+                       gamma_x[4] * gamma_x[4] * gamma_x[0] -
+                       gamma_x[1] * gamma_x[1] * gamma_x[5]);
                 
-                // Generate a random position
-                const auto &p = p_struct[i];
-                
-                const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0]);
-                const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1]);
-                const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2]);
-                
-                // Interpolate metric
-                amrex::GpuArray<CCTK_REAL, 6> gamma_x;
-                GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
-                                     p.pos(1), p.pos(2), dx, p_lo);
-                
-                const CCTK_REAL inv_det_gamma =
-                    1.0 / (gamma_x[0] * gamma_x[3] * gamma_x[5] +
-                           2. * gamma_x[1] * gamma_x[2] * gamma_x[4] -
-                           gamma_x[2] * gamma_x[2] * gamma_x[3] -
-                           gamma_x[4] * gamma_x[4] * gamma_x[0] -
-                           gamma_x[1] * gamma_x[1] * gamma_x[5]);
-                    
-                const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
-                    (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
-                    (gamma_x[4] * gamma_x[2] - gamma_x[1] * gamma_x[5]) * inv_det_gamma,
-                    (gamma_x[1] * gamma_x[4] - gamma_x[2] * gamma_x[3]) * inv_det_gamma,
-                    (gamma_x[0] * gamma_x[5] - gamma_x[2] * gamma_x[2]) * inv_det_gamma,
-                    (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
-                    (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
-                
-                // Normalizing the velocity.
-                const CCTK_REAL v_squared = ratio[0] * ratio[0] * gamma_inv_x[0] +
-                                            ratio[1] * ratio[1] * gamma_inv_x[3] +
-                                            ratio[2] * ratio[2] * gamma_inv_x[5] +
-                                            2.0 * ratio[0] * ratio[1] * gamma_inv_x[1] +
-                                            2.0 * ratio[0] * ratio[2] * gamma_inv_x[2] +
-                                            2.0 * ratio[1] * ratio[2] * gamma_inv_x[4];
-                
-                const CCTK_REAL v = std::sqrt(v_squared);
-                const CCTK_REAL alpha = std::sqrt(1. - m * m / (E * E));
+            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
+                (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
+                (gamma_x[4] * gamma_x[2] - gamma_x[1] * gamma_x[5]) * inv_det_gamma,
+                (gamma_x[1] * gamma_x[4] - gamma_x[2] * gamma_x[3]) * inv_det_gamma,
+                (gamma_x[0] * gamma_x[5] - gamma_x[2] * gamma_x[2]) * inv_det_gamma,
+                (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
+                (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
+            
+            // Normalizing the velocity.
+            const CCTK_REAL v_squared = ratio[0] * ratio[0] * gamma_inv_x[0] +
+                                        ratio[1] * ratio[1] * gamma_inv_x[3] +
+                                        ratio[2] * ratio[2] * gamma_inv_x[5] +
+                                        2.0 * ratio[0] * ratio[1] * gamma_inv_x[1] +
+                                        2.0 * ratio[0] * ratio[2] * gamma_inv_x[2] +
+                                        2.0 * ratio[1] * ratio[2] * gamma_inv_x[4];
+            
+            const CCTK_REAL v = std::sqrt(v_squared);
+            const CCTK_REAL alpha = std::sqrt(1. - m * m / (E * E));
 
-                arrdata[StructType::vx][i] = ratio[0] * alpha / v;
-                arrdata[StructType::vy][i] = ratio[1] * alpha / v;
-                arrdata[StructType::vz][i] = ratio[2] * alpha / v; });
+            arrdata[StructType::vx][i] = ratio[0] * alpha / v;
+            arrdata[StructType::vy][i] = ratio[1] * alpha / v;
+            arrdata[StructType::vz][i] = ratio[2] * alpha / v; 
+        });
     }
 } // RaytracingParticlesContainer::normalize_velocity

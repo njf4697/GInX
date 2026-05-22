@@ -1,50 +1,6 @@
 #ifndef RK4MACROS_HXX
 #define RK4MACROS_HXX
 
-#define CHECK_OUT_OF_BOUNDS_X(X) \
-    if (X > boundarie_hx)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -1;\
-    }                            \
-    if (X < boundarie_lx)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -2;\
-    }
-#define CHECK_OUT_OF_BOUNDS_Y(Y) \
-    if (Y > boundarie_hy)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -3;\
-    }                            \
-    if (Y < boundarie_ly)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -4;\
-    }
-#define CHECK_OUT_OF_BOUNDS_Z(Z) \
-    if (Z > boundarie_hz)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -5;\
-    }                            \
-    if (Z < boundarie_lz)        \
-    {                            \
-        out_of_bounds = true;    \
-        deletion_reasons[i] = -6;\
-    }
-
-#define CHECK_VELOCITY(I, VX, VY, VZ) \
-    if (VX*VX+VY*VY+VZ*VZ>4)         \
-    {                                 \
-        CCTK_VWARN(CCTK_WARN_ALERT,   \
-            "Particle %d has velocity (%f, %f, %f) with mag. >= 2 indicating that the evolution may be unstable! Particle deleted.\n", I, VX, VY, VZ);\
-        particles[i].id() = -1;       \
-        deletion_reasons[i] = -998;   \
-        return;                       \
-    }
-
 #define DEFINE_RK4_VARS CCTK_REAL *AMREX_RESTRICT U0 = attribs[ptclRK4data.U[0]].data();         \
                         CCTK_REAL *AMREX_RESTRICT U1 = attribs[ptclRK4data.U[1]].data();         \
                         CCTK_REAL *AMREX_RESTRICT U2 = attribs[ptclRK4data.U[2]].data();         \
@@ -144,10 +100,10 @@
                       k_even6[i] = k_even[6]; \
                       k_even7[i] = k_even[7];
 
-#define REDEFINE_RK4_ARRAYS amrex::GpuArray<CCTK_REAL, 8> U      = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
-                            amrex::GpuArray<CCTK_REAL, 8> U_tmp  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
-                            amrex::GpuArray<CCTK_REAL, 8> k_odd  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
-                            amrex::GpuArray<CCTK_REAL, 8> k_even = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+#define REDEFINE_RK4_ARRAYS amrex::GpuArray<CCTK_REAL, 9> U      = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
+                            amrex::GpuArray<CCTK_REAL, 9> U_tmp  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
+                            amrex::GpuArray<CCTK_REAL, 9> k_odd  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
+                            amrex::GpuArray<CCTK_REAL, 9> k_even = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 #define SKIP_DELETED_PARTICLES if (particles[i].id() == -1) { return; }
 

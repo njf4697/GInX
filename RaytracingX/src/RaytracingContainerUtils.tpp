@@ -1,7 +1,12 @@
 using namespace RaytracingX;
 
 template <typename StructType>
-AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE int RaytracingParticlesContainer<StructType>::get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx)
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+int RaytracingParticlesContainer<StructType>::get_interpolation_center(
+    const CCTK_REAL point,
+    const CCTK_REAL lower,
+    const CCTK_REAL upper,
+    const CCTK_REAL dx)
 {
     int i = amrex::Math::floor((amrex::Clamp(point, lower, upper - dx / 4) - lower) / dx);
     ASSERT_FINITE(i)
@@ -9,7 +14,9 @@ AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE int Raytra
 }
 
 template <typename StructType>
-void RaytracingParticlesContainer<StructType>::write_to_one_file(std::string filename, std::string data)
+void RaytracingParticlesContainer<StructType>::write_to_one_file(
+    std::string filename,
+    std::string data)
 {
     const int proc_id = amrex::ParallelDescriptor::MyProc();
     const int nprocs = amrex::ParallelDescriptor::NProcs();
@@ -68,7 +75,9 @@ void RaytracingParticlesContainer<StructType>::write_to_one_file(std::string fil
 }
 
 template <typename StructType>
-void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(const int &lev, std::string final_data_file_name)
+void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
+    const int &lev,
+    std::string final_data_file_name)
 {
     std::string output_str;
 

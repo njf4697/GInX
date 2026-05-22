@@ -69,77 +69,128 @@ namespace RaytracingX
         ~RaytracingParticlesContainer() = default;
 
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static int get_interpolation_center(const CCTK_REAL point, const CCTK_REAL lower, const CCTK_REAL upper, const CCTK_REAL dx);
+        static int get_interpolation_center(
+            const CCTK_REAL point,
+            const CCTK_REAL lower,
+            const CCTK_REAL upper,
+            const CCTK_REAL dx);
 
-        static void write_to_one_file(std::string filename, std::string data);
+        static void write_to_one_file(
+            std::string filename,
+            std::string data);
 
-        void write_deleted_particle_data(const int &lev, std::string final_data_file_name);
+        void write_deleted_particle_data(
+            const int &lev,
+            std::string final_data_file_name);
 
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-            amrex::GpuArray<CCTK_REAL, 8>
-            compute_rhs(
-                const int iteration,
-                const int index,
-                const amrex::GpuArray<CCTK_REAL, 8> &u, const CCTK_REAL &t,
-                amrex::Array4<CCTK_REAL const> const &lapse,
-                const amrex::Array4<CCTK_REAL const> &shift,
-                const amrex::Array4<CCTK_REAL const> &metric,
-                const amrex::Array4<CCTK_REAL const> &curv,
-                const amrex::Array4<CCTK_REAL const> &rho, const CCTK_REAL dt,
-                const amrex::GpuArray<double, 3> &dx, const int lev,
-                const amrex::GpuArray<double, 3> &plo, 
-                const amrex::GpuArray<double, 3> &phi);
+        amrex::GpuArray<CCTK_REAL, 8> compute_rhs(
+            const int iteration,
+            const int index,
+            const amrex::GpuArray<CCTK_REAL, 8> &u,
+            const CCTK_REAL &t,
+            amrex::Array4<CCTK_REAL const> const &lapse,
+            const amrex::Array4<CCTK_REAL const> &shift,
+            const amrex::Array4<CCTK_REAL const> &metric,
+            const amrex::Array4<CCTK_REAL const> &curv,
+            const amrex::Array4<CCTK_REAL const> &rho,
+            const CCTK_REAL dt,
+            const amrex::GpuArray<double, 3> &dx,
+            const int lev,
+            const amrex::GpuArray<double, 3> &plo, 
+            const amrex::GpuArray<double, 3> &phi
+            const CCTK_REAL max_energy);
 
-        void evolve(const int iteration,
-                    const amrex::MultiFab &lapse,
-                    const amrex::MultiFab &shift,
-                    const amrex::MultiFab &metric,
-                    const amrex::MultiFab &curv,
-                    const amrex::MultiFab &rho,
-                    const CCTK_REAL &dt, const int &lev);
+        void evolve(
+            const int iteration,
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
+            const amrex::MultiFab &rho,
+            const CCTK_REAL &dt,
+            const int &lev
+            const CCTK_REAL max_energy);
 
         void evolve_k1(
-                       const int iteration,
-                       const amrex::MultiFab &lapse,
-                       const amrex::MultiFab &shift,
-                       const amrex::MultiFab &metric,
-                       const amrex::MultiFab &curv,
-                       const amrex::MultiFab &rho,
-                       const CCTK_REAL &dt, const int &lev, const ptclRK4data ptclRK4data);
+            const int iteration,
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
+            const amrex::MultiFab &rho,
+            const CCTK_REAL &dt,
+            const int &lev,
+            const CCTK_REAL max_energy,
+            const ptclRK4data ptclRK4data);
 
         void evolve_k2(
-                       const int iteration,
-                       const amrex::MultiFab &lapse,
-                       const amrex::MultiFab &shift,
-                       const amrex::MultiFab &metric,
-                       const amrex::MultiFab &curv,
-                       const amrex::MultiFab &rho,
-                       const CCTK_REAL &dt, const int &lev, const ptclRK4data ptclRK4data);
+            const int iteration,
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
+            const amrex::MultiFab &rho,
+            const CCTK_REAL &dt,
+            const int &lev,
+            const CCTK_REAL max_energy,
+            const ptclRK4data ptclRK4data);
 
-        void evolve_k3(const int iteration,
-                       const amrex::MultiFab &lapse,
-                       const amrex::MultiFab &shift,
-                       const amrex::MultiFab &metric,
-                       const amrex::MultiFab &curv,
-                       const amrex::MultiFab &rho,
-                       const CCTK_REAL &dt, const int &lev, const ptclRK4data ptclRK4data);
-        void evolve_k4(const int iteration,
-                       const amrex::MultiFab &lapse,
-                       const amrex::MultiFab &shift,
-                       const amrex::MultiFab &metric,
-                       const amrex::MultiFab &curv,
-                       const amrex::MultiFab &rho,
-                       const CCTK_REAL &dt, const int &lev, const ptclRK4data ptclRK4data);
+        void evolve_k3(
+            const int iteration,
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
+            const amrex::MultiFab &rho,
+            const CCTK_REAL &dt,
+            const int &lev,
+            const CCTK_REAL max_energy,
+            const ptclRK4data ptclRK4data);
 
-        void check_horizon(const amrex::MultiFab &lapse, const int &lev, const CCTK_REAL max_energy);
+        void evolve_k4(
+            const int iteration,
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
+            const amrex::MultiFab &rho,
+            const CCTK_REAL &dt,
+            const int &lev,
+            const CCTK_REAL max_energy,
+            const ptclRK4data ptclRK4data);
+        
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        CCTK_REAL check_bounds(
+            const amrex::GpuArray<CCTK_REAL, 9> u,
+            const amrex::GpuArray<double, 3> &plo,
+            const amrex::GpuArray<double, 3> &phi);
+        
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        CCTK_REAL check_validity(
+            const amrex::GpuArray<CCTK_REAL, 9> rhs,
+            const amrex::GpuArray<CCTK_REAL, 9> u,
+            const CCTK_REAL lapse,
+            const CCTK_REAL max_energy,
+            const int index);
 
-        void check_banned_zones(const int &level, const CCTK_INT4 &zones,
-                                const CCTK_REAL (&x)[10], const CCTK_REAL (&y)[10],
-                                const CCTK_REAL (&z)[10],
-                                const CCTK_REAL (&radius)[10],
-                                const CCTK_REAL (&a)[10]);
+        void check_horizon(
+            const amrex::MultiFab &lapse,
+            const int &lev,
+            const CCTK_REAL max_energy);
 
-        void normalize_velocity(const amrex::MultiFab &metric, const int level);
+        void check_banned_zones(
+            const int &level, 
+            const CCTK_INT4 &zones,
+            const CCTK_REAL (&x)[10], 
+            const CCTK_REAL (&y)[10],
+            const CCTK_REAL (&z)[10],
+            const CCTK_REAL (&radius)[10],
+            const CCTK_REAL (&a)[10]);
+
+        void normalize_velocity(
+            const amrex::MultiFab &metric,
+            const int level);
         
         void redistribute_particles()
         {
@@ -147,11 +198,12 @@ namespace RaytracingX
         } // RaytracingParticlesContainer::redistribute_particles
 
         //RaytracingX: evolve method override necessary because expanding virtual class from BaseParticleContainer
-        void evolve(const amrex::MultiFab &lapse,
-                    const amrex::MultiFab &shift,
-                    const amrex::MultiFab &metric,
-                    const amrex::MultiFab &curv, const CCTK_REAL &dt,
-                    const int &lev)
+        void evolve(
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv, const CCTK_REAL &dt,
+            const int &lev)
         {
             CCTK_ERROR("This evolve method should not be used! Use the other one.");
             return;

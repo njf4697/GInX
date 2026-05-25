@@ -207,7 +207,7 @@ namespace RaytracingX
             const CCTK_REAL x,
             const CCTK_REAL y,
             const CCTK_REAL z,
-            const amrex::GpuArray<CCTK_REAL, 6> gamma)
+            const amrex::GpuArray<CCTK_REAL, 6> gamma);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         static amrex::GpuArray<CCTK_REAL, 3> raise_lower_spatial(

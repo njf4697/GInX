@@ -37,6 +37,47 @@ namespace RaytracingX
         }; // enum
     };
 
+    enum M3idx {
+        XX = 0, XY = 1, XZ = 2,
+        YX = 1, YY = 3, YZ = 4,
+        ZX = 2, ZY = 4, ZZ = 5
+    }
+
+    enum M4idx {
+        TT = 0, TX = 1, TY = 2, TZ = 3,
+        XT = 1, XX = 4, XY = 5, XZ = 6,
+        YT = 2, YX = 5, YY = 7, YZ = 8,
+        ZT = 3, ZX = 6, ZY = 8, ZZ = 9
+    }
+
+    enum Uidx {
+        x = 0,
+        y,
+        z,
+        vx,
+        vy,
+        vz,
+        lnaE,
+        tau,
+        del_rsn,
+        n_attributes
+    }
+
+    struct DelReason {
+        static constexpr CCTK_REAL XHI = -1;
+        static constexpr CCTK_REAL XLO = -2;
+        static constexpr CCTK_REAL YHI = -3;
+        static constexpr CCTK_REAL YLO = -4;
+        static constexpr CCTK_REAL ZHI = -5;
+        static constexpr CCTK_REAL ZLO = -6;
+        static constexpr CCTK_REAL HORIZON = -7;
+        static constexpr CCTK_REAL PHOTOSPHERE = -8;
+        static constexpr CCTK_REAL BANNED_REGION_OFFSET = -9;
+        static constexpr CCTK_REAL UNSTABLE = -997;
+        static constexpr CCTK_REAL NONFINITE = -998;
+        static constexpr CCTK_REAL DEFAULT = -999;
+    }
+
     template <typename StructType>
     class RaytracingParticlesContainer : public GInX::BaseParticleContainer<RaytracingParticlesContainer<StructType>,
                                                                                    StructType>
@@ -173,6 +214,20 @@ namespace RaytracingX
             const CCTK_REAL lapse,
             const CCTK_REAL max_energy,
             const int index);
+        
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        static CCTK_REAL mag2_massless(
+            const CCTK_REAL x,
+            const CCTK_REAL y,
+            const CCTK_REAL z,
+            const amrex::GpuArray<CCTK_REAL, 6> gamma)
+        
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        static amrex::GpuArray<CCTK_REAL, 3> raise_lower_spatial(
+            const CCTK_REAL x,
+            const CCTK_REAL y,
+            const CCTK_REAL z,
+            const amrex::GpuArray<CCTK_REAL, 6> gamma);
 
         void check_horizon(
             const amrex::MultiFab &lapse,

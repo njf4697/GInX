@@ -123,12 +123,6 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
                gamma_x[4] * gamma_x[4] * gamma_x[0] -
                gamma_x[1] * gamma_x[1] * gamma_x[5]);
 
-    if (!std::isfinite(inv_det_gamma))
-    {
-        fprintf(stderr, "the following spatial metric at (%f, %f, %f) has an invalid determinant:\n%f %f %f\n %f %f %f\n%f %f %f\n", u[0], u[1], u[2], gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]);
-    }
-    ASSERT_FINITE(inv_det_gamma)
-
     const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
         (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
         (gamma_x[4] * gamma_x[2] - gamma_x[1] * gamma_x[5]) * inv_det_gamma,
@@ -140,10 +134,16 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
     // Compute the upper index velocity terms.
-    const amrex::GpuArray<CCTK_REAL, 3> V_up = {
+    amrex::GpuArray<CCTK_REAL, 3> V_up = {
         gamma_inv_x[0] * u[3] + gamma_inv_x[1] * u[4] + gamma_inv_x[2] * u[5],
         gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
         gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
+
+    const CCTK_REAL inv_V_up_mag = 1.0/std::sqrt(mag2_massless(V_up[0], V_up[1], V_up[2], gamma_x));
+    
+    V_up[0] *= inv_V_up_mag;
+    V_up[1] *= inv_V_up_mag;
+    V_up[2] *= inv_V_up_mag;
 
     // Compute the rhs for position
     rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -169,54 +169,8 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     // RaytracingX: Add evolution for optical depth calculation.
     //  Compute the rhs for optical depth
-    const CCTK_REAL ds = dx[0] * dx[0] * gamma_inv_x[0] +
-                         dx[1] * dx[1] * gamma_inv_x[3] +
-                         dx[2] * dx[2] * gamma_inv_x[5] +
-                         2.0 * dx[0] * dx[1] * gamma_inv_x[1] +
-                         2.0 * dx[0] * dx[2] * gamma_inv_x[2] +
-                         2.0 * dx[1] * dx[2] * gamma_inv_x[4];
+    const CCTK_REAL ds = mag2_massless(dx[0], dx[1], dx[2], gamma_inv_x);
     rhs[3 + StructType::tau] = (0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
-
-    // Normalizing the velocity.
-    const CCTK_REAL v_squared = rhs[0] * rhs[0] * gamma_inv_x[0] +
-                                rhs[1] * rhs[1] * gamma_inv_x[3] +
-                                rhs[2] * rhs[2] * gamma_inv_x[5] +
-                                2.0 * rhs[0] * rhs[1] * gamma_inv_x[1] +
-                                2.0 * rhs[0] * rhs[2] * gamma_inv_x[2] +
-                                2.0 * rhs[1] * rhs[2] * gamma_inv_x[4];
-
-    ASSERT_FINITE(v_squared)
-    assert(v_squared >= 0);
-
-    ASSERT_FINITE(u[3 + StructType::ln_alphaE])
-    ASSERT_FINITE(std::exp(u[3 + StructType::ln_alphaE]))
-
-    const CCTK_REAL v = std::sqrt(v_squared);
-
-    ASSERT_FINITE(v)
-    ASSERT_FINITE(this->mass)
-
-    if (iteration >= 1170 && iteration <= 1200 && amrex::ParallelDescriptor::MyProc() == 24)
-    {
-        fprintf(stderr, "it: %d, pidx: %d, alphaE: %f, dx/dt=(%f, %f, %f), vup=(%f, %f, %f), vvec=(%f, %f, %f)->%f, x=(%f, %f, %f), dx=(%f, %f, %f)\nmet: %f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
-                index,
-                iteration,
-                std::exp(u[3 + StructType::ln_alphaE]),
-                UNPACKV(rhs),
-                UNPACKV(V_up),
-                UNPACKV(V_down), v,
-                UNPACKV(u),
-                UNPACKV(dx),
-                UNPACK4M_COMP(lapse_x, shift_x, gamma_x));
-    }
-
-    const CCTK_REAL alpha_over_v = std::sqrt(1. - this->mass * this->mass / (2 * std::exp(u[3 + StructType::ln_alphaE]))) / v;
-
-    ASSERT_FINITE(alpha_over_v)
-
-    rhs[0] *= alpha_over_v;
-    rhs[1] *= alpha_over_v;
-    rhs[2] *= alpha_over_v;
 
     rhs[8] = check_validity(rhs, u, lapse_x, max_energy, index);
 
@@ -903,7 +857,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_validity(
     CCTK_REAL deletion_reason = u[8];
 
     if (abs(std::exp(u[6]) / lapse) > max_energy) {
-        deletion_reason = -7;
+        deletion_reason = DelReason::HORIZON;
     }
 
     if (!(std::isfinite(rhs[0]) &&
@@ -919,7 +873,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_validity(
             rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5], rhs[6], rhs[7],
             u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7]
         );
-        deletion_reason = -998;
+        deletion_reason = DelReason::NONFINITE;
     }
 
     return deletion_reason;
@@ -933,25 +887,51 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
     const amrex::GpuArray<double, 3> &phi)
 {
     if (u[0] > phi[0]) {
-        return -1;
+        return DelReason::XHI;
     }
     if (u[0] < plo[0]) {
-        return -2;
+        return DelReason::XLO;
     }
     if (u[1] > phi[1]) {
-        return -3;
+        return DelReason::YHI;
     }
     if (u[1] < plo[1]) {
-        return -4;
+        return DelReason::YLO;
     }
     if (u[2] > phi[2]) {
-        return -5;
+        return DelReason::ZHI;
     }
     if (u[2] < plo[2]) {
-        return -6;
+        return DelReason::ZLO;
     }
     if (u[7] >= 1.0) {
-        return -8;
+        return DelReason::PHOTOSPHERE;
     }
     return u[8];
+}
+
+template <typename StructType>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+CCTK_REAL RaytracingParticlesContainer<StructType>::mag2_massless(
+    const CCTK_REAL x,
+    const CCTK_REAL y,
+    const CCTK_REAL z,
+    const amrex::GpuArray<CCTK_REAL, 6> gamma)
+{
+    return x*x*gamma[0] + y*y*gamma[3] + z*z*gamma[5] +
+        2.0*(x*y*gamma[1] + x*z*gamma[2] + y*z*gamma[4]);
+}
+
+template <typename StructType>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+amrex::GpuArray<CCTK_REAL, 3> RaytracingParticlesContainer<StructType>::raise_lower_spatial(
+    const CCTK_REAL x,
+    const CCTK_REAL y,
+    const CCTK_REAL z,
+    const amrex::GpuArray<CCTK_REAL, 6> gamma)
+{
+    return amrex::GpuArray<CCTK_REAL, 3>{
+        gamma[0] * x + gamma[1] * y + gamma[2] * z,
+        gamma[1] * x + gamma[3] * y + gamma[4] * z,
+        gamma[2] * x + gamma[4] * y + gamma[5] * z};
 }

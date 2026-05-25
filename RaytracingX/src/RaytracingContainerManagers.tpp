@@ -42,7 +42,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
                                          particles[i].pos(2), dx, plo0);
             if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
               particles[i].id() =-1;
-              deletion_reasons[i] = -7;
+              deletion_reasons[i] = DelReason::HORIZON;
             } 
         });
     }
@@ -101,7 +101,7 @@ void RaytracingParticlesContainer<StructType>::check_banned_zones(
           
           if (r <= (radius[check] + sqrt(radius[check]*radius[check]-4*a[check]*a[check])) / 2.0) {
             particles[i].id() = -1;
-            deletion_reasons[i] = -check - 9;
+            deletion_reasons[i] = -check - DelReason::BANNED_REGION_OFFSET;
           }
         } });
     }

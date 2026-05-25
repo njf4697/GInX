@@ -37,19 +37,6 @@ namespace RaytracingX
         }; // enum
     };
 
-    enum M3idx {
-        XX = 0, XY = 1, XZ = 2,
-        YX = 1, YY = 3, YZ = 4,
-        ZX = 2, ZY = 4, ZZ = 5
-    }
-
-    enum M4idx {
-        TT = 0, TX = 1, TY = 2, TZ = 3,
-        XT = 1, XX = 4, XY = 5, XZ = 6,
-        YT = 2, YX = 5, YY = 7, YZ = 8,
-        ZT = 3, ZX = 6, ZY = 8, ZZ = 9
-    }
-
     enum Uidx {
         x = 0,
         y,
@@ -61,7 +48,7 @@ namespace RaytracingX
         tau,
         del_rsn,
         n_attributes
-    }
+    };
 
     struct DelReason {
         static constexpr CCTK_REAL XHI = -1;
@@ -76,7 +63,7 @@ namespace RaytracingX
         static constexpr CCTK_REAL UNSTABLE = -997;
         static constexpr CCTK_REAL NONFINITE = -998;
         static constexpr CCTK_REAL DEFAULT = -999;
-    }
+    };
 
     template <typename StructType>
     class RaytracingParticlesContainer : public GInX::BaseParticleContainer<RaytracingParticlesContainer<StructType>,

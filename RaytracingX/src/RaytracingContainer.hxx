@@ -42,7 +42,7 @@ namespace RaytracingX
         int U_tmp[8];
         int k_odd[8];
         int k_even[8];
-    };
+    } splitRK4idx;
 
     enum Uidx {
         x = 0,

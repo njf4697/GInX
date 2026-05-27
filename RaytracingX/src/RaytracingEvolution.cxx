@@ -38,7 +38,6 @@ using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
 int interp_order;
-ptclRK4data ptclRK4data;
 
 /**
  * \brief Initialize particles' data
@@ -190,10 +189,10 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       // along geodesic. Information for particle output on deletion also passed.
       if (fast_light) { pc->evolve(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy); }
       else {
-        pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, ptclRK4data);
-        pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, ptclRK4data);
-        pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, ptclRK4data);
-        pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, ptclRK4data);
+        pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
       }
     }
   }

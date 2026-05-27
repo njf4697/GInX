@@ -145,7 +145,7 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   }
 
   Metric metric;
-  interpolateMetricAtPoint(CCTK_PASS_CTOC, metric, 3, 15, 0);
+  interpolateMetricAtPoint(CCTK_PASS_CTOC, &metric, 3, 15, 0);
   DEBUG(metric.to_string())
 
   //RaytracingX: Particle skip override moved to schedule.ccl.

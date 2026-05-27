@@ -67,7 +67,8 @@
                         k_even[6] = k_even6[i]; \
                         k_even[7] = k_even7[i];
 
-#define LOAD_RK4_VARS U0[i] = U[0];           \
+#define LOAD_RK4_VARS DEBUG("8.1")\
+                      U0[i] = U[0];           \
                       U1[i] = U[1];           \
                       U2[i] = U[2];           \
                       U3[i] = U[3];           \
@@ -75,6 +76,7 @@
                       U5[i] = U[5];           \
                       U6[i] = U[6];           \
                       U7[i] = U[7];           \
+                      DEBUG("8.2")\
                       U_tmp0[i] = U_tmp[0];   \
                       U_tmp1[i] = U_tmp[1];   \
                       U_tmp2[i] = U_tmp[2];   \
@@ -83,6 +85,7 @@
                       U_tmp5[i] = U_tmp[5];   \
                       U_tmp6[i] = U_tmp[6];   \
                       U_tmp7[i] = U_tmp[7];   \
+                      DEBUG("8.3")\
                       k_odd0[i] = k_odd[0];   \
                       k_odd1[i] = k_odd[1];   \
                       k_odd2[i] = k_odd[2];   \
@@ -91,6 +94,7 @@
                       k_odd5[i] = k_odd[5];   \
                       k_odd6[i] = k_odd[6];   \
                       k_odd7[i] = k_odd[7];   \
+                      DEBUG("8.4")\
                       k_even0[i] = k_even[0]; \
                       k_even1[i] = k_even[1]; \
                       k_even2[i] = k_even[2]; \
@@ -98,7 +102,8 @@
                       k_even4[i] = k_even[4]; \
                       k_even5[i] = k_even[5]; \
                       k_even6[i] = k_even[6]; \
-                      k_even7[i] = k_even[7];
+                      k_even7[i] = k_even[7]; \
+                      DEBUG("8.5")
 
 #define REDEFINE_RK4_ARRAYS amrex::GpuArray<CCTK_REAL, 9> U      = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
                             amrex::GpuArray<CCTK_REAL, 9> U_tmp  = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \

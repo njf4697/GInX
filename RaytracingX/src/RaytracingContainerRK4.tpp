@@ -445,6 +445,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
 
         DEBUG("test2")
 
+        AMREX_ALWAYS_ASSERT(ptclRK4data.U[0] < attribs.size());
+
         DEFINE_RK4_VARS
 
         DEBUG("test3")

@@ -84,8 +84,7 @@ struct ptclRK4data{
 
 
 void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL* e2, CCTK_REAL* e3, Metric* metric); //Utilities.cc
-void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point); //InterpolateMetric.cc
-void interpolateMetricAtPoint2(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z);
+void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z); //InterpolateMetric.cc
 CCTK_REAL innerProduct(const CCTK_REAL* U, const CCTK_REAL* V, const Metric* m); //utilities.cc
 void generalizedCrossProduct(CCTK_REAL* X, const CCTK_REAL* U, const CCTK_REAL* V, const CCTK_REAL* W, const Metric* m); //Utilities.cc
 void oneFormToVector(CCTK_REAL* X_vector, const CCTK_REAL* X_oneform, const Metric* m); //Utilities.cc

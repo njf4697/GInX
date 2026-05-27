@@ -68,6 +68,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 5 && "RaytracingX requires ghost zone size of 5");
 
+
+
   //RaytracingX: Particle skip override moved to schedule.ccl
 
   const int tl = 0;
@@ -141,6 +143,10 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   {
     CCTK_INFO("R_ParticlesContainer_evolve");
   }
+
+  Metric metric;
+  interpolateMetricAtPoint(CCTK_PASS_CTOC, metric, 3, 15, 0);
+  DEBUG(metric.to_string())
 
   //RaytracingX: Particle skip override moved to schedule.ccl.
 

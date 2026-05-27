@@ -37,6 +37,13 @@ namespace RaytracingX
         }; // enum
     };
 
+    struct splitRK4idx{
+        int U[8];
+        int U_tmp[8];
+        int k_odd[8];
+        int k_even[8];
+    };
+
     enum Uidx {
         x = 0,
         y,
@@ -149,8 +156,7 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy,
-            const ptclRK4data ptclRK4data);
+            const CCTK_REAL max_energy);
 
         void evolve_k2(
             const int iteration,
@@ -161,8 +167,7 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy,
-            const ptclRK4data ptclRK4data);
+            const CCTK_REAL max_energy);
 
         void evolve_k3(
             const int iteration,
@@ -173,8 +178,7 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy,
-            const ptclRK4data ptclRK4data);
+            const CCTK_REAL max_energy);
 
         void evolve_k4(
             const int iteration,
@@ -185,8 +189,7 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy,
-            const ptclRK4data ptclRK4data);
+            const CCTK_REAL max_energy);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_bounds(

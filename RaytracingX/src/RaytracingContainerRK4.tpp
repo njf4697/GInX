@@ -415,8 +415,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const ptclRK4data ptclRK4data)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -444,8 +443,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
         DEBUG("test2")
-
-        AMREX_ALWAYS_ASSERT(ptclRK4data.U[0] < attribs.size());
 
         DEFINE_RK4_VARS
 
@@ -554,8 +551,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const ptclRK4data ptclRK4data)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -676,8 +672,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const ptclRK4data ptclRK4data)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -787,8 +782,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const ptclRK4data ptclRK4data)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();

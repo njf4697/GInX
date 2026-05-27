@@ -93,13 +93,13 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       if (!fast_light) {
         for (int i = 0; i < 8; i++) {
           pc->AddRealComp();
-          ptclRK4data.U[i] = pc->NumRealComps() - 1;
+          pc->splitRK4idx.U[i] = pc->NumRealComps() - 1;
           pc->AddRealComp();
-          ptclRK4data.U_tmp[i] = pc->NumRealComps() - 1;
+          pc->splitRK4idx.U_tmp[i] = pc->NumRealComps() - 1;
           pc->AddRealComp();
-          ptclRK4data.k_odd[i] = pc->NumRealComps() - 1;
+          pc->splitRK4idx.k_odd[i] = pc->NumRealComps() - 1;
           pc->AddRealComp();
-          ptclRK4data.k_even[i] = pc->NumRealComps() - 1;
+          pc->splitRK4idx.k_even[i] = pc->NumRealComps() - 1;
         }
       }
 

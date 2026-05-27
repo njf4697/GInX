@@ -144,10 +144,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_evolve");
   }
 
-  Metric metric;
-  interpolateMetricAtPoint(CCTK_PASS_CTOC, &metric, 3, 15, 0);
-  DEBUG(metric.to_string())
-
   //RaytracingX: Particle skip override moved to schedule.ccl.
 
   //RaytracingX: Add density to information passed to evolution function.

@@ -442,6 +442,15 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
+        amrex::Print()
+    << "attribs.size() = "
+    << attribs.size()
+    << "\n";
+
+for (int n = 0; n < attribs.size(); ++n) {
+    AMREX_ALWAYS_ASSERT(attribs[n].data() != nullptr);
+}
+
         DEBUG("test2")
 
         DEFINE_RK4_VARS

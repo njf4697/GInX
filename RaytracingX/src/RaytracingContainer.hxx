@@ -37,12 +37,12 @@ namespace RaytracingX
         }; // enum
     };
 
-    struct splitRK4idx{
+    struct SplitRK4idx{
         int U[8];
         int U_tmp[8];
         int k_odd[8];
         int k_even[8];
-    } splitRK4idx;
+    };
 
     enum Uidx {
         x = 0,
@@ -93,6 +93,8 @@ namespace RaytracingX
         /**
          * \brief Using BaseParticlesContainer constructor
          */
+
+        SplitRK4idx splitRK4idx;
 
         using Base =
             GInX::BaseParticleContainer<RaytracingParticlesContainer<StructType>,StructType>;

@@ -11,6 +11,9 @@
  * comments starting with 'RaytracingX:' for clarity.
  */
 
+#define H5_USE_16_API 1
+#include "hdf5.h"
+
 #include "RaytracingX.h"
 #include "RaytracingInitializers.hxx"
 

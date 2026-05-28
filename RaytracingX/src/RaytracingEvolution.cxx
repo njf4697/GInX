@@ -33,7 +33,7 @@
 #include <iostream>
 #include <loop_device.hxx>
 
-//#include "AST_Spacetime_SetMetric.hxx"
+#include "AST_Spacetime_SetMetric.hxx"
 
 //RaytracingX: Uses override for particle data struct and particle container defined in RaytracingX/RaytracingContainer.hxx.
 using ParticleData = RaytracingX::RaytracingPhotonsData;

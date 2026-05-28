@@ -11,9 +11,6 @@
  * comments starting with 'RaytracingX:' for clarity.
  */
 
-#define H5_USE_16_API 1
-#include "hdf5.h"
-
 #include "RaytracingX.h"
 #include "RaytracingInitializers.hxx"
 
@@ -36,13 +33,12 @@
 #include <iostream>
 #include <loop_device.hxx>
 
-#include "AST_Spacetime_SetMetric.hxx"
+//#include "AST_Spacetime_SetMetric.hxx"
 
 //RaytracingX: Uses override for particle data struct and particle container defined in RaytracingX/RaytracingContainer.hxx.
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
-int interp_order;
 
 /**
  * \brief Initialize particles' data

@@ -25,3 +25,8 @@ CCTK_INT FUNCTION DriverInterpolate(
   CCTK_INT ARRAY IN output_array_types,
   CCTK_POINTER ARRAY IN output_arrays)
 REQUIRES FUNCTION DriverInterpolate
+
+void FUNCTION CallScheduleGroup(
+  CCTK_POINTER IN cctkGH,
+  CCTK_STRING IN groupname)
+REQUIRES FUNCTION CallScheduleGroup

@@ -3,34 +3,34 @@
 
 if (do_raytracing) {
 
-SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTINITIAL {
+SCHEDULE ParticlesContainer_setup AT CCTK_POSTINITIAL {
     LANG: C
     OPTIONS: global
 } "setup"
 
 if ((particle_plot_every>0)||(particle_tsv_every>0) ){
-    SCHEDULE R_ParticlesContainer_print AT CCTK_POSTINITIAL AFTER setup
+    SCHEDULE ParticlesContainer_print AT CCTK_POSTINITIAL AFTER setup
     {
         LANG: C
         OPTIONS: global
     } "print the particles"
 }
 
-SCHEDULE R_ParticlesContainer_evolve AT evol
+SCHEDULE ParticlesContainer_evolve AT evol
 {
     LANG: C
     OPTIONS: global
 } "Photons evolution"
 
 if ((particle_plot_every||particle_tsv_every) ) {
-    SCHEDULE R_ParticlesContainer_print AT evol AFTER R_ParticlesContainer_evolve
+    SCHEDULE ParticlesContainer_print AT evol AFTER ParticlesContainer_evolve
     {
         LANG: C
         OPTIONS: global
     } "print the particles"
 }
 
-SCHEDULE R_ParticlesContainer_final_cleanup at CCTK_SHUTDOWN{
+SCHEDULE ParticlesContainer_final_cleanup at CCTK_SHUTDOWN{
     LANG: C
     OPTIONS: global
 } "cleaning everything"

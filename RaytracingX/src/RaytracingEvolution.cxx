@@ -16,6 +16,9 @@
 
 #include <cctk.h>
 
+#define H5_USE_16_API 1
+#include "hdf5.h"
+
 #include "BaseParticlesContainer.hxx"
 #include "RaytracingContainer.hxx"
 #include <AMReX_ParallelDescriptor.H>
@@ -34,9 +37,6 @@
 #include <loop_device.hxx>
 
 #include "AST_Spacetime_SetMetric.hxx"
-
-#define H5_USE_16_API 1
-#include "hdf5.h"
 
 //RaytracingX: Uses override for particle data struct and particle container defined in RaytracingX/RaytracingContainer.hxx.
 using ParticleData = RaytracingX::RaytracingPhotonsData;

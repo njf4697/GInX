@@ -89,19 +89,6 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       //RaytracingX: Change particle initialization function to that of the camera.
       auto &pc = r_photons.at(patch);
 
-      if (!fast_light) {
-        for (int i = 0; i < 8; i++) {
-          pc->AddRealComp();
-          pc->splitRK4idx.U[i] = pc->NumRealComps() - 1;
-          pc->AddRealComp();
-          pc->splitRK4idx.U_tmp[i] = pc->NumRealComps() - 1;
-          pc->AddRealComp();
-          pc->splitRK4idx.k_odd[i] = pc->NumRealComps() - 1;
-          pc->AddRealComp();
-          pc->splitRK4idx.k_even[i] = pc->NumRealComps() - 1;
-        }
-      }
-
       pc->initialize(camera_initializer<ParticleData, PC>,
                      real_params, int_params);
     }

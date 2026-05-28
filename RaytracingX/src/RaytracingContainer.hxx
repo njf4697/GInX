@@ -93,8 +93,6 @@ namespace RaytracingX
          * \brief Using BaseParticlesContainer constructor
          */
 
-        SplitRK4idx splitRK4idx;
-
         using Base =
             GInX::BaseParticleContainer<RaytracingParticlesContainer<StructType>,StructType>;
         using Base::Base;

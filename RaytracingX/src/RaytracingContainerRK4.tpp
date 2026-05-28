@@ -429,8 +429,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     {
         const int np = pti.numParticles();
 
-        DEBUG("test1")
-
         // Get the information relate to the velocities and energy.
         auto &attribs = pti.GetAttributes();
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
@@ -442,20 +440,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
-        amrex::Print()
-    << "attribs.size() = "
-    << attribs.size()
-    << "\n";
-
-for (int n = 0; n < attribs.size(); ++n) {
-    AMREX_ALWAYS_ASSERT(attribs[n].data() != nullptr);
-}
-
-        DEBUG("test2")
-
         DEFINE_RK4_VARS
-
-        DEBUG("test3")
 
         // Get the array of each parameter.
         auto const lapse_array = lapse.array(pti);
@@ -476,20 +461,14 @@ for (int n = 0; n < attribs.size(); ++n) {
 
       SKIP_DELETED_PARTICLES
 
-      DEBUG("test4")
-
       //RaytracingX: Add optical depth.
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
       amrex::GpuArray<CCTK_REAL, 9> k_even = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-      DEBUG("test5")
 
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k_odd =
           self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0, phi0, max_energy); //RaytracingX: Add density for optical depth.
-
-      DEBUG("test6")
 
       U_tmp[0] = U[0] + 0.5 * dt * k_odd[0];
       U_tmp[1] = U[1] + 0.5 * dt * k_odd[1];
@@ -502,19 +481,13 @@ for (int n = 0; n < attribs.size(); ++n) {
       U_tmp[8] = k_odd[8];
       U_tmp[8] = check_bounds(U_tmp, plo0, phi0);
 
-      DEBUG("test7")
-
       if (U_tmp[8] != 0.0) {
         deletion_reasons[i] = U_tmp[8];
         particles[i].id() = -1;
         return;
       }
 
-      DEBUG("test8")
-
       LOAD_RK4_VARS
-
-      DEBUG("test9")
       });
     }
 } // RaytracingParticlesContainer::evolve_k1

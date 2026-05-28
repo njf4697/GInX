@@ -172,18 +172,32 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       //pc->check_horizon(lapse, lev, max_energy);
 
+      Metric metric;
+
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
       if (fast_light) { pc->evolve(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy); }
       else {
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) {
+          interpolateMetricAtPoint(CCTK_PASS_CTOC, 0.0, 18.0, 0.0);
+          DEBUG("rk1: " + metric.to_string())
+        }
         CCTK_REAL t = CCTK_TIME;
         pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
         CCTK_TIME = t + 0.5 * CCTK_DELTA_TIME;
         CallScheduleGroup(cctkGH, "ANALYTIC_METRIC");
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) {
+          interpolateMetricAtPoint(CCTK_PASS_CTOC, 0.0, 18.0, 0.0);
+          DEBUG("rk2,3: " + metric.to_string())
+        }
         pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
         pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
         CCTK_TIME = t + CCTK_DELTA_TIME;
         CallScheduleGroup(cctkGH, "ANALYTIC_METRIC");
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) {
+          interpolateMetricAtPoint(CCTK_PASS_CTOC, 0.0, 18.0, 0.0);
+          DEBUG("rk4: " + metric.to_string())
+        }
         pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
         CCTK_TIME = t;
         CallScheduleGroup(cctkGH, "ANALYTIC_METRIC");

@@ -10,6 +10,7 @@
                         DEBUG(std::to_string(rk4.U[5]))\
                         DEBUG(std::to_string(rk4.U[6]))\
                         DEBUG(std::to_string(rk4.U[7]))\
+                        DEBUG(std::to_string(attribs.size()))\
                         CCTK_REAL *AMREX_RESTRICT U0 = attribs[rk4.U[0]].data();         \
                         CCTK_REAL *AMREX_RESTRICT U1 = attribs[rk4.U[1]].data();         \
                         CCTK_REAL *AMREX_RESTRICT U2 = attribs[rk4.U[2]].data();         \

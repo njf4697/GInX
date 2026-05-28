@@ -35,6 +35,9 @@
 
 #include "AST_Spacetime_SetMetric.hxx"
 
+#define H5_USE_16_API 1
+#include "hdf5.h"
+
 //RaytracingX: Uses override for particle data struct and particle container defined in RaytracingX/RaytracingContainer.hxx.
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;

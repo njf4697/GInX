@@ -33,15 +33,14 @@ namespace RaytracingX
             tau,          /**< Optical depth value. Also used as particle deletion code, see above macros, also iterates across banned regions*/
             pixel_number, /**< Number used to match particle to corresponding pixel in the image. Defined as a real since BaseParticleContainer does not have options for int parameters, unless defined at runtime, in which case they will not print with WriteAsciiFile*/
             deletion_reason,
+
+            U0, U1, U2, U3, U4, U5, U6, U7,
+            U_tmp0, U_tmp1, U_tmp2, U_tmp3, U_tmp4, U_tmp5, U_tmp6, U_tmp7,
+            k_odd0, k_odd1, k_odd2, k_odd3, k_odd4, k_odd5, k_odd6, k_odd7,
+            k_even0, k_even1, k_even2, k_even3, k_even4, k_even5, k_even6, k_even7,
+
             n_attributes, /**< Total number of attributes*/
         }; // enum
-    };
-
-    struct SplitRK4idx{
-        int U[8];
-        int U_tmp[8];
-        int k_odd[8];
-        int k_even[8];
     };
 
     enum Uidx {

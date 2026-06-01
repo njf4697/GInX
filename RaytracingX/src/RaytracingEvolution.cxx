@@ -128,6 +128,8 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   {
     CCTK_INFO("R_ParticlesContainer_evolve");
   }
+  
+  Metric m;
 
   //RaytracingX: Particle skip override moved to schedule.ccl.
 
@@ -177,10 +179,20 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       // along geodesic. Information for particle output on deletion also passed.
       if (fast_light) { pc->evolve(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy); }
       else {
+        const CCTK_REAL time = cctk_time;
+        interpolateMetricAtPoint(CCTK_PASS_CTOC, m , 0.0, &18.0, 0.0);
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptior::IOProcessorNumber()) { DEBUG("k1" + m.to_string()) }
         pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        SetMetricHelper(CCTK_PASS_CTOC, time + 0.5*CCTK_DELTA_TIME);
+        interpolateMetricAtPoint(CCTK_PASS_CTOC, m , 0.0, &18.0, 0.0);
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptior::IOProcessorNumber()) { DEBUG("k2,3" + m.to_string()) }
         pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
         pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        SetMetricHelper(CCTK_PASS_CTOC, time + CCTK_DELTA_TIME);
+        interpolateMetricAtPoint(CCTK_PASS_CTOC, m , 0.0, &18.0, 0.0);
+        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptior::IOProcessorNumber()) { DEBUG("k4" + m.to_string()) }
         pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+        SetMetricHelper(CCTK_PASS_CTOC, time);
       }
     }
   }

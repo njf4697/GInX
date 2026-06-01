@@ -76,8 +76,6 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
     const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
 
-    ASSERT_FINITE1(u, 3)
-
     // Interpolate lapse & partial lapse at \vect{x}
     CCTK_REAL lapse_x;
     amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;

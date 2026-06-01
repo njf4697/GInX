@@ -412,7 +412,7 @@ extern "C" void R_SetMetric(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time);
 }
 
 extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
@@ -420,7 +420,7 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + 0.5*CCTK_DELTA_TIME);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + 0.5*CCTK_DELTA_TIME);
 }
 
 extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
@@ -428,7 +428,7 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
 }
 
 /**

@@ -16,11 +16,23 @@ if ((particle_plot_every>0)||(particle_tsv_every>0) ){
     } "print the particles"
 }
 
+SCHEDULE AnalyticalSpacetimeX_SwitchOnSettingMetric IN evol BEFORE R_ParticlesContainer_evolve
+  {
+    LANG: C
+    OPTIONS: global
+  } "set flag is_setting_metric to true after regrid"
+
 SCHEDULE R_ParticlesContainer_evolve AT evol
 {
     LANG: C
     OPTIONS: global
 } "Photons evolution"
+
+SCHEDULE AnalyticalSpacetimeX_SwitchOffSettingMetric IN evol AFTER R_ParticlesContainer_evolve
+  {
+    LANG: C
+    OPTIONS: global
+  } "reset flag is_setting_metric to false"
 
 if ((particle_plot_every||particle_tsv_every) ) {
     SCHEDULE R_ParticlesContainer_print AT evol AFTER R_ParticlesContainer_evolve

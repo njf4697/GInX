@@ -50,7 +50,7 @@ SCHEDULE R_ParticlesContainer_evolve IN RAYTRACING_EVOL AFTER R_ParticlesContain
     OPTIONS: global
   } "evolve particles"
 
-SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_redistribute
+SCHEDULE R_SetMetric AS R_SetMetric_initial IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_redistribute
   {
     LANG: C
     OPTIONS: global
@@ -136,13 +136,13 @@ SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL_SPLIT_RK4 AFT
     OPTIONS: global
   } "output particle final data"
 
-  SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data
+  SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data
   {
     LANG: C
     OPTIONS: global
   } "redistribute particles"
 
-SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_output_final_data
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_output_final_data
   {
     LANG: C
     OPTIONS: global

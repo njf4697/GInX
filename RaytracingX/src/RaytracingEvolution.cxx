@@ -193,9 +193,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
-
-  Metric m;
-
+  
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -232,8 +230,6 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k1" + m.to_string()) }
       pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
     }
   }
@@ -250,8 +246,6 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  Metric m;
-
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -288,8 +282,6 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k2" + m.to_string()) }
       pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
     }
   }
@@ -306,8 +298,6 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  Metric m;
-
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -344,8 +334,6 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k3" + m.to_string()) }
       pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
     }
   }
@@ -362,8 +350,6 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  Metric m;
-
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -400,8 +386,6 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k4" + m.to_string()) }
       pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
     }
   }

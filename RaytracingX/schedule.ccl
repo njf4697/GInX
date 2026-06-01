@@ -98,26 +98,26 @@ SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_R_P
     OPTIONS: global
   } "change metric"
 
-SCHEDULE R_ParticlesContainer_bounds_check AT RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
+SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
 {
     LANG: C
     OPTIONS: global
 } "check particle bounds"
 
-SCHEDULE R_ParticlesContainer_bounds_check AT RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek4
+SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek4
 {
     LANG: C
     OPTIONS: global
 } "check particle bounds"
 
 if ((particle_plot_every||particle_tsv_every) ) {
-    SCHEDULE R_ParticlesContainer_print AT RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
+    SCHEDULE R_ParticlesContainer_print IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
     {
         LANG: C
         OPTIONS: global
     } "print the particles"
 
-    SCHEDULE R_ParticlesContainer_print AT RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_bounds_check
+    SCHEDULE R_ParticlesContainer_print IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_bounds_check
     {
         LANG: C
         OPTIONS: global

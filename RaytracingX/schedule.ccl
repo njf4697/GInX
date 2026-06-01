@@ -53,7 +53,13 @@ SCHEDULE R_ParticlesContainer_evolve IN RAYTRACING_EVOL AFTER R_ParticlesContain
 SCHEDULE R_SetMetric AS R_SetMetric_initial IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_redistribute
   {
     LANG: C
-    OPTIONS: global
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric"
 
 SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric
@@ -65,7 +71,13 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
 SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek1
   {
     LANG: C
-    OPTIONS: global
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric"
 
 SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric_plus_half_dt
@@ -83,7 +95,13 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
 SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek3
   {
     LANG: C
-    OPTIONS: global
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric"
 
 SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric_plus_dt
@@ -95,7 +113,13 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
 SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_R_ParticlesContainer_evolvek4
   {
     LANG: C
-    OPTIONS: global
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric"
 
 SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve

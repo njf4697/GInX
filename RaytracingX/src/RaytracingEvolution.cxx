@@ -118,22 +118,30 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
  * This function evolves the particles position by numerically solving the
  * geodesic equations.
  */
+extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    pc->Redistribute();
+  }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
 extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  //RaytracingX: Add debug print statement.
-  if (verbose)
-  {
-    CCTK_INFO("R_ParticlesContainer_evolve");
-  }
-  
-  Metric m;
-
-  //RaytracingX: Particle skip override moved to schedule.ccl.
-
-  //RaytracingX: Add density to information passed to evolution function.
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -145,13 +153,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   assert(gi_metric >= 0 && "Failed to get the metric group index");
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    pc->Redistribute();
-  }
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -177,25 +178,269 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      if (fast_light) { pc->evolve(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy); }
-      else {
-        const CCTK_REAL time = cctk_time;
-        interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k1" + m.to_string()) }
-        pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
-        AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, time + 0.5*CCTK_DELTA_TIME);
-        interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k2,3" + m.to_string()) }
-        pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
-        pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
-        AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, time + CCTK_DELTA_TIME);
-        interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
-        if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k4" + m.to_string()) }
-        pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
-        AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, time);
-      }
+      pc->evolve(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
     }
   }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  Metric m;
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
+  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
+  assert(gi_rho >= 0 && "Failed to get the density group index");
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    {
+      //RaytracingX: Add density to information passed to evolution function.
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const auto &gd_curv = *ld.groupdata.at(gi_curv);
+      const auto &gd_rho = *ld.groupdata.at(gi_rho);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      //pc->check_horizon(lapse, lev, max_energy);
+
+      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
+      // along geodesic. Information for particle output on deletion also passed.
+      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
+      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k1" + m.to_string()) }
+      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+    }
+  }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  Metric m;
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
+  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
+  assert(gi_rho >= 0 && "Failed to get the density group index");
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    {
+      //RaytracingX: Add density to information passed to evolution function.
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const auto &gd_curv = *ld.groupdata.at(gi_curv);
+      const auto &gd_rho = *ld.groupdata.at(gi_rho);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      //pc->check_horizon(lapse, lev, max_energy);
+
+      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
+      // along geodesic. Information for particle output on deletion also passed.
+      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
+      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k2" + m.to_string()) }
+      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+    }
+  }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  Metric m;
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
+  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
+  assert(gi_rho >= 0 && "Failed to get the density group index");
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    {
+      //RaytracingX: Add density to information passed to evolution function.
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const auto &gd_curv = *ld.groupdata.at(gi_curv);
+      const auto &gd_rho = *ld.groupdata.at(gi_rho);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      //pc->check_horizon(lapse, lev, max_energy);
+
+      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
+      // along geodesic. Information for particle output on deletion also passed.
+      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
+      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k3" + m.to_string()) }
+      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+    }
+  }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  Metric m;
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
+  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
+  assert(gi_rho >= 0 && "Failed to get the density group index");
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    {
+      //RaytracingX: Add density to information passed to evolution function.
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const auto &gd_curv = *ld.groupdata.at(gi_curv);
+      const auto &gd_rho = *ld.groupdata.at(gi_rho);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      //pc->check_horizon(lapse, lev, max_energy);
+
+      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
+      // along geodesic. Information for particle output on deletion also passed.
+      interpolateMetricAtPoint(CCTK_PASS_CTOC, &m , 0.0, 18.0, 0.0);
+      if (amrex::ParallelDescriptor::MyProc() == amrex::ParallelDescriptor::IOProcessorNumber()) { DEBUG("k4" + m.to_string()) }
+      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+    }
+  }
+}
+
+extern "C" void R_SetMetric(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time);
+}
+
+extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + 0.5*CCTK_DELTA_TIME);
+}
+
+extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  AnalytialSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
 
   // Bounds check
   const CCTK_REAL regions_x[10] = {region_1_position[0], region_2_position[0],
@@ -234,6 +479,18 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
                              regions_z, regions_radius, regions_a);
     }
   }
+}
+
+/**
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
+ */
+extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
 
   if (output_final_data) {
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -245,13 +502,6 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
       pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
     }
   }}
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    pc->Redistribute();
-  }
 }
 
 /**

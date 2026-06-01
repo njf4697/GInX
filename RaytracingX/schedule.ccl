@@ -16,31 +16,137 @@ if ((particle_plot_every>0)||(particle_tsv_every>0) ){
     } "print the particles"
 }
 
-SCHEDULE AnalyticalSpacetimeX_SwitchOnSettingMetric IN evol BEFORE R_ParticlesContainer_evolve
+if (fast_light) {
+
+SCHEDULE GROUP RAYTRACING_EVOL AT evol
+{
+} "evolve raytracing particles"
+
+}
+
+if (!fast_light) {
+
+SCHEDULE GROUP RAYTRACING_EVOL_SPLIT_RK4 AT evol
+{
+} "evolve raytracing particles"
+
+}
+
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL
   {
     LANG: C
     OPTIONS: global
-  } "set flag is_setting_metric to true after regrid"
+  } "redistribute particles"
 
-SCHEDULE R_ParticlesContainer_evolve AT evol
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL_SPLIT_RK4
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_evolve IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute
+  {
+    LANG: C
+    OPTIONS: global
+  } "evolve particles"
+
+SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_redistribute
+  {
+    LANG: C
+    OPTIONS: global
+  } "change metric"
+
+SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric
+  {
+    LANG: C
+    OPTIONS: global
+  } "evolve particles"
+
+SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek1
+  {
+    LANG: C
+    OPTIONS: global
+  } "change metric"
+
+SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric_plus_half_dt
+  {
+    LANG: C
+    OPTIONS: global
+  } "evolve particles"
+
+  SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek2
+  {
+    LANG: C
+    OPTIONS: global
+  } "evolve particles"
+
+SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek3
+  {
+    LANG: C
+    OPTIONS: global
+  } "change metric"
+
+SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetMetric_plus_dt
+  {
+    LANG: C
+    OPTIONS: global
+  } "evolve particles"
+
+SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_R_ParticlesContainer_evolvek4
+  {
+    LANG: C
+    OPTIONS: global
+  } "change metric"
+
+SCHEDULE R_ParticlesContainer_bounds_check AT RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
 {
     LANG: C
     OPTIONS: global
-} "Photons evolution"
+} "check particle bounds"
 
-SCHEDULE AnalyticalSpacetimeX_SwitchOffSettingMetric IN evol AFTER R_ParticlesContainer_evolve
-  {
+SCHEDULE R_ParticlesContainer_bounds_check AT RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek4
+{
     LANG: C
     OPTIONS: global
-  } "reset flag is_setting_metric to false"
+} "check particle bounds"
 
 if ((particle_plot_every||particle_tsv_every) ) {
-    SCHEDULE R_ParticlesContainer_print AT evol AFTER R_ParticlesContainer_evolve
+    SCHEDULE R_ParticlesContainer_print AT RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
+    {
+        LANG: C
+        OPTIONS: global
+    } "print the particles"
+
+    SCHEDULE R_ParticlesContainer_print AT RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_bounds_check
     {
         LANG: C
         OPTIONS: global
     } "print the particles"
 }
+
+SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_bounds_check
+  {
+    LANG: C
+    OPTIONS: global
+  } "output particle final data"
+
+  SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_output_final_data
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
 
 SCHEDULE R_ParticlesContainer_final_cleanup at CCTK_SHUTDOWN{
     LANG: C

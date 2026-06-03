@@ -445,6 +445,9 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+
   // Bounds check
   const CCTK_REAL regions_x[10] = {region_1_position[0], region_2_position[0],
                                    region_3_position[0], region_4_position[0],
@@ -480,6 +483,7 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
       //RaytracingX: Override created for check_banned_zones(). Banned zones are now given by the outer horizon of Kerr BHs as an approximation. Information for particle output on deletion also passed.
       pc->check_banned_zones(lev, banned_regions, regions_x, regions_y,
                              regions_z, regions_radius, regions_a);
+      pc->check_horizon(lapse, lev, max_energy)
     }
   }
 }

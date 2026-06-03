@@ -32,13 +32,25 @@ SCHEDULE GROUP RAYTRACING_EVOL_SPLIT_RK4 AT evol
 
 }
 
-SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL
+SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
+  {
+    LANG: C
+    OPTIONS: global
+  } "count particles"
+
+SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL_SPLIT_RK4
+  {
+    LANG: C
+    OPTIONS: global
+  } "count particles"
+
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
   {
     LANG: C
     OPTIONS: global
   } "redistribute particles"
 
-SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL_SPLIT_RK4
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL_SPLIT_RK4 AFTER CheckRaytracingParticleNumber
   {
     LANG: C
     OPTIONS: global

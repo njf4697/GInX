@@ -39,6 +39,7 @@
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
+int num_photons;
 
 /**
  * \brief Initialize particles' data
@@ -142,6 +143,8 @@ extern "C" void R_ParticlesContainer_evolve(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (num_photons == 0) { return; }
+
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -193,7 +196,9 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
-  
+
+  if (num_photons == 0) { return; }
+
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -245,6 +250,8 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -298,6 +305,8 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (num_photons == 0) { return; }
+
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -350,6 +359,8 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (num_photons == 0) { return; }
+
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -396,6 +407,8 @@ extern "C" void R_SetMetric(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (num_photons == 0) { return; }
+
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time);
 }
 
@@ -404,6 +417,8 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (num_photons == 0) { return; }
+
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + 0.5*CCTK_DELTA_TIME);
 }
 
@@ -411,6 +426,8 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
 }
@@ -425,6 +442,8 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
 
   // Bounds check
   const CCTK_REAL regions_x[10] = {region_1_position[0], region_2_position[0],
@@ -511,4 +530,25 @@ extern "C" int R_ParticlesContainer_final_cleanup()
   amrex::Gpu::Device::synchronize();
   r_photons.clear();
   return 0;
+}
+
+extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
+{
+  int n_local = 0;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev <= pd.leveldata.size(); ++lev) {
+          n_local += pc->NumberOfParticlesAtLevel(lev);
+      }
+  }
+
+  int n_global = n_local;
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+
+  num_photons = n_global;
+
+  CCTK_VINFO("Found %d particles remaining.", n_global);
 }

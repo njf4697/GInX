@@ -445,6 +445,7 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
+  const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   assert(gi_lapse >= 0 && "Failed to get the lapse group index");
 

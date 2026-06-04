@@ -39,7 +39,7 @@
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
-int num_photons;
+long num_photons;
 
 /**
  * \brief Initialize particles' data
@@ -480,6 +480,9 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     for (int lev = 0; (lev < pd.leveldata.size()) & banned_regions; ++lev)
     {
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
       //RaytracingX: Override created for check_banned_zones(). Banned zones are now given by the outer horizon of Kerr BHs as an approximation. Information for particle output on deletion also passed.
       pc->check_banned_zones(lev, banned_regions, regions_x, regions_y,
                              regions_z, regions_radius, regions_a);
@@ -538,21 +541,21 @@ extern "C" int R_ParticlesContainer_final_cleanup()
 
 extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
 {
-  int n_local = 0;
+  long n_local = 0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
       auto &pc = r_photons.at(patch);
       auto &pd = CarpetX::ghext->patchdata.at(patch);
 
-      for (int lev = 0; lev <= pd.leveldata.size(); ++lev) {
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
           n_local += pc->NumberOfParticlesAtLevel(lev);
       }
   }
 
-  int n_global = n_local;
+  long n_global = n_local;
   amrex::ParallelDescriptor::ReduceLongSum(n_global);
 
   num_photons = n_global;
 
-  CCTK_VINFO("Found %d particles remaining.", n_global);
+  CCTK_VINFO("Found %ld particles remaining.", n_global);
 }

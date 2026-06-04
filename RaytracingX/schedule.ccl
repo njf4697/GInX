@@ -66,6 +66,11 @@ SCHEDULE R_ParticlesContainer_evolve IN RAYTRACING_EVOL AFTER R_ParticlesContain
   {
     LANG: C
     OPTIONS: global
+    READS: ADMBaseX::metric(everywhere)
+    READS: ADMBaseX::curv(everywhere)
+    READS: ADMBaseX::lapse(everywhere)
+    READS: ADMBaseX::shift(everywhere)
+    READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
 SCHEDULE R_SetMetric AS R_SetMetric_initial IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_redistribute
@@ -84,6 +89,11 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
   {
     LANG: C
     OPTIONS: global
+    READS: ADMBaseX::metric(everywhere)
+    READS: ADMBaseX::curv(everywhere)
+    READS: ADMBaseX::lapse(everywhere)
+    READS: ADMBaseX::shift(everywhere)
+    READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
 SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek1
@@ -102,12 +112,22 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
   {
     LANG: C
     OPTIONS: global
+    READS: ADMBaseX::metric(everywhere)
+    READS: ADMBaseX::curv(everywhere)
+    READS: ADMBaseX::lapse(everywhere)
+    READS: ADMBaseX::shift(everywhere)
+    READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
   SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek2
   {
     LANG: C
     OPTIONS: global
+    READS: ADMBaseX::metric(everywhere)
+    READS: ADMBaseX::curv(everywhere)
+    READS: ADMBaseX::lapse(everywhere)
+    READS: ADMBaseX::shift(everywhere)
+    READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
 SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek3
@@ -126,6 +146,11 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
   {
     LANG: C
     OPTIONS: global
+    READS: ADMBaseX::metric(everywhere)
+    READS: ADMBaseX::curv(everywhere)
+    READS: ADMBaseX::lapse(everywhere)
+    READS: ADMBaseX::shift(everywhere)
+    READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
 SCHEDULE R_SetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_R_ParticlesContainer_evolvek4

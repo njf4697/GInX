@@ -67,13 +67,13 @@ struct Metric { //struct that contains information about the metric interpolated
         g_upup_ty = -g_upup_tt*beta_yup;
         g_upup_tz = -g_upup_tt*beta_zup;
         g_upup_xx = gamma_upup_xx-g_upup_tx*beta_xup;
-        g_upup_xy = gamma_upup_xy-g_upup_tx*beta_yup;
-        g_upup_xz = gamma_upup_xz-g_upup_tx*beta_zup;
         g_upup_yy = gamma_upup_yy-g_upup_ty*beta_yup;
-        g_upup_yz = gamma_upup_yz-g_upup_ty*beta_zup;
+        g_upup_xy = gamma_upup_xy-g_upup_tx*beta_yup;
         g_upup_zz = gamma_upup_zz-g_upup_tz*beta_zup;
+        g_upup_xz = gamma_upup_xz-g_upup_tx*beta_zup;
+    };
+        g_upup_yz = gamma_upup_yz-g_upup_ty*beta_zup;
     }
-};
 
 void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL* e2, CCTK_REAL* e3, Metric* metric); //Utilities.cc
 void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z); //InterpolateMetric.cc

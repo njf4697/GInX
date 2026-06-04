@@ -487,7 +487,7 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
       //RaytracingX: Override created for check_banned_zones(). Banned zones are now given by the outer horizon of Kerr BHs as an approximation. Information for particle output on deletion also passed.
       pc->check_banned_zones(lev, banned_regions, regions_x, regions_y,
                              regions_z, regions_radius, regions_a);
-      pc->check_horizon(lapse, lev, max_energy)
+      pc->check_horizon(lapse, lev, max_energy);
     }
   }
 }

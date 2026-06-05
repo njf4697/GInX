@@ -218,6 +218,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
   CCTK_SyncGroup(gi_metric);
   CCTK_SyncGroup(gi_curv);
   CCTK_SyncGroup(gi_rho);
+  CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -280,6 +281,7 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
   CCTK_SyncGroup(gi_metric);
   CCTK_SyncGroup(gi_curv);
   CCTK_SyncGroup(gi_rho);
+  CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -342,6 +344,7 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
   CCTK_SyncGroup(gi_metric);
   CCTK_SyncGroup(gi_curv);
   CCTK_SyncGroup(gi_rho);
+  CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -404,6 +407,7 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
   CCTK_SyncGroup(gi_metric);
   CCTK_SyncGroup(gi_curv);
   CCTK_SyncGroup(gi_rho);
+  CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

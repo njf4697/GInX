@@ -476,7 +476,7 @@ extern "C" void R_PrintTraj(CCTK_ARGUMENTS)
   double out[6];
   const int it = cctkGH->cctk_iteration;
 
-  AnalyticalSpacetimeX::GetTraj(CCTK_PASS_CTOC, cctk_time, &out);
+  AnalyticalSpacetimeX::GetTraj(CCTK_PASS_CTOC, cctk_time, out);
 
   RaytracingX::RaytracingParticlesContainer<StructType>::write_to_one_file("trajectories.csv", "it: " + std::to_string(it) +
                                                                                                 "BH1: (" + std::to_string(out[0]) + ", " + std::to_string(out[1]) + ", " + std::to_string(out[2]) + ") " + 

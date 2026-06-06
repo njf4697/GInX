@@ -473,7 +473,7 @@ extern "C" void R_PrintTraj(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  double out[6]
+  double out[6];
   const int it = cctkGH->cctk_iteration;
 
   AnalyticalSpacetimeX::GetTraj(CCTK_PASS_CTOC, cctk_time, &out);

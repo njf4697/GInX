@@ -44,7 +44,13 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL_SPLIT_RK4
     OPTIONS: global
   } "count particles"
 
-SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL_SPLIT_RK4 AFTER CheckRaytracingParticleNumber
+SCHEDULE R_PrintTraj IN RAYTRACING_EVOL_SPLIT_RK4 AFTER CheckRaytracingParticleNumber
+  {
+    LANG: C
+    OPTIONS: global
+  } "print trajectories"
+
+SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_PrintTraj
   {
       LANG: C
       OPTIONS: global

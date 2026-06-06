@@ -47,7 +47,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL_SPLIT_RK4
 SCHEDULE R_PrintTraj IN RAYTRACING_EVOL_SPLIT_RK4 AFTER CheckRaytracingParticleNumber
   {
     LANG: C
-    OPTIONS: local
+    OPTIONS: global
   } "print trajectories"
 
 SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_PrintTraj

@@ -60,6 +60,10 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
+  if (evolve_every == 1 && update_metric_between_substeps) {
+    CCTK_ERROR("RaytracingX: When evolving photons between every RK4 substep, parameter AnalyticalSpacetimeX::evolve_every must be 1.");
+  }
+
   assert(cctk_dim == 3);
   int gh[3];
   CCTK_GroupnghostzonesVN(
@@ -466,21 +470,6 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
-}
-
-extern "C" void R_PrintTraj(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  double out[AnalyticalSpacetimeX::NTABLES];
-  const int it = cctkGH->cctk_iteration;
-
-  AnalyticalSpacetimeX::GetTraj(CCTK_PASS_CTOC, cctk_time, out);
-
-  RaytracingX::RaytracingParticlesContainer<ParticleData>::write_to_one_file("trajectories.csv", "it: " + std::to_string(it) +
-                                                                                                "BH1: (" + std::to_string(out[0]) + ", " + std::to_string(out[1]) + ", " + std::to_string(out[2]) + ") " + 
-                                                                                                "BH2: (" + std::to_string(out[3]) + ", " + std::to_string(out[4]) + ", " + std::to_string(out[5]) + ")\n");
 }
 
 /**

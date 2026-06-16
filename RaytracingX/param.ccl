@@ -11,6 +11,14 @@ BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true
 
+BOOLEAN update_metric_between_substeps "Whether or not to update grid to intermediate times during RK4 substeps for geodesic evolution" STEERABLE=ALWAYS
+{
+} false
+
+BOOLEAN orthographic_camera "Whether or not the camera projection is perspective or othographic" STEERABLE=ALWAYS
+{
+} false
+
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"
@@ -25,6 +33,16 @@ CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALW
 {
     (0.:180.) :: "Any real number 0<vertical_fov<180"
 } 45.
+
+CCTK_REAL camera_width "Width of camera window in orthographic projection" STEERABLE = ALWAYS
+{
+    (0.:* :: "Any real number"
+} 5.
+
+CCTK_REAL camera_height "Height of camera window in orthographic projection" STEERABLE = ALWAYS
+{
+    (0.:* :: "Any real number"
+} 5.
 
 INT num_pixels_width "Number of pixels across image width" STEERABLE = ALWAYS
 {
@@ -192,3 +210,7 @@ USES CCTK_REAL out_yline_x
 USES CCTK_REAL out_yline_z
 USES CCTK_REAL out_zline_x
 USES CCTK_REAL out_zline_y
+
+SHARES: AnalayticalSpacetimeX
+
+USES INT evolve_every

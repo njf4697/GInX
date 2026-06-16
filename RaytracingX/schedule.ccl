@@ -117,7 +117,7 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_SetM
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-if update_metric_between_substeps
+if (update_metric_between_substeps)
 {
 
 SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek1

@@ -211,6 +211,6 @@ USES CCTK_REAL out_yline_z
 USES CCTK_REAL out_zline_x
 USES CCTK_REAL out_zline_y
 
-SHARES: AnalayticalSpacetimeX
+SHARES: AnalyticalSpacetimeX
 
 USES INT evolve_every

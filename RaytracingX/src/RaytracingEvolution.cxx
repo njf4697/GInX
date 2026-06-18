@@ -60,7 +60,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
-  if (evolve_metric_every == 1 && update_metric_between_substeps) {
+  if (evolve_metric_every != 1 && update_metric_between_substeps) {
     CCTK_ERROR("RaytracingX: When evolving photons between every RK4 substep, parameter AnalyticalSpacetimeX::evolve_metric_every must be 1.");
   }
 

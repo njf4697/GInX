@@ -144,16 +144,16 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
 
       //Calculate offset per pixel. The offset can be thought of as $/Delta\theta$ and $\Delta\phi$ with respect to camera facing direction,
       //but is calculated by finding a vector in the equivalent direction. This also gives the direction corresponding to the center of the pixels.
-      CCTK_REAL a_adj = ((2.0 * i) / num_pixels_width - 1.0) * tan(alpha_h / 2.0);  // a_{adj} = (2a-1)tan(\alpha_h/2)
-      CCTK_REAL b_adj = ((2.0 * j) / num_pixels_height - 1.0) * tan(alpha_v / 2.0); // b_{adj} = (2b-1)tan(\alpha_v/2)
+      CCTK_REAL a_adj = ((2.0 * (i + 0.5)) / num_pixels_width - 1.0) * tan(alpha_h / 2.0);  // a_{adj} = (2a-1)tan(\alpha_h/2)
+      CCTK_REAL b_adj = ((2.0 * (j + 0.5)) / num_pixels_height - 1.0) * tan(alpha_v / 2.0); // b_{adj} = (2b-1)tan(\alpha_v/2)
 
       CCTK_REAL C = sqrt(1 + pow(b_adj, 2) + pow(a_adj, 2));
 
       CCTK_REAL chi[4];
-      chi[0] = C * e0[0] + e1[0] - b_adj * e2[0] + a_adj * e3[0];
-      chi[1] = C * e0[1] + e1[1] - b_adj * e2[1] + a_adj * e3[1];
-      chi[2] = C * e0[2] + e1[2] - b_adj * e2[2] + a_adj * e3[2];
-      chi[3] = C * e0[3] + e1[3] - b_adj * e2[3] + a_adj * e3[3];
+      chi[0] = C * e0[0] - e1[0] + b_adj * e2[0] - a_adj * e3[0];
+      chi[1] = C * e0[1] - e1[1] + b_adj * e2[1] - a_adj * e3[1];
+      chi[2] = C * e0[2] - e1[2] + b_adj * e2[2] - a_adj * e3[2];
+      chi[3] = C * e0[3] - e1[3] + b_adj * e2[3] - a_adj * e3[3];
 
       CCTK_REAL chi_lower[4];
       vectorToOneFormArr(chi_lower, chi, real_params);
@@ -166,7 +166,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       ptd.pos(2, local_particle_id) = camera_pos[2];
       CCTK_REAL A = 1 / lapse * chi[0];
 
-      //The direction of the geodesic needs to be reversed, because the geodesics are evolved backwards in time, but the evolution routine doesn't "know" that.
       arrdata[StructType::vx][local_particle_id] = -chi_lower[1] * A; 
       arrdata[StructType::vy][local_particle_id] = -chi_lower[2] * A;
       arrdata[StructType::vz][local_particle_id] = -chi_lower[3] * A;
@@ -302,8 +301,8 @@ void camera_initializer_orthographic(ParticleContainerClass &pc, const CCTK_REAL
       int i = pidx % num_pixels_width;
       int j = pidx / num_pixels_width;
 
-      CCTK_REAL a_adj = ((2.0 * i) / num_pixels_width - 1.0) * width / 2.0;
-      CCTK_REAL b_adj = ((2.0 * j) / num_pixels_height - 1.0) * height / 2.0;
+      CCTK_REAL a_adj = ((2.0 * i + 1) / num_pixels_width - 1.0) * width / 2.0;
+      CCTK_REAL b_adj = ((2.0 * j + 1) / num_pixels_height - 1.0) * height / 2.0;
 
       CCTK_REAL chi[4];
       chi[0] = e0[0];

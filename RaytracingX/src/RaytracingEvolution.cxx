@@ -594,7 +594,7 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
   }
 
   long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+  amrex::ParallelDescriptor::ReduceLongSum(n_global, true, true);
 
   num_photons = n_global;
 

@@ -166,9 +166,9 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       ptd.pos(2, local_particle_id) = camera_pos[2];
       CCTK_REAL A = 1 / lapse * chi[0];
 
-      arrdata[StructType::vx][local_particle_id] = -chi_lower[1] * A; 
-      arrdata[StructType::vy][local_particle_id] = -chi_lower[2] * A;
-      arrdata[StructType::vz][local_particle_id] = -chi_lower[3] * A;
+      arrdata[StructType::vx][local_particle_id] = chi_lower[1] * A; 
+      arrdata[StructType::vy][local_particle_id] = chi_lower[2] * A;
+      arrdata[StructType::vz][local_particle_id] = chi_lower[3] * A;
       arrdata[StructType::ln_E][local_particle_id] = 0;
       arrdata[StructType::tau][local_particle_id] = 0;
 
@@ -301,8 +301,8 @@ void camera_initializer_orthographic(ParticleContainerClass &pc, const CCTK_REAL
       int i = pidx % num_pixels_width;
       int j = pidx / num_pixels_width;
 
-      CCTK_REAL a_adj = ((2.0 * i + 1) / num_pixels_width - 1.0) * width / 2.0;
-      CCTK_REAL b_adj = ((2.0 * j + 1) / num_pixels_height - 1.0) * height / 2.0;
+      CCTK_REAL a_adj = ((2.0 * i + 0.5) / num_pixels_width - 1.0) * width / 2.0;
+      CCTK_REAL b_adj = ((2.0 * j + 0.5) / num_pixels_height - 1.0) * height / 2.0;
 
       CCTK_REAL chi[4];
       chi[0] = e0[0];

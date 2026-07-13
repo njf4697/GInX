@@ -589,12 +589,12 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
       auto &pd = CarpetX::ghext->patchdata.at(patch);
 
       for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          n_local += pc->NumberOfParticlesAtLevel(lev);
+          n_local += pc->NumberOfParticlesAtLevel(lev, true, true);
       }
   }
 
   long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global, true, true);
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
 
   num_photons = n_global;
 

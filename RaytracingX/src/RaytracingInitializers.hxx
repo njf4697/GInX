@@ -363,7 +363,7 @@ void setup_camera_initializer_reals(CCTK_ARGUMENTS, CCTK_REAL* real_params) {
     metric.beta_z = 0;
     metric.g_xx = 1;
     metric.g_xy = 0;
-    metric.g_zy = 0;
+    metric.g_xz = 0;
     metric.g_yy = 1;
     metric.g_yz = 0;
     metric.g_zz = 1;

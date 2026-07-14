@@ -105,6 +105,48 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     GInX::d_interpolate_array<5>(rho_x, d_rho_x, rho, i0, j0, k0, u[0], u[1],
                                  u[2], dx, plo);
 
+    lapse_x = 1;
+    d_lapse_x[0] = 0;
+    d_lapse_x[1] = 0;
+    d_lapse_x[2] = 0;
+    shift_x[0] = 0;
+    shift_x[1] = 0;
+    shift_x[2] = 0;
+    d_shift_x[0][0] = 0;
+    d_shift_x[1][0] = 0;
+    d_shift_x[2][0] = 0;
+    d_shift_x[0][1] = 0;
+    d_shift_x[1][1] = 0;
+    d_shift_x[2][1] = 0;
+    d_shift_x[0][2] = 0;
+    d_shift_x[1][2] = 0;
+    d_shift_x[2][2] = 0;
+    gamma_x[0] = 1;
+    gamma_x[1] = 0;
+    gamma_x[2] = 0;
+    gamma_x[3] = 1;
+    gamma_x[4] = 0;
+    gamma_x[5] = 1;
+    d_gamma_x[0][0] = 0;
+    d_gamma_x[1][0] = 0;
+    d_gamma_x[2][0] = 0;
+    d_gamma_x[3][0] = 0;
+    d_gamma_x[4][0] = 0;
+    d_gamma_x[5][1] = 0;
+    d_gamma_x[0][1] = 0;
+    d_gamma_x[1][1] = 0;
+    d_gamma_x[2][1] = 0;
+    d_gamma_x[3][1] = 0;
+    d_gamma_x[4][1] = 0;
+    d_gamma_x[5][0] = 0;
+    d_gamma_x[0][2] = 0;
+    d_gamma_x[1][2] = 0;
+    d_gamma_x[2][2] = 0;
+    d_gamma_x[3][2] = 0;
+    d_gamma_x[4][2] = 0;
+    d_gamma_x[5][2] = 0;
+    
+
     ASSERT_FINITE(lapse_x)
     ASSERT_FINITE1(d_lapse_x, 3)
     ASSERT_FINITE1(shift_x, 3)

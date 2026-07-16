@@ -108,6 +108,17 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     metric_at_point->g_yz = metric_[8].data()[0];
     metric_at_point->g_zz = metric_[9].data()[0];
 
+    metric_at_point->alpha = 1.0;
+    metric_at_point->beta_xup = 0.0;
+    metric_at_point->beta_yup = 0.0;
+    metric_at_point->beta_zup = 0.0;
+    metric_at_point->g_xx = 1.0;
+    metric_at_point->g_xy = 0.0;
+    metric_at_point->g_xz = 0.0;
+    metric_at_point->g_yy = 1.0;
+    metric_at_point->g_yz = 0.0;
+    metric_at_point->g_zz = 1.0;
+
     //\beta_i = \gamma_ij*\beta^j
     metric_at_point->beta_x = metric_at_point->beta_xup*metric_at_point->g_xx + metric_at_point->beta_yup*metric_at_point->g_xy + metric_at_point->beta_zup*metric_at_point->g_xz;
     metric_at_point->beta_y = metric_at_point->beta_xup*metric_at_point->g_xy + metric_at_point->beta_yup*metric_at_point->g_yy + metric_at_point->beta_zup*metric_at_point->g_yz;

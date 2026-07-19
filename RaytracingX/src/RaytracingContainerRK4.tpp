@@ -151,8 +151,6 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     curv_x[3] = 0;
     curv_x[4] = 0;
     curv_x[5] = 0;
-    
-    DEBUG(lapse_x)
 
     ASSERT_FINITE(lapse_x)
     ASSERT_FINITE1(d_lapse_x, 3)

@@ -145,12 +145,12 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     d_gamma_x[3][2] = 0;
     d_gamma_x[4][2] = 0;
     d_gamma_x[5][2] = 0;
-    curv_x[0] = 1;
+    curv_x[0] = 0;
     curv_x[1] = 0;
     curv_x[2] = 0;
-    curv_x[3] = 1;
+    curv_x[3] = 0;
     curv_x[4] = 0;
-    curv_x[5] = 1;
+    curv_x[5] = 0;
     
     DEBUG(lapse_x)
 

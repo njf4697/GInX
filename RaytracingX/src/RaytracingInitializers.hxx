@@ -87,25 +87,27 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
   }
 
   int local_tiles = 0;
-  for (amrex::MFIter mfi = pc.MakeMFIter(level); mfi.isValid(); ++mfi)
-  {
-    local_tiles++;
-  }
-  std::vector<int> tiles_per_rank(amrex::ParallelDescriptor::NProcs());
 
-  amrex::ParallelDescriptor::Gather(
-    local_tiles,
-    tiles_per_rank.data(),
-    0);
+  int total_tiles = local_tiles;
 
-amrex::ParallelDescriptor::Bcast(
-    tiles_per_rank.data(),
-    tiles_per_rank.size(),
-    0);
+  MPI_Allreduce(MPI_IN_PLACE,
+                &total_tiles,
+                1,
+                MPI_INT,
+                MPI_SUM,
+                amrex::ParallelDescriptor::Communicator());
+  
+  int current_tile = 0;
 
-  int total_tiles = 0;
-  for (int i = 0; i < amrex::ParallelDescriptor::NProcs(); i++) {
-    total_tiles += tiles_per_rank[i];
+  MPI_Exscan(&local_tiles,
+             &tile_offset,
+             1,
+             MPI_INT,
+             MPI_SUM,
+             amrex::ParallelDescriptor::Communicator());
+
+  if (amrex::ParallelDescriptor::MyProc() == 0) {
+      current_tile = 0;
   }
 
   //const int n_procs = amrex::ParallelDescriptor::NProcs();
@@ -127,12 +129,6 @@ amrex::ParallelDescriptor::Bcast(
 
   //int current_tile = 0;
   //int total_particles_local = 0; //Number of particles already initialized on this processor.
-
-  const int proc_id = amrex::ParallelDescriptor::MyProc();
-  int current_tile = 0;
-  for (int i = 0; i < proc_id; i++) {
-    current_tile += tiles_per_rank[i];
-  }
 
   // Iterating over all the tiles for this processor
   for (amrex::MFIter mfi = pc.MakeMFIter(level); mfi.isValid(); ++mfi)

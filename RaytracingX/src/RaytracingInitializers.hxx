@@ -143,7 +143,7 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     //const unsigned int particles_per_tile = local_particles_size / total_tiles + (current_tile < local_particles_size % total_tiles);
 
     const unsigned int particles_per_tile = num_pixels / total_tiles + (current_tile < num_pixels % total_tiles);
-    const int local_offset = current_tile * (num_pixels / total_tiles) + std::min(total_tiles, num_pixels % total_tiles);
+    const int local_offset = current_tile * (num_pixels / total_tiles) + std::min(current_tiles, num_pixels % total_tiles);
 
     fprintf(stderr, "%i: %i %i %i\n", amrex::ParallelDescriptor::MyProc(), current_tile, particles_per_tile, local_offset);
 

@@ -35,9 +35,7 @@ namespace RaytracingX
             deletion_reason,
 
             U0, U1, U2, U3, U4, U5, U6, U7,
-            U_tmp0, U_tmp1, U_tmp2, U_tmp3, U_tmp4, U_tmp5, U_tmp6, U_tmp7,
-            k_odd0, k_odd1, k_odd2, k_odd3, k_odd4, k_odd5, k_odd6, k_odd7,
-            k_even0, k_even1, k_even2, k_even3, k_even4, k_even5, k_even6, k_even7,
+            k0, k1, k2, k3, k4, k5, k6, k7,
 
             n_attributes, /**< Total number of attributes*/
         }; // enum

@@ -93,7 +93,15 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
   }
   std::vector<int> tiles_per_rank(amrex::ParallelDescriptor::NProcs());
 
-  amrex::ParallelDescriptor::AllGather(local_tiles, tiles_per_rank.data());
+  amrex::ParallelDescriptor::Gather(
+    local_tiles,
+    tiles_per_rank.data(),
+    0);
+
+amrex::ParallelDescriptor::Bcast(
+    tiles_per_rank.data(),
+    tiles_per_rank.size(),
+    0);
 
   int total_tiles = 0;
   for (int i = 0; i < amrex::ParallelDescriptor::NProcs(); i++) {

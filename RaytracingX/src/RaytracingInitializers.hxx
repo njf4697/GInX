@@ -97,6 +97,8 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
                 MPI_SUM,
                 amrex::ParallelDescriptor::Communicator());
 
+  fprintf(stderr, "%i\n", total_tiles);
+
   int current_tile = 0;
 
   MPI_Exscan(&local_tiles,
@@ -137,7 +139,7 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     //const unsigned int particles_per_tile = local_particles_size / total_tiles + (current_tile < local_particles_size % total_tiles);
 
     const unsigned int particles_per_tile = num_pixels / total_tiles + (current_tile < num_pixels % total_tiles);
-    const int local_offset = current_tile* (num_pixels / total_tiles) + std::min(total_tiles, num_pixels % total_tiles);
+    const int local_offset = current_tile * (num_pixels / total_tiles) + std::min(total_tiles, num_pixels % total_tiles);
 
     auto &particle_tile = pc.DefineAndReturnParticleTile(level, mfi);
     assert(particle_tile.numParticles() == 0);

@@ -96,11 +96,11 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
                 MPI_INT,
                 MPI_SUM,
                 amrex::ParallelDescriptor::Communicator());
-  
+
   int current_tile = 0;
 
   MPI_Exscan(&local_tiles,
-             &tile_offset,
+             &current_tile,
              1,
              MPI_INT,
              MPI_SUM,

@@ -260,6 +260,8 @@ void camera_initializer_orthographic(ParticleContainerClass &pc, const CCTK_REAL
     total_tiles++;
   }
 
+  fprintf(stderr, "%i %i %i", num_pixels, local_particles_size, total_tiles);
+
   int current_tile = 0;
   int total_particles_local = 0; //Number of particles already initialized on this processor.
 

@@ -109,7 +109,7 @@ SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolv
     WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric to cctk_time+dt"
 
-SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL_SPLIT_RK4 AFTER R_ParticlesContainer_evolvek4 BEFORE R_ParticlesContainer_output_final_data
+SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek4 BEFORE R_ParticlesContainer_output_final_data
   {
     LANG: C
     OPTIONS: LOCAL

@@ -87,6 +87,10 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
   }
 
   int local_tiles = 0;
+  for (amrex::MFIter mfi = pc.MakeMFIter(level); mfi.isValid(); ++mfi)
+  {
+    local_tiles++;
+  }
 
   int total_tiles = local_tiles;
 
@@ -96,8 +100,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
                 MPI_INT,
                 MPI_SUM,
                 amrex::ParallelDescriptor::Communicator());
-
-  fprintf(stderr, "%i\n", total_tiles);
 
   int current_tile = 0;
 

@@ -306,7 +306,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
           ln_alphaenergy[i], tau[i], 0.0}; //RaytracingX: Add density for optical depth.
-      amrex::GpuArray<CCTK_REAL, 9> k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       SKIP_DELETED_PARTICLES
 
@@ -697,7 +696,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[5] = vels_z[i];
       U_tmp[6] = ln_alphaenergy[i];
       U_tmp[7] = tau[i];
-      U_tmp[8] = k_even[8];
+      U_tmp[8] = k[8];
       U_tmp[8] = check_bounds(U_tmp, plo0, phi0);
 
       if (U_tmp[8] != 0.0) {

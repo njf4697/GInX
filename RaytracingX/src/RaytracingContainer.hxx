@@ -113,6 +113,7 @@ namespace RaytracingX
 
         void write_deleted_particle_data(
             const int &lev,
+            const CCTK_REAL time,
             std::string final_data_file_name);
 
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE

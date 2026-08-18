@@ -92,7 +92,7 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
@@ -110,7 +110,7 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
                         + std::to_string(vels_x[i]) + "\t"
                         + std::to_string(vels_y[i]) + "\t"
                         + std::to_string(vels_z[i]) + "\t"
-                        + std::to_string(ln_alphaenergy[i]) + "\t"
+                        + std::to_string(ln_energy[i]) + "\t"
                         + std::to_string(tau[i]) + "\t"
                         + std::to_string((int)deletion_reasons[i]) + "\t"
                         + std::to_string(time) + "\n";

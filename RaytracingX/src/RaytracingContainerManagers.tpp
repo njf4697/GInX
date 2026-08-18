@@ -19,7 +19,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
 
         // Get the information relate to the velocities and energy.
         auto &attribs = pti.GetAttributes();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
@@ -40,7 +40,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
             amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
             GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
-            if (abs(exp(ln_alphaenergy[i]) / lapse_x) > max_energy) {
+            if (abs(exp(ln_energy[i]) / lapse_x) > max_energy) {
               particles[i].id() =-1;
               deletion_reasons[i] = DelReason::HORIZON;
             } 
@@ -51,6 +51,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
 template <typename StructType>
 void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantities(
     const amrex::MultiFab &lapse,
+    const amrex::MultiFab &shift,
     const int &lev)
 {
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -66,17 +67,18 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
 
         // Get the information relate to the velocities and energy.
         auto &attribs = pti.GetAttributes();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT E = attribs[StructType::U0].data();
+        CCTK_REAL *AMREX_RESTRICT p_0 = attribs[StructType::U0].data();
         CCTK_REAL *AMREX_RESTRICT L_z = attribs[StructType::U1].data();
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
         // Get the array of each parameter.
         auto const lapse_array = lapse.array(pti);
+        auto const shift_array = shift.array(pti);
 
         // Needed for GPU
         auto self = this;
@@ -92,8 +94,13 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
             amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
             GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
-            E[i] = exp(ln_alphaenergy[i]) / lapse_x;
-            L_z[i] = E[i]*(particles[i].pos(0)*vels_y[i] - particles[i].pos(1)*vels_x[i]);
+            amrex::GpuArray<CCTK_REAL, 3> shift_x;
+            amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
+            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
+                                 u[2], dx, plo);
+            const CCTK_REAL E = exp(ln_energy[i]);
+            p_0[i] = E * (lapse_x - (shift_x[0]*vels_x[i] + shift_x[1]*vels_y[i] + shift_x[2]*vels_z[i]));
+            L_z[i] = E * (particles[i].pos(0)*vels_y[i] - particles[i].pos(1)*vels_x[i]);
         });
     }
 }
@@ -212,7 +219,7 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
             const CCTK_REAL ratio[3] = {arrdata[StructType::vx][i],
                                         arrdata[StructType::vy][i],
                                         arrdata[StructType::vz][i]};
-            const CCTK_REAL E = std::exp(arrdata[StructType::ln_alphaE][i]);
+            const CCTK_REAL E = std::exp(arrdata[StructType::ln_E][i]);
             
             // Generate a random position
             const auto &p = p_struct[i];

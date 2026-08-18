@@ -92,8 +92,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     local_tiles++;
   }
 
-  fprintf(stderr, "%i: %i\n", amrex::ParallelDescriptor::MyProc(), local_tiles);
-
   int total_tiles = local_tiles;
 
   MPI_Allreduce(MPI_IN_PLACE,

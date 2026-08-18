@@ -178,17 +178,25 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
+    const CCTK_REAL v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
+                                V_down[1] * V_down[1] * gamma_inv_x[3] +
+                                V_down[2] * V_down[2] * gamma_inv_x[5] +
+                                2.0 * V_down[0] * V_down[1] * gamma_inv_x[1] +
+                                2.0 * V_down[0] * V_down[2] * gamma_inv_x[2] +
+                                2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
+            
+    const CCTK_REAL v = std::sqrt(v_squared);
+    const CCTK_REAL A = std::sqrt(1. - m * m / (u[6] * u[6]))
+
+    V_down[0] *= A / v;
+    V_down[1] *= A / v;
+    V_down[2] *= A / v; 
+
     // Compute the upper index velocity terms.
     amrex::GpuArray<CCTK_REAL, 3> V_up = {
-        gamma_inv_x[0] * u[3] + gamma_inv_x[1] * u[4] + gamma_inv_x[2] * u[5],
-        gamma_inv_x[1] * u[3] + gamma_inv_x[3] * u[4] + gamma_inv_x[4] * u[5],
-        gamma_inv_x[2] * u[3] + gamma_inv_x[4] * u[4] + gamma_inv_x[5] * u[5]};
-
-    const CCTK_REAL inv_V_up_mag = 1.0/std::sqrt(mag2_massless(V_up[0], V_up[1], V_up[2], gamma_x));
-    
-    V_up[0] *= inv_V_up_mag;
-    V_up[1] *= inv_V_up_mag;
-    V_up[2] *= inv_V_up_mag;
+        gamma_inv_x[0] * V_down[0] + gamma_inv_x[1] * V_down[1] + gamma_inv_x[2] * V_down[2],
+        gamma_inv_x[1] * V_down[0] + gamma_inv_x[3] * V_down[1] + gamma_inv_x[4] * V_down[2],
+        gamma_inv_x[2] * V_down[0] + gamma_inv_x[4] * V_down[1] + gamma_inv_x[5] * V_down[2]};
 
     // Compute the rhs for position
     rhs[0] = lapse_x * V_up[0] - shift_x[0];
@@ -208,7 +216,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     }
 
     // Compute the rhs for energy
-    rhs[3 + StructType::ln_alphaE] =
+    rhs[3 + StructType::ln_E] =
         lapse_x * VecVecMul(SMatVecMul(curv_x, V_up), V_up) -
         VecVecMul(V_up, d_lapse_x);
 
@@ -282,7 +290,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
@@ -305,7 +313,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
       const amrex::GpuArray<CCTK_REAL, 9> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
-          ln_alphaenergy[i], tau[i], 0.0}; //RaytracingX: Add density for optical depth.
+          ln_energy[i], tau[i], 0.0}; //RaytracingX: Add density for optical depth.
 
       SKIP_DELETED_PARTICLES
 
@@ -320,7 +328,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
       vels_x[i]           += (1. / 6.) * dt * k[3];
       vels_y[i]           += (1. / 6.) * dt * k[4];
       vels_z[i]           += (1. / 6.) * dt * k[5];
-      ln_alphaenergy[i]   += (1. / 6.) * dt * k[6];
+      ln_energy[i]   += (1. / 6.) * dt * k[6];
       tau[i]              += (1. / 6.) * dt * k[7];
 
       LOAD_RK4_VARS
@@ -388,7 +396,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
@@ -442,7 +450,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       vels_x[i]           += (1. / 3.) * dt * k[3];
       vels_y[i]           += (1. / 3.) * dt * k[4];
       vels_z[i]           += (1. / 3.) * dt * k[5];
-      ln_alphaenergy[i]   += (1. / 3.) * dt * k[6];
+      ln_energy[i]   += (1. / 3.) * dt * k[6];
       tau[i]              += (1. / 3.) * dt * k[7];
       
       LOAD_RK4_VARS
@@ -510,7 +518,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
@@ -563,7 +571,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
       vels_x[i]           += (1. / 3.) * dt * k[3];
       vels_y[i]           += (1. / 3.) * dt * k[4];
       vels_z[i]           += (1. / 3.) * dt * k[5];
-      ln_alphaenergy[i]   += (1. / 3.) * dt * k[6];
+      ln_energy[i]   += (1. / 3.) * dt * k[6];
       tau[i]              += (1. / 3.) * dt * k[7];
 
       LOAD_RK4_VARS
@@ -631,7 +639,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
-        CCTK_REAL *AMREX_RESTRICT ln_alphaenergy = attribs[StructType::ln_alphaE].data();
+        CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
@@ -685,7 +693,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       vels_x[i]           += (1. / 6.) * dt * k[3];
       vels_y[i]           += (1. / 6.) * dt * k[4];
       vels_z[i]           += (1. / 6.) * dt * k[5];
-      ln_alphaenergy[i]   += (1. / 6.) * dt * k[6];
+      ln_energy[i]   += (1. / 6.) * dt * k[6];
       tau[i]              += (1. / 6.) * dt * k[7];
       
       U_tmp[0] = particles[i].pos(0);
@@ -694,7 +702,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[3] = vels_x[i];
       U_tmp[4] = vels_y[i];
       U_tmp[5] = vels_z[i];
-      U_tmp[6] = ln_alphaenergy[i];
+      U_tmp[6] = ln_energy[i];
       U_tmp[7] = tau[i];
       U_tmp[8] = k[8];
       U_tmp[8] = check_bounds(U_tmp, plo0, phi0);

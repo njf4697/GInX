@@ -222,6 +222,10 @@ namespace RaytracingX
             const int &lev,
             const CCTK_REAL max_energy);
 
+        void calculate_kerr_conserved_quantities(
+            const amrex::MultiFab &lapse,
+            const int &lev);
+
         void check_banned_zones(
             const int &level, 
             const CCTK_INT4 &zones,

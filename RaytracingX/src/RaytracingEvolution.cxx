@@ -523,7 +523,7 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
       const auto &ld = pd.leveldata.at(lev);
       const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
       const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      const auto &gd_lapse = *ld.groupdata.at(gi_shift);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
       const amrex::MultiFab &shift = *gd_shift.mfab[tl];
       pc->calculate_kerr_conserved_quantities(lapse, shift, lev);
     }

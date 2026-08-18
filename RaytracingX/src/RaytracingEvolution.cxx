@@ -510,7 +510,9 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
   assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -521,7 +523,9 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
       const auto &ld = pd.leveldata.at(lev);
       const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
       const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      pc->calculate_kerr_conserved_quantities(lapse, lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_shift);
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      pc->calculate_kerr_conserved_quantities(lapse, shift, lev);
     }
   }
 }

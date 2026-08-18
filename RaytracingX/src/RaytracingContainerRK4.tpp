@@ -176,7 +176,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
         (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
         (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
 
-    const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
+    amrex::GpuArray<CCTK_REAL, 3> V_down = {u[3], u[4], u[5]};
 
     const CCTK_REAL v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
                                 V_down[1] * V_down[1] * gamma_inv_x[3] +

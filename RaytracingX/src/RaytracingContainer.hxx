@@ -29,7 +29,7 @@ namespace RaytracingX
             vx = 0,       /**< Velocity's lower index on the x direction.*/
             vy,           /**< Velocity's lower index on the y direction.*/
             vz,           /**< Velocity's lower index on the z direction.*/
-            ln_alphaE,         /**< Ln Energy value.*/
+            ln_E,         /**< Ln Energy value.*/
             tau,          /**< Optical depth value. Also used as particle deletion code, see above macros, also iterates across banned regions*/
             pixel_number, /**< Number used to match particle to corresponding pixel in the image. Defined as a real since BaseParticleContainer does not have options for int parameters, unless defined at runtime, in which case they will not print with WriteAsciiFile*/
             deletion_reason,

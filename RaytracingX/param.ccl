@@ -78,6 +78,10 @@ BOOLEAN verbose "Print additional output"  STEERABLE=ALWAYS
 {
 } false
 
+BOOLEAN calculate_kerr_conserved_quantities "Calculate conserved quantities for Kerr spacetime"  STEERABLE=ALWAYS
+{
+} false
+
 BOOLEAN output_final_data "Print the data for a particle before it is deleted"  STEERABLE=ALWAYS
 {
 } false

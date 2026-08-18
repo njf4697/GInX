@@ -77,6 +77,7 @@ void RaytracingParticlesContainer<StructType>::write_to_one_file(
 template <typename StructType>
 void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
     const int &lev,
+    const CCTK_REAL time,
     std::string final_data_file_name)
 {
     std::string output_str;
@@ -111,7 +112,8 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
                         + std::to_string(vels_z[i]) + "\t"
                         + std::to_string(ln_alphaenergy[i]) + "\t"
                         + std::to_string(tau[i]) + "\t"
-                        + std::to_string((int)deletion_reasons[i]) + "\n";
+                        + std::to_string((int)deletion_reasons[i]) + "\t"
+                        + std::to_string(time) + "\n";
         }
     }
 

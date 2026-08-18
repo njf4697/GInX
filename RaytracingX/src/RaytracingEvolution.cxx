@@ -496,9 +496,34 @@ extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     { 
-      pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
+      pc->write_deleted_particle_data(lev, cctk_time, std::string(out_dir) + "/" + final_data_file_name);
     }
   }}
+}
+
+extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    { 
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      pc->calculate_kerr_conserved_quantities(lapse, lev);
+    }
+  }
 }
 
 /**

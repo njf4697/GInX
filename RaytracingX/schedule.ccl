@@ -122,6 +122,14 @@ SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContai
   } "reset metric to cctk_time"
 }
 
+if (calculate_kerr_conserved_quantities) {
+    SCHEDULE R_ParticlesContainer_calculate_kerr_conserved IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve BEFORE R_ParticlesContainer_print
+    {
+        LANG: C
+        OPTIONS: global
+    } "calculate conserved quantities for particles and output in U0 and U1"
+}
+
 if ((particle_plot_every||particle_tsv_every) ) {
     SCHEDULE R_ParticlesContainer_print IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
     {

@@ -92,7 +92,7 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
             amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
             GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
-            E[i] = exp(ln_alphaenergy) / lapse_x;
+            E[i] = exp(ln_alphaenergy[i]) / lapse_x;
             L_z[i] = E[i]*(particles[i].pos(0)*vels_y[i] - particles[i].pos(1)*vels_x[i]);
         });
     }

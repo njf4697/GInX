@@ -96,8 +96,8 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
                                          particles[i].pos(2), dx, plo0);
             amrex::GpuArray<CCTK_REAL, 3> shift_x;
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
-            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
-                                 u[2], dx, plo);
+            GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
             const CCTK_REAL E = exp(ln_energy[i]);
             p_0[i] = E * (lapse_x - (shift_x[0]*vels_x[i] + shift_x[1]*vels_y[i] + shift_x[2]*vels_z[i]));
             L_z[i] = E * (particles[i].pos(0)*vels_y[i] - particles[i].pos(1)*vels_x[i]);

@@ -69,6 +69,8 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const amrex::GpuArray<double, 3> &phi,
     const CCTK_REAL max_energy)
 {
+    const CCTK_REAL m = this->mass;
+
     // RaytracingX: Add space for optical depth variable.
     amrex::GpuArray<CCTK_REAL, 9> rhs = {0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
@@ -186,7 +188,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
                                 2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
             
     const CCTK_REAL v = std::sqrt(v_squared);
-    const CCTK_REAL A = std::sqrt(1. - m * m / (u[6] * u[6]))
+    const CCTK_REAL A = std::sqrt(1. - m * m / (u[6] * u[6]));
 
     V_down[0] *= A / v;
     V_down[1] *= A / v;

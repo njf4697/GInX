@@ -186,6 +186,10 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
                                 2.0 * V_down[0] * V_down[1] * gamma_inv_x[1] +
                                 2.0 * V_down[0] * V_down[2] * gamma_inv_x[2] +
                                 2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
+
+
+    ASSERT_FINITE(mass)
+    ASSERT_FINITE(v_squared)
             
     const CCTK_REAL v = std::sqrt(v_squared);
     const CCTK_REAL A = std::sqrt(1. - mass * mass / (u[6] * u[6]));

@@ -10,7 +10,7 @@
 
 #define MAX(X, Y) ((X > Y) ? X : Y)
 #define MIN(X, Y) ((X > Y) ? X : Y)
-#define DEBUG(X) fprintf(stderr, ("proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X + "\n").c_str());             
+#define DEBUG(X) fprintf(stderr, "%s\n", ("proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X).c_str());             
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
 #define ASSERT_FINITE2(X, Y, Z) for (int jj = 0; jj < Z; jj++) { for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[jj][ii]); } }

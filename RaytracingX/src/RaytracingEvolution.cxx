@@ -175,6 +175,8 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
 
+    const CCTK_REAL mass = pc->mass;
+
     for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     {
       //RaytracingX: Add density to information passed to evolution function.
@@ -194,7 +196,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, mass);
     }
   }
 }
@@ -238,6 +240,8 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
 
+    const CCTK_REAL mass = pc->mass;
+
     for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     {
       //RaytracingX: Add density to information passed to evolution function.
@@ -257,7 +261,7 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, mass);
     }
   }
 }
@@ -301,6 +305,8 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
 
+    const CCTK_REAL mass = pc->mass;
+
     for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     {
       //RaytracingX: Add density to information passed to evolution function.
@@ -320,7 +326,7 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, mass);
     }
   }
 }
@@ -359,6 +365,8 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
   CCTK_SyncGroupI(cctkGH, gi_rho);
   CCTK_Barrier(cctkGH);
 
+  const CCTK_REAL mass = pc->mass;
+
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
@@ -383,7 +391,7 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy);
+      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, CCTK_DELTA_TIME, lev, max_energy, mass);
     }
   }
 }

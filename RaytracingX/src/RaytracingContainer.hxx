@@ -132,18 +132,8 @@ namespace RaytracingX
             const int lev,
             const amrex::GpuArray<double, 3> &plo, 
             const amrex::GpuArray<double, 3> &phi,
-            const CCTK_REAL max_energy);
-
-        void evolve(
-            const int iteration,
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
-            const amrex::MultiFab &curv,
-            const amrex::MultiFab &rho,
-            const CCTK_REAL &dt,
-            const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL mass);
 
         void evolve_k1(
             const int iteration,
@@ -154,7 +144,8 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL mass);
 
         void evolve_k2(
             const int iteration,
@@ -165,7 +156,8 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL mass);
 
         void evolve_k3(
             const int iteration,
@@ -176,7 +168,8 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL mass);
 
         void evolve_k4(
             const int iteration,
@@ -187,7 +180,8 @@ namespace RaytracingX
             const amrex::MultiFab &rho,
             const CCTK_REAL &dt,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL mass);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_bounds(

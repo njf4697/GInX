@@ -273,8 +273,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const CCTK_REAL mass)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -283,7 +282,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const auto dx = this->Geom(lev).CellSizeArray();
     const auto plo = this->Geom(lev).ProbLoArray();
 
-    const CCTK_REAL mass = this->mass;
+    const CCTK_REAL m = this->mass;
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
@@ -325,7 +324,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k =
           self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0, phi0, max_energy, mass); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0, max_energy, m); //RaytracingX: Add density for optical depth.
 
       particles[i].pos(0) += (1. / 6.) * dt * k[0];
       particles[i].pos(1) += (1. / 6.) * dt * k[1];
@@ -382,8 +381,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const amrex::MultiFab &rho,
     const CCTK_REAL &dt,
     const int &lev,
-    const CCTK_REAL max_energy,
-    const CCTK_REAL mass)
+    const CCTK_REAL max_energy)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -392,7 +390,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const auto dx = this->Geom(lev).CellSizeArray();
     const auto plo = this->Geom(lev).ProbLoArray();
 
-    const CCTK_REAL mass = this->mass;
+    const CCTK_REAL m = this->mass;
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
@@ -516,7 +514,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     const auto dx = this->Geom(lev).CellSizeArray();
     const auto plo = this->Geom(lev).ProbLoArray();
 
-    const CCTK_REAL mass = this->mass;
+    const CCTK_REAL m = this->mass;
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
@@ -639,7 +637,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     const auto dx = this->Geom(lev).CellSizeArray();
     const auto plo = this->Geom(lev).ProbLoArray();
 
-    const CCTK_REAL mass = this->mass;
+    const CCTK_REAL m = this->mass;
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)

@@ -202,6 +202,8 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       ASSERT_FINITE1(chi_lower, 4)
       ASSERT_FINITE1(chi_lower, 4)
 
+      arrdata[StructType::tau][local_particle_id] = 0;
+
       if (calculate_kerr_conserved_quantities) {
         CCTK_REAL shift_raised[3];
         oneformToVectorSpatial(shift_raised, shift_lower, real_params);

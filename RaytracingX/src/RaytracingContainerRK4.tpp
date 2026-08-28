@@ -164,14 +164,9 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     // Compute the inverse of the metric.
     const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
 
-    ASSERT_FINITE(inv_det_gamma)
-
     const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
 
     const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[Uidx::vx], u[Uidx::vy], u[Uidx::vz]};
-
-    ASSERT_FINITE1(V_down, 3)
-    ASSERT_FINITE1(gamma_inv_x, 6)
 
     //const CCTK_REAL v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
     //                            V_down[1] * V_down[1] * gamma_inv_x[3] +

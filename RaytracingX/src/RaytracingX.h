@@ -43,12 +43,12 @@
 #define G4_yz 8
 #define G4_zz 9
 
-#define G3_xx 1
-#define G3_xy 2
-#define G3_xz 3
-#define G3_yy 4
-#define G3_yz 5
-#define G3_zz 6
+#define G3_xx 0
+#define G3_xy 1
+#define G3_xz 2
+#define G3_yy 3
+#define G3_yz 4
+#define G3_zz 5
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

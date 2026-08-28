@@ -174,6 +174,8 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       chi[2] = C * e0[2] - e1[2] + b_adj * e2[2] - a_adj * e3[2];
       chi[3] = C * e0[3] - e1[3] + b_adj * e2[3] - a_adj * e3[3];
 
+      ASSERT_FINITE1(chi, 4)
+
       CCTK_REAL chi_lower[4];
       vectorToOneFormArr(chi_lower, chi, real_params);
 

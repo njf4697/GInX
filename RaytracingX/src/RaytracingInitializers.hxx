@@ -199,7 +199,7 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
         arrdata[i][local_particle_id] = 0.0;
       }
 
-      DEBUG(chi_lower[1])
+      DEBUG(std::to_string(chi_lower[1]))
       ASSERT_FINITE1(chi_lower, 4)
 
       if (calculate_kerr_conserved_quantities) {

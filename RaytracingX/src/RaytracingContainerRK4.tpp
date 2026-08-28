@@ -103,7 +103,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     // RaytracingX: Interpolate density for optical depth calculation.
     //  Interpolate rho at \vect{x}
     CCTK_REAL rho_x;
-    GInX::d_interpolate_array<5>(rho_x, rho, i0, j0, k0, u[0], u[1],
+    GInX::interpolate_array<5>(rho_x, rho, i0, j0, k0, u[0], u[1],
                                  u[2], dx, plo);
 
     //lapse_x = 1;

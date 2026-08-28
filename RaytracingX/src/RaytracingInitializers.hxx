@@ -51,20 +51,22 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
    * num_pixels_width and num_pixels_height are the number of pixels of the image horizontally and vertically respectfully.
    * camera_pos are the x, y, and z coordinates of the camera.
    */
-  const CCTK_REAL e0[4] = {real_params[10], real_params[11], real_params[12], real_params[13]}
-  const CCTK_REAL e1[4] = {real_params[14], real_params[15], real_params[16], real_params[17]}
-  const CCTK_REAL e2[4] = {real_params[18], real_params[19], real_params[20], real_params[21]}
-  const CCTK_REAL e3[4] = {real_params[22], real_params[23], real_params[24], real_params[25]}
+  const CCTK_REAL e0[4] = {real_params[10], real_params[11], real_params[12], real_params[13]};
+  const CCTK_REAL e1[4] = {real_params[14], real_params[15], real_params[16], real_params[17]};
+  const CCTK_REAL e2[4] = {real_params[18], real_params[19], real_params[20], real_params[21]};
+  const CCTK_REAL e3[4] = {real_params[22], real_params[23], real_params[24], real_params[25]};
   const CCTK_REAL alpha_h = real_params[26];
   const CCTK_REAL alpha_v = real_params[27];
   const CCTK_REAL lapse = real_params[28];
-  const CCTK_REAL shift_lower[3] = {real_params[1], real_params[2], real_params[3]}
+  const CCTK_REAL shift_lower[3] = {real_params[1], real_params[2], real_params[3]};
   const CCTK_INT num_pixels_width = int_params[0];
   const CCTK_INT num_pixels_height = int_params[1];
   const CCTK_REAL camera_pos[3] = {real_params[29], real_params[30], real_params[31]};
 
   const CCTK_INT level = 0;
   const CCTK_INT num_pixels = num_pixels_width * num_pixels_height;
+
+  const bool calculate_kerr_conserved_quantities = (int_params[2] == 1);
   
   //Assert that the number of pixels is valid. This is due to a hack storing the pixel id as a real, and 16,777,217 is the first integer to not be exact in IEEE 32-bit floats. Reasoning for hack explained below.
   if (num_pixels > 16777216) {
@@ -204,10 +206,9 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
 
         arrdata[StructType::U0][local_particle_id] = (lapse - (shift_raised[0]*V_lower[0] + shift_raised[1]*V_lower[1] + shift_raised[2]*V_lower[2]));
         arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_lower[1] - camera_pos[1]*V_lower[0]);
-        arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params)
-      }
+        arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params);
       
-    }
+      }
     current_tile++;
   }
   pc.Redistribute();
@@ -437,6 +438,7 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params) {
 
     int_params[0] = num_pixels_width;
     int_params[1] = num_pixels_height;
+    int_params[2] = calculate_kerr_conserved_quantities ? 1 : 0;
 }
 
 #endif // !PHOTON_INITIALIZERS

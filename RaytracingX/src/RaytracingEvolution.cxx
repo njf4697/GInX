@@ -80,7 +80,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   assert(gi_metric >= 0 && "Failed to get the metric group index");
 
   //RaytracingX: Passes camera information into arrays that can be used by the initialization funciton.
-  CCTK_INT int_params[2];
+  CCTK_INT int_params[3];
   CCTK_REAL real_params[32];
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params);

@@ -107,6 +107,9 @@ void vectorToOneFormArr(CCTK_REAL* X_oneform, const CCTK_REAL* X_vector, const C
 void projectUontoV(CCTK_REAL* X, const CCTK_REAL* U, const CCTK_REAL* V, const Metric* m); //Utilities.cc
 void normalize(CCTK_REAL* X_norm, const CCTK_REAL* X, const Metric* m); //Utilities.cc
 CCTK_REAL getTimeComponentOf4Velocity(const CCTK_REAL vx, const CCTK_REAL vy, const CCTK_REAL vz, Metric* m); //Utilities.cc
+void invertSpatialMetricArr(CCTK_REAL* gamma_inv, const CCTK_REAL* metric_arr); //Utilities.cc
+CCTK_REAL spatialInnerProductArr(CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr); //Utilities.cc
+void oneformToVectorSpatial(CCTK_REAL* V3_vector, const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr); //Utilities.cc
 
 //constants for unit conversion to code units
 static const CCTK_REAL M_cgs = 1.9884e33;      //g               -> M

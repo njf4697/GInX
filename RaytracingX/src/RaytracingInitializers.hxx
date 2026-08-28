@@ -174,8 +174,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       chi[2] = C * e0[2] - e1[2] + b_adj * e2[2] - a_adj * e3[2];
       chi[3] = C * e0[3] - e1[3] + b_adj * e2[3] - a_adj * e3[3];
 
-      ASSERT_FINITE1(chi, 4)
-
       CCTK_REAL chi_lower[4];
       vectorToOneFormArr(chi_lower, chi, real_params);
 
@@ -192,6 +190,8 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       arrdata[StructType::vz][local_particle_id] = chi_lower[3] * A;
       arrdata[StructType::ln_E][local_particle_id] = 0;
       arrdata[StructType::tau][local_particle_id] = 0;
+
+      ASSERT_FINITE(arrdata[StructType::vx][local_particle_id])
 
       //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
       arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
@@ -210,6 +210,8 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
         arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_lower[1] - camera_pos[1]*V_lower[0]);
         arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params);
       }
+
+      ASSERT_FINITE(arrdata[StructType::vx][local_particle_id])
     }
     current_tile++;
   }

@@ -215,6 +215,7 @@ namespace RaytracingX
         void calculate_kerr_conserved_quantities(
             const amrex::MultiFab &lapse,
             const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
             const int &lev);
 
         void check_banned_zones(

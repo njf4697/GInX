@@ -126,12 +126,12 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
             
             amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
             
-            V_norm[i] =  v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
-                                        V_down[1] * V_down[1] * gamma_inv_x[3] +
-                                        V_down[2] * V_down[2] * gamma_inv_x[5] +
-                                        2.0 * V_down[0] * V_down[1] * gamma_inv_x[1] +
-                                        2.0 * V_down[0] * V_down[2] * gamma_inv_x[2] +
-                                        2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
+            V_norm[i] =  V_down[0] * V_down[0] * gamma_inv_x[0] +
+                            V_down[1] * V_down[1] * gamma_inv_x[3] +
+                            V_down[2] * V_down[2] * gamma_inv_x[5] +
+                            2.0 * V_down[0] * V_down[1] * gamma_inv_x[1] +
+                            2.0 * V_down[0] * V_down[2] * gamma_inv_x[2] +
+                            2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
             
         });
     }

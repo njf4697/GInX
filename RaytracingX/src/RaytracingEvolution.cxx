@@ -511,8 +511,10 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
   assert(gi_lapse >= 0 && "Failed to get the lapse group index");
   assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -525,7 +527,9 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
       const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
       const auto &gd_shift = *ld.groupdata.at(gi_shift);
       const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-      pc->calculate_kerr_conserved_quantities(lapse, shift, lev);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      pc->calculate_kerr_conserved_quantities(lapse, shift, metric, lev);
     }
   }
 }

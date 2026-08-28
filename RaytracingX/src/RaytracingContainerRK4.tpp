@@ -170,7 +170,8 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[Uidx::vx], u[Uidx::vy], u[Uidx::vz]};
 
-    ASSERT_FINITE1(gamma_inv_x, 3)
+    ASSERT_FINITE1(V_down, 3)
+    ASSERT_FINITE1(gamma_inv_x, 6)
 
     //const CCTK_REAL v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
     //                            V_down[1] * V_down[1] * gamma_inv_x[3] +

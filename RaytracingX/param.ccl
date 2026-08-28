@@ -15,14 +15,15 @@ BOOLEAN update_metric_between_substeps "Whether or not to update grid to interme
 {
 } false
 
-BOOLEAN orthographic_camera "Whether or not the camera projection is perspective or othographic" STEERABLE=ALWAYS
-{
-} false
-
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"
 } 5.0
+
+CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
+{
+    (0.:180.) :: "Any real number 0<vertical_fov<180"
+} 45.
 
 CCTK_REAL vertical_fov "Vertical field of view (in degrees)" STEERABLE = ALWAYS
 {

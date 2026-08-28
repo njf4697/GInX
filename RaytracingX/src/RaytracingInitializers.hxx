@@ -422,8 +422,8 @@ void setup_camera_initializer_reals(CCTK_ARGUMENTS, CCTK_REAL* real_params) {
     real_params[23] = e3[1];
     real_params[24] = e3[2];
     real_params[25] = e3[3];
-    real_params[26] = (orthographic_camera) ? camera_width : alpha_h;
-    real_params[27] = (orthographic_camera) ? camera_height : alpha_v;
+    real_params[26] = alpha_h;
+    real_params[27] = alpha_v;
     real_params[28] = metric.alpha;
     real_params[29] = camera_pos[0];
     real_params[30] = camera_pos[1];

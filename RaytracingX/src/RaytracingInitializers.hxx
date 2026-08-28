@@ -200,7 +200,7 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       if (calculate_kerr_conserved_quantities) {
         CCTK_REAL shift_raised[3];
         oneformToVectorSpatial(shift_raised, shift_lower, real_params);
-        const CCTK_REAL V_lower = {arrdata[StructType::vx][local_particle_id], arrdata[StructType::vy][local_particle_id], arrdata[StructType::vz][local_particle_id]};
+        const CCTK_REAL V_lower[3] = {arrdata[StructType::vx][local_particle_id], arrdata[StructType::vy][local_particle_id], arrdata[StructType::vz][local_particle_id]};
 
         arrdata[StructType::U0][local_particle_id] = (lapse - (shift_raised[0]*V_lower[0] + shift_raised[1]*V_lower[1] + shift_raised[2]*V_lower[2]));
         arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_lower[1] - camera_pos[1]*V_lower[0]);

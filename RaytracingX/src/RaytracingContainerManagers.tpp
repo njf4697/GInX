@@ -52,6 +52,7 @@ template <typename StructType>
 void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantities(
     const amrex::MultiFab &lapse,
     const amrex::MultiFab &shift,
+    const amrex::MultiFab &metric,
     const int &lev)
 {
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -73,12 +74,14 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
         CCTK_REAL *AMREX_RESTRICT p_0 = attribs[StructType::U0].data();
         CCTK_REAL *AMREX_RESTRICT L_z = attribs[StructType::U1].data();
+        CCTK_REAL *AMREX_RESTRICT V_norm = attribs[StructType::U2].data();
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
         // Get the array of each parameter.
         auto const lapse_array = lapse.array(pti);
         auto const shift_array = shift.array(pti);
+        auto const metric_array = metric.array(pti);
 
         // Needed for GPU
         auto self = this;
@@ -98,9 +101,38 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
             amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
             GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
+            amrex::GpuArray<CCTK_REAL, 6> gamma_x;
+            amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
+            GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
             const CCTK_REAL E = exp(ln_energy[i]);
             p_0[i] = E * (lapse_x - (shift_x[0]*vels_x[i] + shift_x[1]*vels_y[i] + shift_x[2]*vels_z[i]));
             L_z[i] = E * (particles[i].pos(0)*vels_y[i] - particles[i].pos(1)*vels_x[i]);
+
+            const CCTK_REAL inv_det_gamma =
+                1.0 / (gamma_x[0] * gamma_x[3] * gamma_x[5] +
+                       2. * gamma_x[1] * gamma_x[2] * gamma_x[4] -
+                       gamma_x[2] * gamma_x[2] * gamma_x[3] -
+                       gamma_x[4] * gamma_x[4] * gamma_x[0] -
+                       gamma_x[1] * gamma_x[1] * gamma_x[5]);
+                
+            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = {
+                (gamma_x[3] * gamma_x[5] - gamma_x[4] * gamma_x[4]) * inv_det_gamma,
+                (gamma_x[4] * gamma_x[2] - gamma_x[1] * gamma_x[5]) * inv_det_gamma,
+                (gamma_x[1] * gamma_x[4] - gamma_x[2] * gamma_x[3]) * inv_det_gamma,
+                (gamma_x[0] * gamma_x[5] - gamma_x[2] * gamma_x[2]) * inv_det_gamma,
+                (gamma_x[2] * gamma_x[1] - gamma_x[0] * gamma_x[4]) * inv_det_gamma,
+                (gamma_x[0] * gamma_x[3] - gamma_x[1] * gamma_x[1]) * inv_det_gamma};
+            
+            amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
+            
+            V_norm[i] =  v_squared = V_down[0] * V_down[0] * gamma_inv_x[0] +
+                                        V_down[1] * V_down[1] * gamma_inv_x[3] +
+                                        V_down[2] * V_down[2] * gamma_inv_x[5] +
+                                        2.0 * V_down[0] * V_down[1] * gamma_inv_x[1] +
+                                        2.0 * V_down[0] * V_down[2] * gamma_inv_x[2] +
+                                        2.0 * V_down[1] * V_down[2] * gamma_inv_x[4];
+            
         });
     }
 }

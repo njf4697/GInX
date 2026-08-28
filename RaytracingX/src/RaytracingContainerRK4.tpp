@@ -218,7 +218,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     //  Compute the rhs for optical depth
     //TODO: implement optical depth
     //const CCTK_REAL ds = mag2_massless(dx[0], dx[1], dx[2], gamma_inv_x);
-    rhs[Uidx::vx] = 0.0; //(0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
+    rhs[Uidx::tau] = 0.0; //(0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
     rhs[Uidx::del_rsn] = check_validity(rhs, u, lapse_x, max_energy, index);
 

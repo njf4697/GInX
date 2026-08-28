@@ -191,8 +191,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       arrdata[StructType::ln_E][local_particle_id] = 0;
       arrdata[StructType::tau][local_particle_id] = 0;
 
-      ASSERT_FINITE(arrdata[StructType::vx][local_particle_id])
-
       //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
       arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
       arrdata[StructType::deletion_reason][local_particle_id] = RaytracingX::DelReason::DEFAULT;
@@ -211,7 +209,6 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
         arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params);
       }
 
-      ASSERT_FINITE(arrdata[StructType::vx][local_particle_id])
     }
     current_tile++;
   }

@@ -207,10 +207,11 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
         arrdata[StructType::U0][local_particle_id] = (lapse - (shift_raised[0]*V_lower[0] + shift_raised[1]*V_lower[1] + shift_raised[2]*V_lower[2]));
         arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_lower[1] - camera_pos[1]*V_lower[0]);
         arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params);
-      
       }
+    }
     current_tile++;
   }
+
   pc.Redistribute();
   pc.SortParticlesByCell();
   CCTK_VINFO("%ld particles created", pc.TotalNumberOfParticles());

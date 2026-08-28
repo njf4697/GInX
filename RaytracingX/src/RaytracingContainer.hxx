@@ -17,7 +17,8 @@
 #include <AMReX_MultiFabUtil.H>
 #include <AMReX_MFIter.H>
 
-#include "RK4Macros.hxx"             
+#include "RK4Macros.hxx"     
+#include "RaytracingContainerMacros.hxx"        
 
 namespace RaytracingX
 {
@@ -48,10 +49,12 @@ namespace RaytracingX
         vx,
         vy,
         vz,
-        lnaE,
+        lnE,
         tau,
         del_rsn,
-        n_attributes
+        p_t, //if calculate_kerr_conserved_quantities
+        L_z, //if calculate_kerr_conserved_quantities
+        Vsqr //if calculate_kerr_conserved_quantities
     };
 
     struct DelReason {
@@ -192,20 +195,6 @@ namespace RaytracingX
             const CCTK_REAL lapse,
             const CCTK_REAL max_energy,
             const int index);
-        
-        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static CCTK_REAL mag2_massless(
-            const CCTK_REAL x,
-            const CCTK_REAL y,
-            const CCTK_REAL z,
-            const amrex::GpuArray<CCTK_REAL, 6> gamma);
-        
-        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static amrex::GpuArray<CCTK_REAL, 3> raise_lower_spatial(
-            const CCTK_REAL x,
-            const CCTK_REAL y,
-            const CCTK_REAL z,
-            const amrex::GpuArray<CCTK_REAL, 6> gamma);
 
         void check_horizon(
             const amrex::MultiFab &lapse,

@@ -28,6 +28,24 @@
                                B[2], G[1], G[3], G[4], \
                                B[3], G[2], G[4], G[5]
 
+#define G4_tt 0
+#define G4_tx 1
+#define G4_ty 2
+#define G4_tz 3
+#define G4_xx 4
+#define G4_xy 5
+#define G4_xz 6
+#define G4_yy 7
+#define G4_yz 8
+#define G4_zz 9
+
+#define G3_xx 4
+#define G3_xy 5
+#define G3_xz 6
+#define G3_yy 7
+#define G3_yz 8
+#define G3_zz 9
+
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;
     CCTK_REAL beta_x, beta_y, beta_z; //g_{tx}, g_{ty}, g_{tz}

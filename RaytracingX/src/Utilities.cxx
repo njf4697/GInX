@@ -91,10 +91,10 @@ void vectorToOneForm(CCTK_REAL* X_oneform, const CCTK_REAL* X_vector, const Metr
  * \f g_{33} =  metric_arr[9] \f
  */
 void vectorToOneFormArr(CCTK_REAL* X_oneform, const CCTK_REAL* X_vector, const CCTK_REAL* metric_arr) { //X_\nu = g_{\mu\nu} X^\mu
-    X_oneform[0] = X_vector[0]*metric_arr[0] + X_vector[1]*metric_arr[1] + X_vector[2]*metric_arr[2] + X_vector[3]*metric_arr[3];
-    X_oneform[1] = X_vector[0]*metric_arr[1] + X_vector[1]*metric_arr[4] + X_vector[2]*metric_arr[5] + X_vector[3]*metric_arr[6];
-    X_oneform[2] = X_vector[0]*metric_arr[2] + X_vector[1]*metric_arr[5] + X_vector[2]*metric_arr[7] + X_vector[3]*metric_arr[8];
-    X_oneform[3] = X_vector[0]*metric_arr[3] + X_vector[1]*metric_arr[6] + X_vector[2]*metric_arr[8] + X_vector[3]*metric_arr[9];
+    X_oneform[0] = X_vector[0]*metric_arr[G4_tt] + X_vector[1]*metric_arr[G4_tx] + X_vector[2]*metric_arr[G4_ty] + X_vector[3]*metric_arr[G4_tz];
+    X_oneform[1] = X_vector[0]*metric_arr[G4_tx] + X_vector[1]*metric_arr[G4_xx] + X_vector[2]*metric_arr[G4_xy] + X_vector[3]*metric_arr[G4_xz];
+    X_oneform[2] = X_vector[0]*metric_arr[G4_ty] + X_vector[1]*metric_arr[G4_xy] + X_vector[2]*metric_arr[G4_yy] + X_vector[3]*metric_arr[G4_yz];
+    X_oneform[3] = X_vector[0]*metric_arr[G4_tz] + X_vector[1]*metric_arr[G4_xz] + X_vector[2]*metric_arr[G4_yz] + X_vector[3]*metric_arr[G4_zz];
 }
 
 /**
@@ -230,3 +230,40 @@ void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL*
     error |= !(abs(innerProduct(e2, e3, metric)) < 0.001);
     if (error) { CCTK_ERROR("Given camera coordinate system is invalid."); }
 }
+
+void invertSpatialMetricArr(CCTK_REAL* gamma_inv, CCTK_REAL* metric_arr) {
+    const CCTK_REAL inv_det_gamma = 1.0 / (metric_arr[G4_xx] * metric_arr[G4_yy] * metric_arr[G4_zz] +
+                                        2. * metric_arr[G4_xy] * metric_arr[G4_xz] * metric_arr[G4_yz] -
+                                        metric_arr[G4_xz] * metric_arr[G4_xz] * metric_arr[G4_yy] -
+                                        metric_arr[G4_yz] * metric_arr[G4_yz] * metric_arr[G4_xx] -
+                                        metric_arr[G4_xy] * metric_arr[G4_xy] * metric_arr[G4_zz]);
+
+    gamma_inv[G3_xx] = (metric_arr[G4_yy] * metric_arr[G4_zz] - metric_arr[G4_yz] * metric_arr[G4_yz]) * inv_det_gamma;
+    gamma_inv[G3_xy] = (metric_arr[G4_yz] * metric_arr[G4_xz] - metric_arr[G4_xy] * metric_arr[G4_zz]) * inv_det_gamma;
+    gamma_inv[G3_xz] = (metric_arr[G4_xy] * metric_arr[G4_yz] - metric_arr[G4_xz] * metric_arr[G4_yy]) * inv_det_gamma;
+    gamma_inv[G3_yy] = (metric_arr[G4_xx] * metric_arr[G4_zz] - metric_arr[G4_xz] * metric_arr[G4_xz]) * inv_det_gamma;
+    gamma_inv[G3_yz] = (metric_arr[G4_xz] * metric_arr[G4_xy] - metric_arr[G4_xx] * metric_arr[G4_yz]) * inv_det_gamma;
+    gamma_inv[G3_zz] = (metric_arr[G4_xx] * metric_arr[G4_yy] - metric_arr[G4_xy] * metric_arr[G4_xy]) * inv_det_gamma;
+}
+
+CCTK_REAL spatialInnerProductArr(CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr) {
+    CCTK_REAL gamma_inv[6];
+    invertSpatialMetricArr(gamma_inv, metric_arr);
+
+    return V3_oneform[0] * V3_oneform[0] * gamma_inv_x[G3_xx] +
+            V3_oneform[1] * V3_oneform[1] * gamma_inv_x[G3_yy] +
+            V3_oneform[2] * V3_oneform[2] * gamma_inv_x[G3_zz] +
+            2.0 * V3_oneform[0] * V3_oneform[1] * gamma_inv_x[G3_xy] +
+            2.0 * V3_oneform[0] * V3_oneform[2] * gamma_inv_x[G3_xz] +
+            2.0 * V3_oneform[1] * V3_oneform[2] * gamma_inv_x[G3_yz];
+}
+
+void oneformToVectorSpatial(CCTK_REAL* V3_vector, const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr) {
+    CCTK_REAL gamma_inv[6];
+    invertSpatialMetricArr(gamma_inv, metric_arr);
+
+    V3_vector[0] = V3_oneform[0] * gamma_inv[G3_xx] + V3_oneform[1] * gamma_inv[G3_xy] + V3_oneform[2] * gamma_inv[G3_xz];
+    V3_vector[1] = V3_oneform[0] * gamma_inv[G3_xy] + V3_oneform[1] * gamma_inv[G3_yy] + V3_oneform[2] * gamma_inv[G3_yz];
+    V3_vector[2] = V3_oneform[0] * gamma_inv[G3_xz] + V3_oneform[1] * gamma_inv[G3_yz] + V3_oneform[2] * gamma_inv[G3_zz];
+}
+

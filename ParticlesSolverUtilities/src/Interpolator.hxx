@@ -514,7 +514,125 @@ interpolate_array(amrex::GpuArray<CCTK_REAL, 6> &array6,
     barycentric_cubic_1d<INTERPOLATION_ORDER>(array6[comp], points, w, H, z,
                                               plo[2], dx[2]);
   }
-} // interpolate_array
+} // interpolate_array (3d symmetric matrix)
+
+/**
+ * \brief Do the barycentric interpolation for a 3 dimensional vector.
+ *
+ * This function computes the interpolation for a 3 vector,
+ * such as the shift in just
+ * one call using the barycentric_cubic_1d function similar to the
+ * barycentric_cubic_3d function.
+ *
+ * @see barycentric_cubic_3d
+ * @see barycentric_cubic_1d
+ *
+ * @param array3 Reference to GpuArray of size 3 that is going to store the
+ * interpolated values.
+ * @param f Array containing the function values.
+ * @param i0 Basis cell index accordingly to x.
+ * @param j0 Basis cell index accordingly to y.
+ * @param k0 Basis cell index accordingly to z.
+ * @param x Coordinate x value to interpolate.
+ * @param y Coordinate y value to interpolate.
+ * @param z Coordinate z value to interpolate.
+ * @param dx Vector \f$\Delta x\f$  with the space steps value.
+ * @param plo Lower values of the entire domain.
+ */
+template <int INTERPOLATION_ORDER>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE void
+interpolate_array(amrex::GpuArray<CCTK_REAL, 3> &array3,
+                  const amrex::Array4<CCTK_REAL const> &f, const long int &i0,
+                  const long int &j0, const long int &k0, const CCTK_REAL &x,
+                  const CCTK_REAL &y, const CCTK_REAL &z,
+                  const amrex::GpuArray<double, 3> &dx,
+                  const amrex::GpuArray<double, 3> &plo) {
+  const int order =
+      (((INTERPOLATION_ORDER - 1) * INTERPOLATION_ORDER) >> 1) - 1;
+  const CCTK_INT all_nodes[14] = {0, 1, -1, 0, 1, -1, 0, 1, 2, -2, -1, 0, 1, 2};
+  const CCTK_REAL all_weights[14] = {
+      -1.,  1.,        0.5,        -1.,        0.5,  -1.0 / 6.0, 0.5,
+      -0.5, 1.0 / 6.0, 1.0 / 24.0, -1.0 / 6.0, 0.25, -1.0 / 6.0, 1.0 / 24.0};
+  const CCTK_INT *nodes = &all_nodes[order];
+  const CCTK_REAL *w = &all_weights[order];
+
+  for (int comp = 0; comp < 3; comp++) {
+
+    // Do the interpolation on x
+    CCTK_REAL G[INTERPOLATION_ORDER][INTERPOLATION_ORDER];
+    for (int j = 0; j < INTERPOLATION_ORDER; j++) {
+      for (int k = 0; k < INTERPOLATION_ORDER; k++) {
+        CCTK_REAL values[INTERPOLATION_ORDER];
+        CCTK_INT points[INTERPOLATION_ORDER];
+        for (int i = 0; i < INTERPOLATION_ORDER; i++) {
+          values[i] = f(i0 + nodes[i], j0 + nodes[j], k0 + nodes[k], comp);
+          points[i] = i0 + nodes[i];
+        }
+        barycentric_cubic_1d<INTERPOLATION_ORDER>(G[j][k], points, w, values, x,
+                                                  plo[0], dx[0]);
+      }
+    }
+
+    // Do the interpolation on y
+    CCTK_REAL H[INTERPOLATION_ORDER];
+    for (int k = 0; k < INTERPOLATION_ORDER; k++) {
+      CCTK_REAL values[INTERPOLATION_ORDER];
+      CCTK_INT points[INTERPOLATION_ORDER];
+      for (int j = 0; j < INTERPOLATION_ORDER; j++) {
+        values[j] = G[j][k];
+        points[j] = j0 + nodes[j];
+      }
+      barycentric_cubic_1d<INTERPOLATION_ORDER>(H[k], points, w, values, y,
+                                                plo[1], dx[1]);
+    }
+
+    // Do the interpolation on z
+    CCTK_INT points[INTERPOLATION_ORDER];
+    for (int k = 0; k < INTERPOLATION_ORDER; k++) {
+      points[k] = k0 + nodes[k];
+    }
+    barycentric_cubic_1d<INTERPOLATION_ORDER>(array3[comp], points, w, H, z,
+                                              plo[2], dx[2]);
+  }
+} // interpolate_array (3d vector)
+
+/**
+ * \brief Do the barycentric interpolation for a scalar
+ *
+ * This function computes the interpolation for a scalar, such as the lapse, 
+ * in a format consistent with other interpolate_array usages.
+ *
+ * @see barycentric_cubic_3d
+ *
+ * @param scalar Reference to scalar that is going to store the
+ * interpolated value.
+ * @param f Array containing the function values.
+ * @param i0 Basis cell index accordingly to x.
+ * @param j0 Basis cell index accordingly to y.
+ * @param k0 Basis cell index accordingly to z.
+ * @param x Coordinate x value to interpolate.
+ * @param y Coordinate y value to interpolate.
+ * @param z Coordinate z value to interpolate.
+ * @param dx Vector \f$\Delta x\f$  with the space steps value.
+ * @param plo Lower values of the entire domain.
+ */
+template <int INTERPOLATION_ORDER>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
+void interpolate_array(
+    CCTK_REAL &array,
+    const amrex::Array4<CCTK_REAL const> &f,
+    const long int &i0,
+    const long int &j0,
+    const long int &k0,
+    const CCTK_REAL &x,
+    const CCTK_REAL &y,
+    const CCTK_REAL &z,
+    const amrex::GpuArray<double, 3> &dx,
+    const amrex::GpuArray<double, 3> &plo)
+{
+    array = barycentric_cubic_3d<INTERPOLATION_ORDER>(
+        f, i0, j0, k0, x, y, z, dx, plo);
+} // interpolate_array (scalar)
 
 /**
  * \brief Do the barycentric interpolation for a 3 dimensional and symmetric

@@ -51,32 +51,17 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
    * num_pixels_width and num_pixels_height are the number of pixels of the image horizontally and vertically respectfully.
    * camera_pos are the x, y, and z coordinates of the camera.
    */
-  CCTK_REAL e0[4], e1[4], e2[4], e3[4];
-  e0[0] = real_params[10];
-  e0[1] = real_params[11];
-  e0[2] = real_params[12];
-  e0[3] = real_params[13];
-  e1[0] = real_params[14];
-  e1[1] = real_params[15];
-  e1[2] = real_params[16];
-  e1[3] = real_params[17];
-  e2[0] = real_params[18];
-  e2[1] = real_params[19];
-  e2[2] = real_params[20];
-  e2[3] = real_params[21];
-  e3[0] = real_params[22];
-  e3[1] = real_params[23];
-  e3[2] = real_params[24];
-  e3[3] = real_params[25];
-  CCTK_REAL alpha_h = real_params[26];
-  CCTK_REAL alpha_v = real_params[27];
-  CCTK_REAL lapse = real_params[28];
-  CCTK_INT num_pixels_width = int_params[0];
-  CCTK_INT num_pixels_height = int_params[1];
-  CCTK_REAL camera_pos[3];
-  camera_pos[0] = real_params[29];
-  camera_pos[1] = real_params[30];
-  camera_pos[2] = real_params[31];
+  const CCTK_REAL e0 = {real_params[10], real_params[11], real_params[12], real_params[13]}
+  const CCTK_REAL e1 = {real_params[14], real_params[15], real_params[16], real_params[17]}
+  const CCTK_REAL e2 = {real_params[18], real_params[19], real_params[20], real_params[21]}
+  const CCTK_REAL e3 = {real_params[22], real_params[23], real_params[24], real_params[25]}
+  const CCTK_REAL alpha_h = real_params[26];
+  const CCTK_REAL alpha_v = real_params[27];
+  const CCTK_REAL lapse = real_params[28];
+  const CCTK_REAL shift_lower = {real_params[1], real_params[2], real_params[3]}
+  const CCTK_INT num_pixels_width = int_params[0];
+  const CCTK_INT num_pixels_height = int_params[1];
+  const CCTK_REAL camera_pos = {real_params[29], real_params[30], real_params[31]};
 
   const CCTK_INT level = 0;
   const CCTK_INT num_pixels = num_pixels_width * num_pixels_height;
@@ -211,6 +196,17 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
       for (int i = StructType::U0; i < StructType::n_attributes; i++) {
         arrdata[i][local_particle_id] = 0.0;
       }
+
+      if (calculate_kerr_conserved_quantities) {
+        CCTK_REAL shift_raised[3];
+        oneformToVectorSpatial(shift_raised, shift_lower, real_params);
+        const CCTK_REAL V_lower = {arrdata[StructType::vx][local_particle_id], arrdata[StructType::vy][local_particle_id], arrdata[StructType::vz][local_particle_id]};
+
+        arrdata[StructType::U0][local_particle_id] = (lapse - (shift_raised[0]*V_lower[0] + shift_raised[1]*V_lower[1] + shift_raised[2]*V_lower[2]));
+        arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_lower[1] - camera_pos[1]*V_lower[0]);
+        arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_lower, real_params)
+      }
+      
     }
     current_tile++;
   }

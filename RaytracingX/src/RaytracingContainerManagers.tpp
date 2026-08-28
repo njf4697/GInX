@@ -244,12 +244,12 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
             GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, p.pos(0),
                                  p.pos(1), p.pos(2), dx, p_lo);
             
-            const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x)
+            const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
                 
-            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma, inv_det_gamma);
+            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
             
             // Normalizing the velocity.
-            const CCTK_REAL v_squared = SPATIAL_INNER_PRODUCT(ratio, gamma_inv_x)
+            const CCTK_REAL v_squared = SPATIAL_INNER_PRODUCT(ratio, gamma_inv_x);
             
             const CCTK_REAL v = std::sqrt(v_squared);
             const CCTK_REAL alpha = std::sqrt(1. - m * m / (E * E));

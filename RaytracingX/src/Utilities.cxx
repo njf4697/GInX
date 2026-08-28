@@ -231,7 +231,7 @@ void gramSchmidtProcess(CCTK_ARGUMENTS, CCTK_REAL* e0, CCTK_REAL* e1, CCTK_REAL*
     if (error) { CCTK_ERROR("Given camera coordinate system is invalid."); }
 }
 
-void invertSpatialMetricArr(CCTK_REAL* gamma_inv, CCTK_REAL* metric_arr) {
+void invertSpatialMetricArr(CCTK_REAL* gamma_inv, const CCTK_REAL* metric_arr) {
     const CCTK_REAL inv_det_gamma = 1.0 / (metric_arr[G4_xx] * metric_arr[G4_yy] * metric_arr[G4_zz] +
                                         2. * metric_arr[G4_xy] * metric_arr[G4_xz] * metric_arr[G4_yz] -
                                         metric_arr[G4_xz] * metric_arr[G4_xz] * metric_arr[G4_yy] -
@@ -250,12 +250,12 @@ CCTK_REAL spatialInnerProductArr(CCTK_REAL* V3_oneform, const CCTK_REAL* metric_
     CCTK_REAL gamma_inv[6];
     invertSpatialMetricArr(gamma_inv, metric_arr);
 
-    return V3_oneform[0] * V3_oneform[0] * gamma_inv_x[G3_xx] +
-            V3_oneform[1] * V3_oneform[1] * gamma_inv_x[G3_yy] +
-            V3_oneform[2] * V3_oneform[2] * gamma_inv_x[G3_zz] +
-            2.0 * V3_oneform[0] * V3_oneform[1] * gamma_inv_x[G3_xy] +
-            2.0 * V3_oneform[0] * V3_oneform[2] * gamma_inv_x[G3_xz] +
-            2.0 * V3_oneform[1] * V3_oneform[2] * gamma_inv_x[G3_yz];
+    return V3_oneform[0] * V3_oneform[0] * gamma_inv[G3_xx] +
+            V3_oneform[1] * V3_oneform[1] * gamma_inv[G3_yy] +
+            V3_oneform[2] * V3_oneform[2] * gamma_inv[G3_zz] +
+            2.0 * V3_oneform[0] * V3_oneform[1] * gamma_inv[G3_xy] +
+            2.0 * V3_oneform[0] * V3_oneform[2] * gamma_inv[G3_xz] +
+            2.0 * V3_oneform[1] * V3_oneform[2] * gamma_inv[G3_yz];
 }
 
 void oneformToVectorSpatial(CCTK_REAL* V3_vector, const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr) {

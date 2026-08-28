@@ -8,8 +8,12 @@
 #ifndef RAYTRACINGX
 #define RAYTRACINGX
 
+#ifndef MAX
 #define MAX(X, Y) ((X > Y) ? X : Y)
+#endif
+#ifndef MIN
 #define MIN(X, Y) ((X > Y) ? X : Y)
+#endif
 #define DEBUG(X) fprintf(stderr, "%s\n", ("proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X).c_str());             
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }
 #define ASSERT_FINITE1(X, Y) for (int ii = 0; ii < Y; ii++) { ASSERT_FINITE(X[ii]); }
@@ -39,12 +43,12 @@
 #define G4_yz 8
 #define G4_zz 9
 
-#define G3_xx 4
-#define G3_xy 5
-#define G3_xz 6
-#define G3_yy 7
-#define G3_yz 8
-#define G3_zz 9
+#define G3_xx 1
+#define G3_xy 2
+#define G3_xz 3
+#define G3_yy 4
+#define G3_yz 5
+#define G3_zz 6
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;

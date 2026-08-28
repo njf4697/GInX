@@ -164,7 +164,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     // Compute the inverse of the metric.
     const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
 
-    const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma)
+    const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
 
     const amrex::GpuArray<CCTK_REAL, 3> V_down = {u[Uidx::vx], u[Uidx::vy], u[Uidx::vz]};
 
@@ -675,11 +675,11 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::vz]  = U[Uidx::vz]  + dt * k[Uidx::vz];
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
-      U_tmp[Uidx::del_rsn] = k[Uidx:del_rsn];
+      U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
-        deletion_reasons[i] = U_tmp[Udix::del_rsn];
+        deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         particles[i].id() = -1;
         return;
       }
@@ -709,8 +709,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
 
-      if (U_tmp[Udix::del_rsn] != 0.0) {
-        deletion_reasons[i] = U_tmp[Udix::del_rsn];
+      if (U_tmp[Uidx::del_rsn] != 0.0) {
+        deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         particles[i].id() = -1;
         return;
       }

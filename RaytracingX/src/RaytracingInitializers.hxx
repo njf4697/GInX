@@ -51,17 +51,17 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
    * num_pixels_width and num_pixels_height are the number of pixels of the image horizontally and vertically respectfully.
    * camera_pos are the x, y, and z coordinates of the camera.
    */
-  const CCTK_REAL e0 = {real_params[10], real_params[11], real_params[12], real_params[13]}
-  const CCTK_REAL e1 = {real_params[14], real_params[15], real_params[16], real_params[17]}
-  const CCTK_REAL e2 = {real_params[18], real_params[19], real_params[20], real_params[21]}
-  const CCTK_REAL e3 = {real_params[22], real_params[23], real_params[24], real_params[25]}
+  const CCTK_REAL e0[4] = {real_params[10], real_params[11], real_params[12], real_params[13]}
+  const CCTK_REAL e1[4] = {real_params[14], real_params[15], real_params[16], real_params[17]}
+  const CCTK_REAL e2[4] = {real_params[18], real_params[19], real_params[20], real_params[21]}
+  const CCTK_REAL e3[4] = {real_params[22], real_params[23], real_params[24], real_params[25]}
   const CCTK_REAL alpha_h = real_params[26];
   const CCTK_REAL alpha_v = real_params[27];
   const CCTK_REAL lapse = real_params[28];
-  const CCTK_REAL shift_lower = {real_params[1], real_params[2], real_params[3]}
+  const CCTK_REAL shift_lower[3] = {real_params[1], real_params[2], real_params[3]}
   const CCTK_INT num_pixels_width = int_params[0];
   const CCTK_INT num_pixels_height = int_params[1];
-  const CCTK_REAL camera_pos = {real_params[29], real_params[30], real_params[31]};
+  const CCTK_REAL camera_pos[3] = {real_params[29], real_params[30], real_params[31]};
 
   const CCTK_INT level = 0;
   const CCTK_INT num_pixels = num_pixels_width * num_pixels_height;

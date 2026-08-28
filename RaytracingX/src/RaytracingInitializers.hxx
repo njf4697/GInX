@@ -209,7 +209,7 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
         arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_down, real_params);
       }
 
-      ASSERT_FINITE1(V_down)
+      ASSERT_FINITE1(V_down, 3)
 
     }
     current_tile++;

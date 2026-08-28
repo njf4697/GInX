@@ -246,7 +246,7 @@ void invertSpatialMetricArr(CCTK_REAL* gamma_inv, const CCTK_REAL* metric_arr) {
     gamma_inv[G3_zz] = (metric_arr[G4_xx] * metric_arr[G4_yy] - metric_arr[G4_xy] * metric_arr[G4_xy]) * inv_det_gamma;
 }
 
-CCTK_REAL spatialInnerProductArr(CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr) {
+CCTK_REAL spatialInnerProductArr(const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr) {
     CCTK_REAL gamma_inv[6];
     invertSpatialMetricArr(gamma_inv, metric_arr);
 

@@ -29,21 +29,6 @@ CCTK_REAL vertical_fov "Vertical field of view (in degrees)" STEERABLE = ALWAYS
     (0.:180.) :: "Any real number 0<vertical_fov<180"
 } 45.
 
-CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
-{
-    (0.:180.) :: "Any real number 0<vertical_fov<180"
-} 45.
-
-CCTK_REAL camera_width "Width of camera window in orthographic projection" STEERABLE = ALWAYS
-{
-    (0.:* :: "Any real number"
-} 5.
-
-CCTK_REAL camera_height "Height of camera window in orthographic projection" STEERABLE = ALWAYS
-{
-    (0.:* :: "Any real number"
-} 5.
-
 INT num_pixels_width "Number of pixels across image width" STEERABLE = ALWAYS
 {
     (0:* :: "Any positive integer"

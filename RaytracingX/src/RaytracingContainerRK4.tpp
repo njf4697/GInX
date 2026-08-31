@@ -731,7 +731,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_validity(
 {
     CCTK_REAL deletion_reason = u[Uidx::del_rsn];
 
-    if (abs(std::exp(u[Uidx::lnE]) / lapse) > max_energy) {
+    if (u[Uidx::lnE] > log(max_energy * lapse)) {
         deletion_reason = DelReason::HORIZON;
     }
 

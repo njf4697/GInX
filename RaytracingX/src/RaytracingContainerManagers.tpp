@@ -39,7 +39,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
             CCTK_REAL lapse_x;
             GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
-            if (ln_energy[i] > log(max_energy * lapse)) {
+            if (ln_energy[i] > log(max_energy * lapse_x)) {
               particles[i].id() =-1;
               deletion_reasons[i] = DelReason::HORIZON;
             } 

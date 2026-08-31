@@ -49,6 +49,12 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
 SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
   {
     LANG: C
@@ -60,6 +66,12 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
 SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
   {
     LANG: C
@@ -70,6 +82,12 @@ SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: ADMBaseX::shift(everywhere)
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
+
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
 
 SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
   {
@@ -85,7 +103,7 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
 if (update_metric_between_substeps)
 {
 
-SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1 BEFORE R_ParticlesContainer_evolvek2
+SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_k1 BEFORE R_ParticlesContainer_evolvek2
   {
     LANG: C
     OPTIONS: LOCAL
@@ -97,7 +115,7 @@ SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_
     WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric to cctk_time+0.5*dt"
 
-SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3 BEFORE R_ParticlesContainer_evolvek4
+SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_k3 BEFORE R_ParticlesContainer_evolvek4
   {
     LANG: C
     OPTIONS: LOCAL

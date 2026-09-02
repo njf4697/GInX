@@ -32,7 +32,13 @@ SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bound
       OPTIONS: global
   } "check particle bounds"
 
-SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
+SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_initial IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_initial
   {
     LANG: C
     OPTIONS: global

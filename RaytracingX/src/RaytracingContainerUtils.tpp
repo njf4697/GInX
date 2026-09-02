@@ -6,11 +6,11 @@ int RaytracingParticlesContainer<StructType>::get_interpolation_center(
     const CCTK_REAL point,
     const CCTK_REAL lower,
     const CCTK_REAL upper,
+    const CCTK_REAL dx,
     const int lower_tile_index,
     const int upper_tile_index,
     const int ghost_lower, 
-    const int ghost_upper,
-    const CCTK_REAL dx)
+    const int ghost_upper)
 {   
     int i = (point - lower) / dx;
     assert(std::isfinite(i) && "interpolation onto grid failed");

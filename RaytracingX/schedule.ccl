@@ -32,12 +32,6 @@ SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bound
       OPTIONS: global
   } "check particle bounds"
 
-SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_initial IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
-
 SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_initial
   {
     LANG: C
@@ -55,13 +49,7 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k1
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
   {
     LANG: C
     OPTIONS: global
@@ -78,13 +66,7 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k2
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
   {
     LANG: C
     OPTIONS: global
@@ -101,13 +83,7 @@ SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k3
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
   {
     LANG: C
     OPTIONS: global
@@ -180,11 +156,11 @@ if ((particle_plot_every||particle_tsv_every) ) {
     } "print the particles"
 }
 
-SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
+#SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
+#  {
+#    LANG: C
+#    OPTIONS: global
+#  } "redistribute particles"
 
   SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data
   {

@@ -132,6 +132,17 @@ extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  if (output_final_data) {
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    { 
+      pc->write_deleted_particle_data(lev, cctk_time, std::string(out_dir) + "/" + final_data_file_name);
+    }
+  }}
+
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
@@ -487,7 +498,7 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
  *
  * This function evolves the particles position by numerically solving the
  * geodesic equations.
- */
+ *
 extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
@@ -508,6 +519,7 @@ extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 }
+*/
 
 extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
 {

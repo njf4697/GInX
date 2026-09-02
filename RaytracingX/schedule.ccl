@@ -49,7 +49,13 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
+SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k1
   {
     LANG: C
     OPTIONS: global
@@ -66,7 +72,13 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
+SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k2
   {
     LANG: C
     OPTIONS: global
@@ -83,7 +95,13 @@ SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
+SCHEDULE R_ParticlesContainer_output_final_data AS R_ParticlesContainer_output_final_data_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
+
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_k3
   {
     LANG: C
     OPTIONS: global

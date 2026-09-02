@@ -13,7 +13,13 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
-    {
+    {   
+        const amrex::Box& box = box;
+        const amrex::Box& fbox = pti.fabbox();
+        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
+        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
+        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
 
         const int np = pti.numParticles();
 
@@ -32,9 +38,9 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
         {
             //RaytracingX: Delete particle when geodesic reaches event horizon.
-            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
-            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
-            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
+            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0], idxlo[0], idxhi[0], nglo[0], nghi[0]);;
+            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1], idxlo[1], idxhi[1], nglo[1], nghi[1]);;
+            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2], idxlo[2], idxhi[2], nglo[2], nghi[2]);;
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
             GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
@@ -61,7 +67,14 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
-    {
+    {   
+        const amrex::Box& box = box;
+        const amrex::Box& fbox = pti.fabbox();
+        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
+        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
+        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
+
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.
@@ -87,9 +100,9 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
         {
             //RaytracingX: Delete particle when geodesic reaches event horizon.
-            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
-            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
-            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
+            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0], idxlo[0], idxhi[0], nglo[0], nghi[0]);;
+            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1], idxlo[1], idxhi[1], nglo[1], nghi[1]);;
+            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2], idxlo[2], idxhi[2], nglo[2], nghi[2]);;
             // Interpolate lapse & partial lapse at \vect{x}
             CCTK_REAL lapse_x;
             GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
@@ -205,7 +218,13 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
     const auto p_hi = this->Geom(level).ProbHiArray();
 
     for (amrex::MFIter mfi = this->MakeMFIter(level); mfi.isValid(); ++mfi)
-    {
+    {   
+        const amrex::Box& box = box;
+        const amrex::Box& fbox = pti.fabbox();
+        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
+        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
+        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
 
         // Get a reference to the particles
         auto &particle_tile = this->DefineAndReturnParticleTile(level, mfi);
@@ -233,9 +252,9 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
             // Generate a random position
             const auto &p = p_struct[i];
             
-            const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0]);
-            const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1]);
-            const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2]);
+            const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0], idxlo[0], idxhi[0], nglo[0], nghi[0]);;
+            const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1], idxlo[1], idxhi[1], nglo[1], nghi[1]);;
+            const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2], idxlo[2], idxhi[2], nglo[2], nghi[2]);;
             
             // Interpolate metric
             amrex::GpuArray<CCTK_REAL, 6> gamma_x;

@@ -219,8 +219,8 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
 
     for (amrex::MFIter mfi = this->MakeMFIter(level); mfi.isValid(); ++mfi)
     {   
-        const amrex::Box& box = pti.tilebox();
-        const amrex::Box& fbox = pti.fabbox();
+        const amrex::Box& box = mfi.tilebox();
+        const amrex::Box& fbox = mfi.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
         const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};

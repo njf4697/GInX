@@ -225,7 +225,6 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
         const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
         const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
-        fprintf(stderr, "%i %i %i %i\n", idxlo[0], idxhi[0], nglo[0], nghi[0]);
 
         // Get a reference to the particles
         auto &particle_tile = this->DefineAndReturnParticleTile(level, mfi);

@@ -14,7 +14,7 @@ int RaytracingParticlesContainer<StructType>::get_interpolation_center(
 {   
     int i = (point - lower) / dx;
     assert(std::isfinite(i) && "interpolation onto grid failed");
-    return amrex::Clamp(i, lower_tile_index, upper_tile_index);
+    return amrex::Clamp(i, lower_tile_index+2, upper_tile_index-2);
 }
 
 template <typename StructType>

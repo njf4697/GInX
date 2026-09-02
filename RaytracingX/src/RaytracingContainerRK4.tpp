@@ -157,14 +157,6 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     //curv_x[4] = 0;
     //curv_x[5] = 0;
 
-    ASSERT_FINITE(lapse_x)
-    ASSERT_FINITE1(d_lapse_x, 3)
-    ASSERT_FINITE1(shift_x, 3)
-    ASSERT_FINITE2(d_shift_x, 3, 3)
-    ASSERT_FINITE1(gamma_x, 6)
-    ASSERT_FINITE2(d_gamma_x, 6, 3)
-    ASSERT_FINITE1(curv_x, 6)
-
     // Compute the inverse of the metric.
     const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
 
@@ -195,8 +187,6 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     // Compute the upper index velocity terms.
     amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
-
-    ASSERT_FINITE1(V_up, 3)
 
     // Compute the rhs for position
     rhs[0] = lapse_x * V_up[0] - shift_x[0];

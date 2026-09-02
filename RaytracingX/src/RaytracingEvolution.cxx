@@ -493,6 +493,8 @@ extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  CCTK_Barrier(cctkGH);
+
   if (output_final_data) {
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

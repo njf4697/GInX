@@ -14,7 +14,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
@@ -68,7 +68,7 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
@@ -219,7 +219,7 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
 
     for (amrex::MFIter mfi = this->MakeMFIter(level); mfi.isValid(); ++mfi)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};

@@ -286,7 +286,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
@@ -401,7 +401,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
@@ -531,7 +531,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
@@ -661,7 +661,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = box;
+        const amrex::Box& box = pti.tilebox();
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};

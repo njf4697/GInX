@@ -145,7 +145,7 @@ if (calculate_kerr_conserved_quantities) {
     {
         LANG: C
         OPTIONS: global
-    } "calculate conserved quantities for particles and output in U0 and U1"
+    } "calculate conserved quantities for particles and output in U0, U1, and U2"
 }
 
 if ((particle_plot_every||particle_tsv_every) ) {

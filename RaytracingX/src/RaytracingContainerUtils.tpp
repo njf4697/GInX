@@ -8,9 +8,10 @@ int RaytracingParticlesContainer<StructType>::get_interpolation_center(
     const CCTK_REAL upper,
     const CCTK_REAL dx)
 {
-    int i = amrex::Math::floor((amrex::Clamp(point, lower, upper - dx / 4) - lower) / dx);
-    ASSERT_FINITE(i)
-    return i;
+    //int i = amrex::Math::floor((amrex::Clamp(point, lower, upper - dx / 4) - lower) / dx);
+    return = amrex::Math::floor((point - lower) / dx);
+    //ASSERT_FINITE(i)
+    //return i;
 }
 
 template <typename StructType>

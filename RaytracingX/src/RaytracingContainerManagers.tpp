@@ -62,6 +62,7 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
+        const amrex::Box& box = pti.tilebox();
 
         const int np = pti.numParticles();
 
@@ -111,6 +112,12 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
             amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
             
             V_sqr[i] =  SPATIAL_INNER_PRODUCT(V_down, gamma_inv_x);
+
+            if (particles[i].id() == -1) {
+                p_0[i] = 1/0;
+                L_z[i] = 1/0;
+                v_sqr[i] = 1/0;
+            }
             
         });
     }

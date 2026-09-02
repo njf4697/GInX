@@ -275,13 +275,16 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const auto phi0 = this->Geom(0).ProbHiArray();
 
     const auto dx = this->Geom(lev).CellSizeArray();
-    const auto plo = this->Geom(lev).ProbLoArray();
+
 
     const CCTK_REAL m = this->mass;
 
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
+        const amrex::Box& box = pti.tilebox();
+        const amrex::GpuArray<double, 3> plo = {pti.tilebox().smallEnd(0), pti.tilebox().smallEnd(1), pti.tilebox().smallEnd(2)};
+
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.

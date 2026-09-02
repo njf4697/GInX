@@ -62,8 +62,6 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
-        const amrex::Box& box = pti.tilebox();
-
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.

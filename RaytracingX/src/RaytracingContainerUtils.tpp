@@ -13,7 +13,7 @@ int RaytracingParticlesContainer<StructType>::get_interpolation_center(
     const int ghost_upper)
 {   
     int i = (point - lower) / dx;
-    //return i;
+    return i;
     assert(std::isfinite(i) && "interpolation onto grid failed");
     //fprintf(stderr, "%i, %i, %i\n", i, lower_tile_index-ghost_lower+2, upper_tile_index+ghost_upper-2);
     return amrex::Clamp(i, lower_tile_index-ghost_lower+2, upper_tile_index+ghost_upper-2);

@@ -108,6 +108,10 @@ namespace RaytracingX
             const CCTK_REAL point,
             const CCTK_REAL lower,
             const CCTK_REAL upper,
+            const int lower_tile_index,
+            const int upper_tile_index,
+            const int ghost_lower, 
+            const int ghost_upper,
             const CCTK_REAL dx);
 
         static void write_to_one_file(
@@ -133,9 +137,13 @@ namespace RaytracingX
             const CCTK_REAL dt,
             const amrex::GpuArray<double, 3> &dx,
             const int lev,
-            const amrex::GpuArray<double, 3> &plo, 
+            const amrex::GpuArray<double, 3> &plo,
             const amrex::GpuArray<double, 3> &phi,
-            const CCTK_REAL max_energy,
+            const amrex::GpuArray<int, 3> &idxlo,
+            const amrex::GpuArray<int, 3> &idxhi,
+            const amrex::GpuArray<int, 3> &nglo,
+            const amrex::GpuArray<int, 3> &nghi,
+            const CCTK_REAL max_energy, 
             const CCTK_REAL mass);
 
         void evolve_k1(

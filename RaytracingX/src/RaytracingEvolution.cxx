@@ -505,6 +505,8 @@ extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
       pc->write_deleted_particle_data(lev, cctk_time, std::string(out_dir) + "/" + final_data_file_name);
     }
   }}
+
+  CCTK_Barrier(cctkGH);
 }
 
 extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)

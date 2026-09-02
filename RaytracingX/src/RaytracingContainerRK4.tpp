@@ -290,7 +290,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {fbox.smallEnd(0)-idxlo[0], fbox.smallEnd(1)-idxlo[1], fbox.smallEnd(2)-idxlo[2]};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
         const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
 
         const int np = pti.numParticles();
@@ -405,7 +405,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {fbox.smallEnd(0)-idxlo[0], fbox.smallEnd(1)-idxlo[1], fbox.smallEnd(2)-idxlo[2]};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
         const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
 
         const int np = pti.numParticles();
@@ -535,7 +535,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {fbox.smallEnd(0)-idxlo[0], fbox.smallEnd(1)-idxlo[1], fbox.smallEnd(2)-idxlo[2]};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
         const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
         
         const int np = pti.numParticles();
@@ -665,7 +665,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
         const amrex::Box& fbox = pti.fabbox();
         const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
         const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {fbox.smallEnd(0)-idxlo[0], fbox.smallEnd(1)-idxlo[1], fbox.smallEnd(2)-idxlo[2]};
+        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
         const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
 
         const int np = pti.numParticles();

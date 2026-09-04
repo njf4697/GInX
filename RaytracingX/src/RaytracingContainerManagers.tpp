@@ -98,7 +98,9 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
         auto self = this;
 
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
-        {
+        {   
+            if (particles[i].id() == -1) { return; }
+
             //RaytracingX: Delete particle when geodesic reaches event horizon.
             const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0], idxlo[0], idxhi[0], nglo[0], nghi[0]);;
             const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1], idxlo[1], idxhi[1], nglo[1], nghi[1]);;

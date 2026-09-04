@@ -448,6 +448,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
         return;
       }
 
+      SKIP_DELETED_PARTICLES
+
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
                             metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, idxlo, idxhi, nglo, nghi, max_energy, m);
@@ -577,6 +579,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
         particles[i].id() = -1;
         return;
       }
+
+      SKIP_DELETED_PARTICLES
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
@@ -707,6 +711,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
         particles[i].id() = -1;
         return;
       }
+
+      SKIP_DELETED_PARTICLES
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,

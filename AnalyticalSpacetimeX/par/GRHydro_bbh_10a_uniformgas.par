@@ -1,0 +1,577 @@
+Cactus::cctk_run_title = "QC-0"
+Cactus::cctk_full_warnings         = yes
+Cactus::highlight_warning_messages = no
+Cactus::terminate       = "never"
+#Cactus::cctk_final_time = 200.0
+
+ActiveThorns = "IOUtil zlib LocalReduce"
+IO::out_dir = $parfile
+
+ActiveThorns = "AEILocalInterp"
+ActiveThorns = "Fortran"
+ActiveThorns = "GSL"
+ActiveThorns = "GenericFD"
+ActiveThorns = "HDF5"
+ActiveThorns = "LocalInterp"
+ActiveThorns = "LoopControl"
+ActiveThorns = "Slab"
+ActiveThorns = "TGRtensor"
+ActiveThorns = "InitBase"
+ActiveThorns = "Carpet CarpetLib CarpetInterp CarpetReduce CarpetSlab"
+
+#Carpet::verbose           = yes
+#Carpet::veryverbose       = yes
+Carpet::schedule_barriers = no
+Carpet::storage_verbose   = no
+#Carpet::timers_verbose    = no
+CarpetLib::output_bboxes  = no
+
+Carpet::domain_from_coordbase = yes
+Carpet::max_refinement_levels = 10
+
+driver::ghost_size       = 3
+Carpet::use_buffer_zones = yes
+
+#Carpet::prolongation_order_space = 3
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+
+# Parameters of thorn CarpetInterp (implementing interp)
+CarpetInterp::check_tree_search = "no"
+CarpetInterp::tree_search       = "yes"
+
+#Carpet::convergence_level = 0
+Carpet::init_fill_timelevels = yes
+Carpet::init_3_timelevels = "no"
+Carpet::enable_all_storage       = "no"
+
+Carpet::poison_new_timelevels = "no"
+CarpetLib::poison_new_memory  = yes
+
+Carpet::output_timers_every      = 5120
+CarpetLib::print_timestats_every = 5120
+CarpetLib::print_memstats_every  = 5120
+
+ActiveThorns = "NaNChecker"
+
+#NaNChecker::check_every     = 1 # 512
+#NaNChecker::verbose         = "all"
+#NaNChecker::action_if_found = "just_warn"
+##NaNChecker::action_if_found = "terminate"
+#NaNChecker::check_vars      = "
+#        GRHydro::em_Ax
+#        GRHydro::em_Az
+#        GRHydro::em_Ay
+#        #GRHydro::Bcons
+#        #GRHydro::Bvecxminus
+#        #GRHydro::Bvecxplus
+#        GRHydro::em_psi6phi
+#        #HydroBase::rho 
+#        #HydroBase::vel 
+#        ADMBase::metric
+#        ADMBase::curv
+#        ADMBase::lapse
+#        ADMBase::shift
+#        #IllinoisGRMHD::rho_b
+#        #IllinoisGRMHD::P
+#        #IllinoisGRMHD::Bx
+#        #IllinoisGRMHD::By
+#        #IllinoisGRMHD::Bz
+#        #IllinoisGRMHD::Ax
+#        #IllinoisGRMHD::Ay
+#        #IllinoisGRMHD::Az
+#"
+
+ActiveThorns = "Boundary CartGrid3D CoordBase SymBase"
+
+CoordBase::domainsize = "minmax"
+CartGrid3D::type = "coordbase"
+grid::avoid_origin = "no"
+
+#CoordBase::xmin = -10.00
+#CoordBase::ymin = -10.00
+#CoordBase::zmin = -10.00
+#CoordBase::xmax = +10.00
+#CoordBase::ymax = +10.00
+#CoordBase::zmax = +10.00
+#CoordBase::dx   =    0.100
+#CoordBase::dy   =    0.100
+#CoordBase::dz   =    0.100
+CoordBase::xmin = -240.00
+CoordBase::ymin = -240.00
+CoordBase::zmin = -240.00
+CoordBase::xmax = +240.00
+CoordBase::ymax = +240.00
+CoordBase::zmax = +240.00
+CoordBase::dx   =    2.0 #2.00
+CoordBase::dy   =    2.0 #2.00
+CoordBase::dz   =    2.0 #2.00
+
+CoordBase::boundary_size_x_lower     = 3
+CoordBase::boundary_size_y_lower     = 3
+CoordBase::boundary_size_z_lower     = 3
+CoordBase::boundary_size_x_upper     = 3
+CoordBase::boundary_size_y_upper     = 3
+CoordBase::boundary_size_z_upper     = 3
+
+ActiveThorns = "CarpetMask"
+
+CarpetMask::verbose = no
+
+CarpetMask::excluded_surface       [0] = 0
+CarpetMask::excluded_surface_factor[0] = 1.0
+
+CarpetMask::excluded_surface       [1] = 1
+CarpetMask::excluded_surface_factor[1] = 1.0
+
+CarpetMask::excluded_surface       [2] = 2
+CarpetMask::excluded_surface_factor[2] = 1.0
+
+#ActiveThorns = "GRHydro_Refluxing Refluxing"
+#GRHydro_Refluxing::nvars               = 8
+#Carpet::refinement_centering  = "cell"
+#CoordBase::boundary_staggered_x_lower = "yes"
+#CoordBase::boundary_staggered_y_lower = "yes"
+#CoordBase::boundary_staggered_z_lower = "yes"
+#CoordBase::boundary_staggered_x_upper = "yes"
+#CoordBase::boundary_staggered_y_upper = "yes"
+#CoordBase::boundary_staggered_z_upper = "yes"
+
+ActiveThorns = "CarpetRegrid2 CarpetTracker"
+CarpetTracker::surface[0] = 0
+CarpetTracker::surface[1] = 1
+#CarpetTracker::surface[2] = 2
+
+CarpetRegrid2::regrid_every            = 128
+CarpetRegrid2::verbose                 = no
+CarpetRegrid2::freeze_unaligned_levels = "yes"
+CarpetRegrid2::freeze_unaligned_parent_levels = "yes"
+CarpetRegrid2::ensure_proper_nesting   = "yes"
+CarpetRegrid2::snap_to_coarse          = "yes"
+#CarpetRegrid2::min_distance          = 0.  # FIXME: double-check this
+CarpetRegrid2::num_centres = 3
+
+CarpetRegrid2::num_levels_1         =   6
+CarpetRegrid2::position_x_1         =   5.0
+CarpetRegrid2::radius_1[ 1]         =   64.0
+CarpetRegrid2::radius_1[ 2]         =   32.0
+CarpetRegrid2::radius_1[ 3]         =   16.0
+CarpetRegrid2::radius_1[ 4]         =    6.0
+CarpetRegrid2::radius_1[ 5]         =    3.0
+CarpetRegrid2::radius_1[ 6]         =    1.0
+CarpetRegrid2::movement_threshold_1 =    0.17
+
+CarpetRegrid2::num_levels_2         = 6
+CarpetRegrid2::position_x_2         =  -5.0
+CarpetRegrid2::radius_2[ 1]         =   64.0
+CarpetRegrid2::radius_2[ 2]         =   32.0
+CarpetRegrid2::radius_2[ 3]         =   16.0
+CarpetRegrid2::radius_2[ 4]         =   6.0
+CarpetRegrid2::radius_2[ 5]         =   3.0
+CarpetRegrid2::radius_2[ 6]         =   1.0
+CarpetRegrid2::movement_threshold_2 =   0.17
+
+CarpetRegrid2::num_levels_3         =  4
+CarpetRegrid2::active_3             = yes
+CarpetRegrid2::radius_3[ 1]         =  128.0
+CarpetRegrid2::radius_3[ 2]         =  32 #64.0
+CarpetRegrid2::radius_3[ 3]         =  16 #32.0
+#CarpetRegrid2::radius_3[ 4]         =  16.0
+#CarpetRegrid2::radius_3[ 5]         =   4.0
+#CarpetRegrid2::radius_3[ 6]         =   2.0
+#CarpetRegrid2::movement_threshold_3 =   0.16
+
+
+# ==============================================================================
+# Initial data
+# ==============================================================================
+ActiveThorns = "InitBase HydroBase TmunuBase Vectors" 
+
+
+# -------------------- InitBase ------------------------------------------------
+InitBase::initial_data_setup_method = "init_some_levels"
+
+# -------------------- HydroBase -----------------------------------------------
+# ReadInterpolate ignores the following parameters, which are however required
+# to allocate storage and for the evolution of the interpolated data
+
+#ActiveThorns = "Seed_Magnetic_Fields 
+ActiveThorns = "GRHydro"
+HydroBase::initial_hydro = "uniform"
+#HydroBase::initial_Avec = "uniform"
+#
+HydroBase::initial_Aphi  = "zero"
+#HydroBase::initial_Avec  = "zero"
+#HydroBase::initial_Bvec = "zero" #dipole" #oloidal_cut" #dipole"
+#MoL::initial_data_is_crap = "yes"
+#HydroBase::initial_Bvec  = "zero"
+
+#Seed_Magnetic_Fields::Afield_type = "Uniform"
+#Seed_Magnetic_Fields::invbeta_uniform_bz = 1e-10
+#Seed_Magnetic_Fields::r_gap = 0
+#Seed_Magnetic_Fields::rho_b_init = 1.0
+#Seed_Magnetic_Fields::rho_b_atm_init = 1e-8
+HydroBase::timelevels        = 3 ##1
+
+ActiveThorns = "GRHydro_InitData"
+GRHydro_InitData::rho_bbh_init = 1e-2
+GRHydro_InitData::invbeta_bbh  = 1e-30
+GRHydro_InitData::radius_bbh_gap  = 8
+GRHydro_InitData::rho_bbh_atm_init = 1e-7
+#HydroBase::initial_Avec = "initialmagfield"
+GRHydro::transport_constraints     = "yes"
+#GRHydro::cell_centered_A    = "yes"          # use constraint transport
+#GRHydro::staggered_fluxct_A    = "yes"          # use constraint transport
+#GRHydro::use_Lorenz_gauge          = "yes"           # damping for the modified Lorentz gauge -> 0.1
+GRHydro::damp_lorenz               = 1 #2.5            # damping for the modified Lorentz gauge
+CarpetLib::support_staggered_operators = "yes"
+GRHydro::track_divB                = "yes"
+GRHydro::calculate_bcom            = "yes"
+#GRHydro_InitData::poloidal_A_b = 1e-10 #1e-6 #1e-3
+#GRHydro_InitData::poloidal_P_cut = 1e-4 #5e-6 #5e-8
+##GRHydro_InitData::poloidal_n_p = 3
+##GRHydro_InitData::poloidal_rho_max = 1.28e-3
+#GRHydro_InitData::poloidal_A_b = 1e-20 #1.0e-3 #1e-4 #1e-6 #1e-3
+#GRHydro_InitData::cylrad0 = 3.5  #dipole geometry
+#GRHydro_InitData::poloidal_P_cut     = 9e-12 #4e-12 #5.0e-11
+
+# -------------------- TmunuBase -----------------------------------------------
+#TmunuBase::prolongation_type     = "none"
+#TmunuBase::stress_energy_at_rhs  = yes
+#TmunuBase::stress_energy_storage = yes
+#TmunuBase::timelevels            = 1
+#TmunuBase::support_old_CalcTmunu_mechanism = "no"
+
+# -------------------- EOS -----------------------------------------------------
+
+#ID_converter_ILGRMHD::K_Initial     = 0.2 # 1e-3
+#ID_converter_ILGRMHD::Gamma_Initial = 1.3333 #1.66666666666667
+#IllinoisGRMHD::neos     = 1
+#IllinoisGRMHD::K_poly   = 0.2 #1e-3
+#IllinoisGRMHD::gamma_th = 1.3333333 #1.66666666666667
+#IllinoisGRMHD::verbose  = "no"
+
+#Seed_Magnetic_Fields::kappa   = 100 #0.2 #1e-3
+#Seed_Magnetic_Fields::gamma = 1.66666666 #333333 #1.66666666666667
+
+
+# ----------------- IllinoisGRMHD ----------------------------------------------
+#IllinoisGRMHD::conserv_to_prims_debug = 0
+#IllinoisGRMHD::Psi6threshold          = 1.5
+#IllinoisGRMHD::rho_b_max               = 10000
+#IllinoisGRMHD::gamma_speed_limit      = 10.   # Default  ##50.  # As in the SphericalNR run
+#IllinoisGRMHD::damp_lorenz            = 2.5 #75  # 1.5/dt_max  # As suggested by Zach Etienne
+#IllinoisGRMHD::tau_atm   = 5.0e-10
+#IllinoisGRMHD::rho_b_atm = 1.0e-8
+#IllinoisGRMHD::Symmetry               = "none"
+#IllinoisGRMHD::update_Tmunu           = no  # Decouple spacetime from matter evolution
+
+HydroBase::evolution_method      = "GRHydro"
+GRHydro::method_type               = "RSA FV"
+GRHydro::recon_method              = "weno-z" #mp5"
+GRHydro::recon_vars                = "primitive"
+GRHydro::riemann_solver            = "HLLE"
+GRHydro::bound                     = "flat" #none"
+GRHydro::GRHydro_eos_type          = "General"
+GRHydro::GRHydro_eos_table         = "Ideal_Fluid"
+GRHydro::GRHydro_enable_internal_excision = "no"
+GRHydro::use_cxx_code = "yes"
+GRHydro::Grhydro_MaxNumConstrainedVars = 13
+GRHydro::GRHydro_MaxNumEvolvedVars     = 10
+GRHydro::rho_abs_min               = 1e-8
+#GRHydro::initial_rho_abs_min       = 1e-6
+#
+#GRHydro::apply_drift_floor            = "no"
+#GRHydro::sigma_floor     = 10
+#GRHydro::eps_floor       = 1e-10
+#GRHydro::w_ceiling       = 5.0
+#GRHydro::eps_ceiling     = 1e4
+#GRHydro::rho_ceiling     = 1e2
+#GRHydro::alp_ceiling     = 0.6  #0.7
+##GRHydro::eps_floor            = 1
+GRHydro::reconstruct_Wv = "yes"
+GRHydro::w_ceiling  = 10
+GRHydro::cap_rho  = 10.0
+GRHydro::cap_temp  = 10
+GRHydro::check_sigma_drift = "no"
+GRHydro::apply_prims_cap = "yes"
+GRHydro::TVD_gLxF_drift_frame = "yes"
+#GRHydro::max_sigma_drift = 1
+
+# con2prim settings
+#GRHydro::c2p_reset_pressure        = "yes"
+GRHydro::GRHydro_atmo_tolerance    = 0.01
+GRHydro::GRHydro_c2pMHD_method = 1
+GRHydro::GRHydro_c2pMHD_method_backup = 5
+GRHydro::GRHydro_use_c2pMHD_method_backup = "yes"
+grhydro::grhydro_c2p_warnlevel          = 1
+grhydro::grhydro_c2p_warn_from_reflevel = 1
+grhydro::GRHydro_c2p_grace_alp = 0.7
+# --- EOS Omni ---
+eos_omni::poly_gamma                            = 1.333333 #666666666666667 #2.0
+eos_omni::poly_gamma_initial                    = 1.333333 #666666666666667 #2.0
+eos_omni::poly_k                                = 0.2
+eos_omni::gl_k                                  = 0.2
+EOS_Omni::gl_gamma                 = 1.3333333 #666666666666667
+GRHydro::initial_Gamma             = 1.3333333 #666666666666667
+GRHydro::GRHydro_stencil            = 3
+
+#ActiveThorns = "Seed_Magnetic_Fields"
+#HydroBase::initial_hydro = "Uniform_Gas"
+#Seed_Magnetic_Fields::Afield_type  = "Uniform"
+#Seed_Magnetic_Fields::kappa   = 0.2 #1e-3
+#Seed_Magnetic_Fields::gamma = 1.33333333 #66666666666667
+#Seed_Magnetic_Fields::r_gap = 8
+#Seed_Magnetic_Fields::rho_b_init = 1.0
+#Seed_Magnetic_Fields::rho_b_atm_init = 1e-2
+
+#GRHydro::psidcspeed = "light speed"
+#GRHydro::decouple_normal_Bfield = "yes"
+# >>> B-field evolution >>>>>>>>>>>>>>>>>>>>>>>
+HydroBase::Bvec_evolution_method   = "GRHydro_Avec" #GRHydro"      # use the B-field for evolution (or "GRHydro_Avec")
+# --- vector potential ---
+# --- analysis ---
+#GRHydro::track_divB                = "yes"          # track divB=0 violations
+
+ActiveThorns = "MoL Time"
+MoL::ODE_Method             = "RK4"
+MoL::MoL_Intermediate_Steps = 4
+MoL::MoL_Num_Scratch_Levels = 1
+#Carpet::time_refinement_factors = "[1, 1, 2, 4, 8, 16, 32, 64, 128, 256]"
+#Carpet::time_refinement_factors = "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]"
+Time::dtfac = 0.25
+
+ActiveThorns = "ADMBase ADMCoupling ADMMacros CoordGauge SpaceMask StaticConformal TmunuBase"
+
+ADMMacros::spatial_order = 4
+SpaceMask::use_mask      = "yes"
+
+#=======================
+# Analytical Spacetime
+# ======================
+ActiveThorns = "AnalyticalSpacetime"
+AnalyticalSpacetime::analytical_metric_type = "SuperposedBBH" #BoostedBH"
+AnalyticalSpacetime::traj_read_table = "yes"
+AnalyticalSpacetime::traj_table_name ="/home/mvxcombi/repo/analyticalbbh/CBwaves/src/CircularOrbit_a0_m05_sep10.h5"
+#AnalyticalSpacetime::traj_table_name ="/home/d/dsiegel/lcombi/repository/analyticalbbh/CBwaves/src/CircularOrbit_a0_m05_sep10.h5"
+AnalyticalSpacetime::AST_adjust_mass1 = 1.0
+AnalyticalSpacetime::AST_adjust_mass2 = 1.0
+AnalyticalSpacetime::set_positions = "yes"
+AnalyticalSpacetime::surf_storage_BH1 = 0
+AnalyticalSpacetime::surf_storage_BH2 = 1
+AnalyticalSpacetime::AST_cutoff_floor = 0.5 # 1e-1
+AnalyticalSpacetime::AST_a1_buffer = 0.01
+AnalyticalSpacetime::AST_a2_buffer = 0.01
+
+ADMBase::initial_lapse = "analytical_spacetime"
+ADMBase::initial_shift = "analytical_spacetime"
+ADMBase::initial_data = "analytical_spacetime"
+ADMBase::evolution_method = "analytical_spacetime"
+ADMBase::metric_type = "physical"
+
+AnalyticalSpacetime::evolve_metric_every = 128
+ADMBase::lapse_prolongation_type = "none"
+ADMBase::shift_prolongation_type = "none"
+ADMBase::metric_prolongation_type = "none"
+
+ADMBase::metric_timelevels = 3
+ADMBase::lapse_timelevels = 3
+ADMBase::shift_timelevels = 3
+
+#Boundary::radpower                     = 2
+
+ActiveThorns = "SphericalSurface"
+
+SphericalSurface::nsurfaces = 6
+SphericalSurface::maxntheta = 39
+SphericalSurface::maxnphi   = 76
+
+SphericalSurface::ntheta      [0] = 39
+SphericalSurface::nphi        [0] = 76
+SphericalSurface::nghoststheta[0] = 2
+SphericalSurface::nghostsphi  [0] = 2
+
+SphericalSurface::ntheta      [1] = 39
+SphericalSurface::nphi        [1] = 76
+SphericalSurface::nghoststheta[1] = 2
+SphericalSurface::nghostsphi  [1] = 2
+
+SphericalSurface::ntheta      [2] = 39
+SphericalSurface::nphi        [2] = 76
+SphericalSurface::nghoststheta[2] = 2
+SphericalSurface::nghostsphi  [2] = 2
+
+SphericalSurface::ntheta      [3] = 39
+SphericalSurface::nphi        [3] = 76
+SphericalSurface::nghoststheta[3] = 2
+SphericalSurface::nghostsphi  [3] = 2
+
+SphericalSurface::ntheta      [4] = 39
+SphericalSurface::nphi        [4] = 76
+SphericalSurface::nghoststheta[4] = 2
+SphericalSurface::nghostsphi  [4] = 2
+
+SphericalSurface::ntheta      [5] = 39
+SphericalSurface::nphi        [5] = 76
+SphericalSurface::nghoststheta[5] = 2
+SphericalSurface::nghostsphi  [5] = 2
+
+#=========================
+# Apparent horizons
+#========================
+ActiveThorns = "ML_ADMConstraints"
+ActiveThorns = "AHFinderDirect"
+
+AHFinderDirect::find_every = 127
+
+AHFinderDirect::run_at_CCTK_POST_RECOVER_VARIABLES = no
+
+AHFinderDirect::move_origins            = yes
+AHFinderDirect::reshape_while_moving    = yes
+AHFinderDirect::predict_origin_movement = yes
+
+AHFinderDirect::max_Newton_iterations__initial	= 100
+AHFinderDirect::max_Newton_iterations__subsequent	= 10
+AHFinderDirect::max_allowable_Theta_growth_iterations	= 10
+AHFinderDirect::max_allowable_Theta_nonshrink_iterations	= 10
+
+AHFinderDirect::geometry_interpolator_name = "Lagrange polynomial interpolation"
+AHFinderDirect::geometry_interpolator_pars = "order=4"
+AHFinderDirect::surface_interpolator_name  = "Lagrange polynomial interpolation"
+AHFinderDirect::surface_interpolator_pars  = "order=4"
+
+AHFinderDirect::output_h_every = 1024
+
+AHFinderDirect::N_horizons = 3
+
+AHFinderDirect::origin_x                             [1] = 5.0 #$x_punc 
+AHFinderDirect::initial_guess__coord_sphere__x_center[1] = 5.0 #$x_punc
+AHFinderDirect::initial_guess__coord_sphere__radius  [1] = 0.85
+AHFinderDirect::which_surface_to_store_info          [1] = 0
+AHFinderDirect::reset_horizon_after_not_finding      [1] = yes
+#AHFinderDirect::dont_find_after_individual_time      [1] = 30.0
+AHFinderDirect::track_origin_from_grid_scalar[1] = yes
+AHFinderDirect::track_origin_source_x[1] = "AnalyticalSpacetime::xbh1"
+AHFinderDirect::track_origin_source_y[1] = "AnalyticalSpacetime::ybh1"
+AHFinderDirect::track_origin_source_z[1] = "AnalyticalSpacetime::zbh1"
+AHFinderDirect::patch_system_type[1]                 = "full sphere"
+
+AHFinderDirect::origin_x                             [2] = -5.0 #$x_punc
+AHFinderDirect::initial_guess__coord_sphere__x_center[2] = -5.0 #$x_punc
+AHFinderDirect::initial_guess__coord_sphere__radius  [2] = 0.85 #2*$par_m2
+AHFinderDirect::which_surface_to_store_info          [2] = 1
+AHFinderDirect::reset_horizon_after_not_finding      [2] = yes
+#AHFinderDirect::dont_find_after_individual_time      [2] = 30.0
+AHFinderDirect::track_origin_from_grid_scalar[2] = yes
+AHFinderDirect::track_origin_source_x[2] = "AnalyticalSpacetime::xbh2"
+AHFinderDirect::track_origin_source_y[2] = "AnalyticalSpacetime::ybh2"
+AHFinderDirect::track_origin_source_z[2] = "AnalyticalSpacetime::zbh2"
+AHFinderDirect::patch_system_type[2]                 = "full sphere"
+
+# ============
+# Post merger
+# ============
+
+AHFinderDirect::initial_guess__coord_sphere__radius  [3] = 1.0
+AHFinderDirect::which_surface_to_store_info          [3] = 2
+AHFinderDirect::reset_horizon_after_not_finding      [3] = no
+AHFinderDirect::find_after_individual_time           [3] = 15.0
+
+ActiveThorns = "SetMask_SphericalSurface"
+SetMask_SphericalSurface::SetMask_SurfaceIndex[0] = 0
+SetMask_SphericalSurface::SetMask_RadiusFactor[0] = 0.7
+SetMask_SphericalSurface::SetMask_SurfaceIndex[1] = 1
+SetMask_SphericalSurface::SetMask_RadiusFactor[1] = 0.7
+SetMask_SphericalSurface::SetMask_SurfaceIndex[2] = 1
+SetMask_SphericalSurface::SetMask_RadiusFactor[2] = 0.7
+###SetMask_SphericalSurface::SetMask_MaskName = "GRHydro::bbh_excision_real_mask"
+##hydro_initexcision::hydro_initexcision  = "yes"
+#hydro_initexcision::hydro_initexcision_type  = "sphere"
+#hydro_initexcision::hydro_initexcision_coordinate_length  = 1.0 # should be slightly larger than a_BH = spin_BH*mass_BH 
+#
+
+#ActiveThorns = "QuasiLocalMeasures"
+#QuasiLocalMeasures::verbose              = yes
+#QuasiLocalMeasures::interpolator         = "Lagrange polynomial interpolation"
+#QuasiLocalMeasures::interpolator_options = "order=4"
+#QuasiLocalMeasures::surface_index[0] = 0
+#QuasiLocalMeasures::surface_index[1] = 1
+#QuasiLocalMeasures::surface_index[2] = 2
+#ActiveThorns = "Dissipation"
+#Dissipation::epsdis     = 0.1
+#Dissipation::order      = 5
+#Dissipation::extra_dissipation_in_horizons = "yes"
+#Dissipation::vars       = "
+#  HydroBase::Avec   # apply dissipation to magnetic field
+#  #GRHydro::em_Ax   # apply dissipation to magnetic field
+#  #GRHydro::em_Ay   # apply dissipation to magnetic field
+#  #GRHydro::em_Az   # apply dissipation to magnetic field
+#  #GRHydro::em_psi6phi   # apply dissipation to magnetic field
+#"
+
+
+ActiveThorns = "CarpetIOBasic"
+
+IOBasic::outInfo_every      = 8
+IOBasic::outInfo_reductions = "maximum"
+IOBasic::outInfo_vars       = "
+ Carpet::physical_time_per_hour
+ ML_ADMConstraints::H
+ HydroBase::rho 
+ GRHydro::Bcons
+ HydroBase::press
+ HydroBase::eps
+ #GRHydro::em_Ax
+ #GRHydro::em_Ay
+ #GRHydro::em_Az
+ #GRHydro::em_psi6phi
+"
+
+Activethorns = "CarpetIOHDF5"
+CarpetIOHDF5::one_file_per_group     = no
+CarpetIOHDF5::output_symmetry_points = no
+CarpetIOHDF5::out3D_ghosts           = yes #no
+CarpetIOHDF5::compression_level                  = 0
+CarpetIOHDF5::out2D_dir       = "HDF5_2D"
+CarpetIOHDF5::out2D_every     = 512 #1024 # 2048
+CarpetIOHDF5::out2D_criterion = "divisor"
+CarpetIOHDF5::out2D_vars      = "
+ HydroBase::Bvec
+ GRHydro::Bcons
+ GRHydro::em_Ax
+ GRHydro::B_norm
+ GRHydro::mhd_press_ratio
+ GRHydro::em_Ay
+ GRHydro::tau
+ GRHydro::em_Az
+ GRHydro::em_psi6phi
+ HydroBase::press
+ HydroBase::eps
+ ADMBase::lapse
+ ADMBase::shift
+ ADMBase::metric
+ ADMBase::curv
+ HydroBase::rho 
+ HydroBase::vel 
+ HydroBase::w_lorentz
+   ML_ADMConstraints::ML_Ham
+   ML_ADMConstraints::ML_mom
+"
+
+IOHDF5::checkpoint                  = yes
+IO::checkpoint_dir                  = $parfile
+IO::checkpoint_ID                   = yes
+IO::checkpoint_every_walltime_hours = 6.0
+IO::checkpoint_on_terminate         = yes
+
+IO::recover     = "autoprobe"
+IO::recover_dir = $parfile
+
+ActiveThorns = "Formaline"
+ActiveThorns = "TimerReport"
+
+TimerReport::out_every                  =  5024
+TimerReport::out_filename               = "TimerReport"
+TimerReport::output_all_timers_together = yes
+TimerReport::output_all_timers_readable = yes
+TimerReport::n_top_timers               = 20

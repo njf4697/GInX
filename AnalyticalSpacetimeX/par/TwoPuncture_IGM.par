@@ -1,0 +1,984 @@
+ActiveThorns = "
+    ADMbase
+    ADMMacros
+    ADMMass            # FIXME: activate or not?
+    AEILocalInterp
+    AHFinderDirect
+    Boundary
+    Carpet
+    CarpetInterp
+    CarpetIOASCII
+    CarpetIOBasic
+    CarpetIOASCII
+    CarpetIOHDF5
+    CarpetIOScalar
+    CarpetLib
+    CarpetMask
+    CarpetReduce
+    CarpetRegrid2
+    CarpetSlab
+    CarpetTracker
+    CartGrid3D
+    Convert_to_HydroBase
+    CoordBase
+    CoordGauge
+    Dissipation
+    EOS_Omni
+    Formaline
+    HydroBase
+    ID_converter_ILGRMHD  # To convert ADMBase and HydroBase variables into IGM variables
+    IllinoisGRMHD
+    InitBase
+    IOUtil
+    LoopControl
+    ML_ADMConstraints
+    ML_BSSN
+    ML_BSSN_Helper
+    MoL
+    Multipole
+    NaNChecker
+    NewRad        # Provides function ExtrapolateGammas, used by ML_BSSN_Helper
+    Outflow
+    PunctureTracker
+    QuasiLocalMeasures
+    SphericalSurface
+    StaticConformal
+    SummationByParts
+    SymBase
+    SystemStatistics
+    TerminationTrigger
+    Time
+    TimerReport
+    TmunuBase
+    TwoPunctures
+    WeylScal4
+"
+
+
+
+# ==============================================================================
+# User-defined parameters
+# ==============================================================================
+
+# There are 13 refinement levels (including the coarsest one)
+# -----------------------------------------------------------
+#$Carpet_max_refinement_levels = 13
+$Carpet_max_refinement_levels = 7
+$reflevel_factor              = 32 #256  # 2^8  # See Carpet::time_refinement_factors below
+$regrid_analysis_factor       = 32 #64   # 2^6  # See Carpet::time_refinement_factors below
+
+
+# Number of collocation points used to solve the Hamiltonian and momentum
+# constraint equations
+# -----------------------------------------------------------------------
+$n_collocation_points = 40
+
+
+# Mass parameter for each of the two punctures
+# --------------------------------------------
+$par_m = 0.3066016  # Gives m ~= 0.5 for each puncture
+
+
+# Position of puncture 1
+# ----------------------
+$x_punc1 = 10.0 
+$y_punc1 = 0. 
+$z_punc1 = 0.
+
+# Position of puncture 2
+# ----------------------
+$x_punc2 = -10.0
+$y_punc2 = 0.0
+$z_punc2 = 0.
+
+
+# Momentum of puncture 1
+# ----------------------
+$Px_punc1 = 0.0 
+$Py_punc1 = 0.0630579
+$Pz_punc1 = 0.
+
+# Momentum of puncture 2
+# ----------------------
+$Px_punc2 = 0.0 
+$Py_punc2 = -0.06305
+$Pz_punc2 = 0.
+
+
+# Spin of puncture 1
+# ------------------
+$Sx_punc1 = 0.
+$Sy_punc1 = 0.
+$Sz_punc1 = 0. 
+
+# Spin of puncture 2
+# -----------------
+$Sx_punc2 = 0.
+$Sy_punc2 = 0.
+$Sz_punc2 = 0. 
+
+# ==============================================================================
+
+
+
+# ==============================================================================
+# General setup
+# ==============================================================================
+
+# -------------------- Cactus ---------------------------------------------------
+Cactus::cctk_run_title             = "TwoPuncture ID evolve in IGM"
+Cactus::cctk_full_warnings         = yes
+Cactus::highlight_warning_messages = no
+
+Cactus::terminate   = "never" ##"iteration"
+##Cactus::terminate   = "iteration"
+Cactus::cctk_itlast = 0
+
+
+
+# -------------------- Carpet --------------------------------------------------
+Carpet::processor_topology = "automatic"  # Default
+
+Carpet::domain_from_coordbase = yes
+Carpet::convergence_level     = 0
+Carpet::max_refinement_levels = $Carpet_max_refinement_levels
+Carpet::refinement_centering  = "vertex"  ##"cell"
+ 
+Carpet::ghost_size       = 3
+Carpet::use_buffer_zones = yes
+
+#Carpet::regrid_during_initialisation = no
+#Carpet::regrid_during_recovery       = no
+#Carpet::regrid_in_level_mode         = yes
+
+Carpet::grid_structure_filename   = "carpet-grid-structure"
+Carpet::grid_coordinates_filename = "carpet.grid"
+
+Carpet::enable_all_storage = no
+
+Carpet::init_fill_timelevels  = yes
+Carpet::poison_new_timelevels = yes
+
+#Carpet::num_integrator_substeps = 4
+
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+
+Carpet::output_timer_tree_every = 8*$reflevel_factor  ##0
+Carpet::output_timers_every     = 8*$reflevel_factor  ##0
+##Carpet::timer_file              = ""  # Defaults to "carpet-timing-statistics"
+
+Carpet::verbose = no
+
+##Carpet::time_refinement_factors = "[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]"
+#Carpet::time_refinement_factors = "[1, 1, 1, 1, 1,  2,  4,  8,  16,  32,  64,  128,  256]"
+#Carpet::time_refinement_factors = "[1, 2, 4, 8, 16]"
+
+
+
+
+# -------------------- CarpetLib -----------------------------------------------
+CarpetLib::print_memstats_every        = 8*$reflevel_factor
+CarpetLib::print_timestats_every       = 8*$reflevel_factor
+CarpetLib::support_staggered_operators = yes
+
+##CarpetLib::poison_new_memory = yes
+##CarpetLib::poison_value      = 114
+
+
+
+# -------------------- CarpetMask ----------------------------------------------
+CarpetMask::excluded_surface[0] = 0
+CarpetMask::excluded_surface[1] = 1
+CarpetMask::excluded_surface[2] = 2
+
+CarpetMask::excluded_surface_factor[0] = 1.
+CarpetMask::excluded_surface_factor[1] = 1.
+CarpetMask::excluded_surface_factor[2] = 1.
+
+CarpetMask::verbose = no
+
+
+
+# -------------------- IO ------------------------------------------------------
+# Needed by ReadInterpolate
+IO::filereader_ID_dir = "/work2/07825/lennoggi/frontera/CBD_493_140_280_SerialFFTfilter_64nodes_7OMP_checkpoints"
+
+# Checkpointing
+IO::checkpoint_dir                  = "../Checkpoint"
+##IO::checkpoint_every                = 4096
+IO::checkpoint_every_walltime_hours = 12.
+IO::checkpoint_id                   = no
+IO::checkpoint_keep                 = 1
+IO::checkpoint_on_terminate         = yes
+
+# Miscellaneous options
+IO::out_dir                   = "Miscellaneous"
+IO::abort_on_io_errors        = yes
+IO::parfile_write             = "generate"
+IO::print_timing_info         = yes
+IO::strict_io_parameter_check = yes
+IO::verbose                   = "full"
+
+# Recovery
+IO::recover     = "autoprobe"
+IO::recover_dir = "../Checkpoint"
+
+# Limit the number of MPI processes dumping 3D output files to disk in order to
+# avoid stressing the filesystem
+#
+# ***** IMPORTANT *****
+# Set this up so that only ONE 3D OUTPUT FILE PER NODE (for each grid function)
+# is dumped to disk. For example, when using 7 OpenMP threads per MPI process
+# (which means, on Frontera, 56/7=8 MPI processes per node), the following setup
+# does the job:
+#     IO::out_mode       = "np"
+#     IO::out_proc_every = 8
+#
+IO::out_mode       = "np"  ##"one_file"
+IO::out_proc_every = 8
+
+
+
+# -------------------- LoopControl ---------------------------------------------
+LoopControl::random_jump_probability = 0
+
+
+
+# -------------------- TerminationTrigger --------------------------------------
+TerminationTrigger::create_termination_file = yes
+TerminationTrigger::max_walltime            = 48.
+TerminationTrigger::on_remaining_walltime   = 15.  ##30.
+TerminationTrigger::termination_file        = "../Terminate"
+TerminationTrigger::termination_from_file   = yes
+
+
+
+# -------------------- TimerReport ---------------------------------------------
+TimerReport::out_every                  = 8*$reflevel_factor
+TimerReport::out_filename               = "Timer_report.txt"
+TimerReport::output_all_timers_readable = yes
+TimerReport::output_all_timers          = yes
+
+
+
+
+
+# ==============================================================================
+# Grid
+# ==============================================================================
+
+# -------------------- CartGrid3D ----------------------------------------------
+CartGrid3D::type = "coordbase"
+
+
+
+# -------------------- CoordBase -----------------------------------------------
+CoordBase::xmin = -256 #8192.  ## + 0.015625  # Off the z axis
+CoordBase::xmax = +256 #8192.  ## + 0.015625  # Off the z axis
+CoordBase::ymin = -256 #8192.  ## + 0.015625
+CoordBase::ymax = +256 #8192.  ## + 0.015625  # Off the z axis
+CoordBase::zmin = -256 #8192.
+CoordBase::zmax = +256 #8192.
+
+# To avoid interpolating at the origin of the destination grid
+##CoordBase::boundary_staggered_x_lower = yes
+##CoordBase::boundary_staggered_x_upper = yes
+##CoordBase::boundary_staggered_y_lower = yes
+##CoordBase::boundary_staggered_y_upper = yes
+##CoordBase::boundary_staggered_z_lower = yes
+##CoordBase::boundary_staggered_z_upper = yes
+
+CoordBase::boundary_size_x_lower = 3
+CoordBase::boundary_size_y_lower = 3
+CoordBase::boundary_size_z_lower = 3
+CoordBase::boundary_size_x_upper = 3
+CoordBase::boundary_size_y_upper = 3
+CoordBase::boundary_size_z_upper = 3
+
+CoordBase::spacing    = "gridspacing"
+CoordBase::domainsize = "minmax"
+
+CoordBase::dx = 16 #64.
+CoordBase::dy = 16 #64.
+CoordBase::dz = 16 #64.
+
+
+
+# -------------------- CarpetRegrid2 -------------------------------------------
+
+# General parameters
+# ------------------
+CarpetRegrid2::regrid_every          = $regrid_analysis_factor
+CarpetRegrid2::ensure_proper_nesting = yes
+CarpetRegrid2::snap_to_coarse        = yes
+CarpetRegrid2::min_distance          = 0.  # FIXME: double-check this
+##CarpetRegrid2::verbose = yes
+
+
+# Grid hierarchies
+# ----------------
+CarpetRegrid2::num_centres = 3
+
+CarpetRegrid2::num_levels_1 = $Carpet_max_refinement_levels      # Hierarchy centered around puncture 1
+CarpetRegrid2::num_levels_2 = $Carpet_max_refinement_levels      # Hierarchy centered around puncture 2
+CarpetRegrid2::num_levels_3 = $Carpet_max_refinement_levels      #- 3  # Hierarchy centered around the origin
+
+
+# Positions of the grid hierarchies
+# ---------------------------------
+CarpetRegrid2::position_x_1 = $x_punc1
+CarpetRegrid2::position_y_1 = $y_punc1
+CarpetRegrid2::position_z_1 = $z_punc1
+
+CarpetRegrid2::position_x_2 = $x_punc2
+CarpetRegrid2::position_y_2 = $y_punc2
+CarpetRegrid2::position_z_2 = $z_punc2
+
+CarpetRegrid2::position_x_3 = 0.
+CarpetRegrid2::position_y_3 = 0.
+CarpetRegrid2::position_z_3 = 0.
+
+
+# Radii of the grid hierarchies
+# -----------------------------
+#CarpetRegrid2::radius_1 =   [-1., 6., 6., 3., 0.5]
+#CarpetRegrid2::radius_2 =   [-1., 6., 6., 3., 0.5]
+#
+#CarpetRegrid2::radius_x_3 = [-1., 128., 64., 32., 20.]
+#CarpetRegrid2::radius_y_3 = [-1., 128., 64., 32., 20.]
+#CarpetRegrid2::radius_z_3 = [-1.,  72., 48., 24., 20.]
+#
+###CarpetRegrid2::radius_x_3 = [-1., 160., 80., 40., 20.]
+###CarpetRegrid2::radius_y_3 = [-1., 160., 80., 40., 20.]
+###CarpetRegrid2::radius_z_3 = [-1.,  60., 40., 25., 20.]
+
+CarpetRegrid2::position_x_1         = +1.168642873
+CarpetRegrid2::radius_1[ 1]         =  64.0
+CarpetRegrid2::radius_1[ 2]         =  16.0
+CarpetRegrid2::radius_1[ 3]         =   8.0
+CarpetRegrid2::radius_1[ 4]         =   4.0
+CarpetRegrid2::radius_1[ 5]         =   2.0
+CarpetRegrid2::radius_1[ 6]         =   1.0
+CarpetRegrid2::movement_threshold_1 =   0.16
+
+CarpetRegrid2::position_x_2         = -1.168642873
+CarpetRegrid2::radius_2[ 1]         =  64.0
+CarpetRegrid2::radius_2[ 2]         =  16.0
+CarpetRegrid2::radius_2[ 3]         =   8.0
+CarpetRegrid2::radius_2[ 4]         =   4.0
+CarpetRegrid2::radius_2[ 5]         =   2.0
+CarpetRegrid2::radius_2[ 6]         =   1.0
+CarpetRegrid2::movement_threshold_2 =   0.16
+
+CarpetRegrid2::active_3             = no
+CarpetRegrid2::radius_3[ 1]         =  64.0
+CarpetRegrid2::radius_3[ 2]         =  16.0
+CarpetRegrid2::radius_3[ 3]         =   8.0
+CarpetRegrid2::radius_3[ 4]         =   4.0
+CarpetRegrid2::radius_3[ 5]         =   2.0
+CarpetRegrid2::radius_3[ 6]         =   1.0
+CarpetRegrid2::movement_threshold_3 =   0.16
+
+# ==============================================================================
+# Initial data
+# ==============================================================================
+
+# -------------------- InitBase ------------------------------------------------
+InitBase::initial_data_setup_method = "init_some_levels"
+
+
+
+
+# ==============================================================================
+# Evolution
+# ==============================================================================
+
+# -------------------- ADMBase -------------------------------------------------
+# ReadInterpolate ignores the following parameters, which are however required
+# to allocate storage and for the evolution of the interpolated data
+ADMBase::initial_data    = "TwoPunctures"
+ADMBase::initial_lapse   = "TwoPunctures-averaged"
+ADMBase::initial_shift   = "zero"
+ADMBase::initial_dtlapse = "zero"
+ADMBase::initial_dtshift = "zero"
+
+ADMBase::evolution_method         = "ML_BSSN"
+ADMBase::lapse_evolution_method   = "ML_BSSN"
+ADMBase::shift_evolution_method   = "ML_BSSN"
+ADMBase::dtlapse_evolution_method = "ML_BSSN"
+ADMBase::dtshift_evolution_method = "ML_BSSN"
+
+ADMBase::metric_type = "physical"
+
+# FIXME: check the following parameters
+ADMBase::metric_timelevels = 3 ##1
+ADMBase::lapse_timelevels  = 3 ##1
+ADMBase::shift_timelevels  = 3 ##1
+
+
+
+# -------------------- HydroBase -----------------------------------------------
+# ReadInterpolate ignores the following parameters, which are however required
+# to allocate storage and for the evolution of the interpolated data
+
+ActiveThorns = "Seed_Magnetic_Fields"
+HydroBase::initial_hydro = "Uniform_gas"
+
+HydroBase::initial_Aphi  = "zero"
+HydroBase::initial_Avec  = "zero"
+HydroBase::initial_Bvec  = "zero"
+Seed_Magnetic_Fields::Afield_type = "Uniform"
+Seed_Magnetic_Fields::kappa   = 0.01
+Seed_Magnetic_Fields::gamma = 1.66666666666667
+
+HydroBase::timelevels        = 3 ##1
+#HydroBase::prolongation_type = "ENO"
+
+
+
+# -------------------- TmunuBase -----------------------------------------------
+TmunuBase::prolongation_type     = "none"
+TmunuBase::stress_energy_at_rhs  = yes
+TmunuBase::stress_energy_storage = yes
+TmunuBase::timelevels            = 1
+
+
+
+# -------------------- MoL -----------------------------------------------------
+MoL::ODE_method             = "RK4"
+MoL::MoL_intermediate_steps = 4
+MoL::MoL_num_scratch_levels = 1
+
+
+
+# -------------------- Time ----------------------------------------------------
+#Time::dtfac = 0.25 # 0.03125  # dt_max = 2
+Carpet::time_refinement_factors = "[1, 1, 2, 4, 8, 16, 32, 64, 128, 256]"
+
+Time::dtfac = 0.25
+
+
+
+# -------------------- ML_BSSN -------------------------------------------------
+ML_BSSN::rhs_boundary_condition     = "NewRad"
+ML_BSSN::initial_boundary_condition = "extrapolate-gammas"
+
+# The beta driver is equal to 1/M, where the total ADM mass M is equal to 1
+# (Hydro_Disk_ID::torus_central_mass = 1. in the CBD parfile)
+ML_BSSN::betadriver      = 1.
+ML_BSSN::harmonicf       = 2.    # "1+log" gauge
+ML_BSSN::harmonicn       = 1     # "1+log" gauge
+ML_BSSN::shiftgammacoeff = 0.75
+
+ML_BSSN::advectLapse = 1
+ML_BSSN::advectShift = 1
+
+ML_BSSN::minimumlapse = 1.e-08
+
+
+
+# -------------------- Dissipation ---------------------------------------------
+Dissipation::epsdis = 0.1
+Dissipation::order  = 5
+Dissipation::vars   = "
+    ML_BSSN::ml_curv
+    ML_BSSN::ml_dtlapse
+    ML_BSSN::ml_dtshift
+    ML_BSSN::ml_gamma
+    ML_BSSN::ml_lapse
+    ML_BSSN::ml_log_confac
+    ML_BSSN::ml_metric
+    ML_BSSN::ml_shift
+    ML_BSSN::ml_trace_curv
+"
+
+
+# -------------------- EOS -----------------------------------------------------
+# In the CBD parfile, the EOS settings are:
+# Hydro_Disk_ID::torus_eos_k           = 0.01
+# Hydro_Disk_ID::torus_adiabatic_index = 1.66666666666667
+
+ID_converter_ILGRMHD::K_Initial     = 0.01
+ID_converter_ILGRMHD::Gamma_Initial = 1.66666666666667
+
+IllinoisGRMHD::neos     = 1
+IllinoisGRMHD::K_poly   = 0.01
+IllinoisGRMHD::gamma_th = 1.66666666666667
+
+# FIXME: *probably* not used
+EOS_Omni::poly_k     = 0.01
+EOS_Omni::poly_gamma = 1.66666666666667
+EOS_Omni::gl_k       = 0.01
+EOS_Omni::gl_gamma   = 1.66666666666667
+
+
+# ----------------- IllinoisGRMHD ----------------------------------------------
+IllinoisGRMHD::conserv_to_prims_debug = 0
+IllinoisGRMHD::Psi6threshold          = 4.
+IllinoisGRMHD::gamma_speed_limit      = 10.   # Default  ##50.  # As in the SphericalNR run
+IllinoisGRMHD::damp_lorenz            = 0.20 #75  # 1.5/dt_max  # As suggested by Zach Etienne
+IllinoisGRMHD::rho_b_atm          = 2.e-10
+IllinoisGRMHD::tau_atm            = 2.e-12  # FIXME: same as u_atm_max, not sure if will work
+IllinoisGRMHD::Symmetry               = "none"
+IllinoisGRMHD::update_Tmunu           = no  # Decouple spacetime from matter evolution
+
+##IllinoisGRMHD::rho_b_max              = 0.004  # Disabled
+#IllinoisGRMHD::u_atm              = 2.e-12
+#IllinoisGRMHD::atmo_falloff           = yes
+#IllinoisGRMHD::rho_b_max             = 15. ##0.
+
+
+
+# -------------------- SummationByParts ----------------------------------------
+SummationByParts::order = 4
+
+
+
+# -------------------- ADMMacros -----------------------------------------------
+ADMMacros::spatial_order = 4
+
+
+
+# -------------------- Boundary ------------------------------------------------
+Boundary::radpower = 2
+
+
+
+
+
+# ==============================================================================
+# Analysis
+# ==============================================================================
+
+# -------------------- SphericalSurface ----------------------------------------
+SphericalSurface::nsurfaces = 5
+SphericalSurface::maxntheta = 39
+SphericalSurface::maxnphi   = 76
+
+# ***** Spherical surface for puncture 1 *****
+SphericalSurface::ntheta[0]       = 39
+SphericalSurface::nphi[0]         = 76
+SphericalSurface::nghoststheta[0] = 2
+SphericalSurface::nghostsphi[0]   = 2
+
+# ***** Spherical surface for puncture 2 *****
+SphericalSurface::ntheta[1]       = 39
+SphericalSurface::nphi[1]         = 76
+SphericalSurface::nghoststheta[1] = 2
+SphericalSurface::nghostsphi[1]   = 2
+
+# ***** Spherical surface for the BH formed at merger *****
+SphericalSurface::ntheta[2]       = 39
+SphericalSurface::nphi[2]         = 76
+SphericalSurface::nghoststheta[2] = 2
+SphericalSurface::nghostsphi[2]   = 2
+
+# ***** Spherical surfaces needed by Outflow *****
+SphericalSurface::set_spherical[3] = yes
+SphericalSurface::radius[3]        = 15.
+SphericalSurface::ntheta[3]        = 39
+SphericalSurface::nphi[3]          = 76
+SphericalSurface::nghoststheta[3]  = 2
+SphericalSurface::nghostsphi[3]    = 2
+
+SphericalSurface::set_spherical[4] = yes
+SphericalSurface::radius[4]        = 30.
+SphericalSurface::ntheta[4]        = 39
+SphericalSurface::nphi[4]          = 76
+SphericalSurface::nghoststheta[4]  = 2
+SphericalSurface::nghostsphi[4]    = 2
+
+# -------------------- CarpetTracker -------------------------------------------
+CarpetTracker::surface[0] = 0
+CarpetTracker::surface[1] = 1
+
+# N.B.: do NOT track surface 3 (i.e., the BH formed at merger), since that does
+#       not exist at the beginning and this causes the central hierarchy of
+#       grids to be disabled!
+
+
+
+# -------------------- PunctureTracker -----------------------------------------
+PunctureTracker::initial_x[0] = $x_punc1
+PunctureTracker::initial_y[0] = $y_punc1
+PunctureTracker::initial_z[0] = $z_punc1
+
+PunctureTracker::initial_x[1] = $x_punc2
+PunctureTracker::initial_y[1] = $y_punc2
+PunctureTracker::initial_z[1] = $z_punc2
+
+PunctureTracker::track[0] = yes
+PunctureTracker::track[1] = yes
+
+PunctureTracker::which_surface_to_store_info[0] = 0
+PunctureTracker::which_surface_to_store_info[1] = 1
+
+PunctureTracker::verbose  = no
+
+
+
+# -------------------- AHFinderDirect ------------------------------------------
+AHFinderDirect::N_horizons                  = 3
+AHFinderDirect::find_every                  = $regrid_analysis_factor
+AHFinderDirect::output_h_every              = $regrid_analysis_factor
+AHFinderDirect::output_mean_curvature_every = $regrid_analysis_factor
+
+AHFinderDirect::move_origins            = yes
+AHFinderDirect::reshape_while_moving    = yes
+AHFinderDirect::predict_origin_movement = yes
+
+AHFinderDirect::geometry_interpolator_name = "Lagrange polynomial interpolation"
+AHFinderDirect::geometry_interpolator_pars = "order = 4"  # FIXME: use order = 3?
+AHFinderDirect::surface_interpolator_name  = "Lagrange polynomial interpolation"
+AHFinderDirect::surface_interpolator_pars  = "order = 4"  # FIXME: use order = 3?
+
+
+# ***** Parameters for puncture 1 *****
+AHFinderDirect::origin_x[1] = $x_punc1
+AHFinderDirect::origin_y[1] = $y_punc1
+AHFinderDirect::origin_z[1] = $z_punc1
+
+AHFinderDirect::initial_guess__coord_sphere__x_center[1] = $x_punc1
+AHFinderDirect::initial_guess__coord_sphere__y_center[1] = $y_punc1
+AHFinderDirect::initial_guess__coord_sphere__z_center[1] = $z_punc1
+AHFinderDirect::initial_guess__coord_sphere__radius[1]   = 0.29
+
+AHFinderDirect::track_origin_from_grid_scalar[1] = yes
+
+AHFinderDirect::track_origin_source_x[1] = "PunctureTracker::pt_loc_x[0]"
+AHFinderDirect::track_origin_source_y[1] = "PunctureTracker::pt_loc_y[0]"
+AHFinderDirect::track_origin_source_z[1] = "PunctureTracker::pt_loc_z[0]"
+
+AHFinderDirect::patch_system_type[1]                 = "full sphere"
+AHFinderDirect::reset_horizon_after_not_finding[1]   = yes
+##AHFinderDirect::dont_find_after_individual_time[1] = 30.  # FIXME: set this equal to merger time, leave commented until merger time has been figured out
+AHFinderDirect::which_surface_to_store_info[1]       = 0
+
+# ***** Parameters for puncture 2 *****
+AHFinderDirect::origin_x[2] = $x_punc2
+AHFinderDirect::origin_y[2] = $y_punc2
+AHFinderDirect::origin_z[2] = $z_punc2
+
+AHFinderDirect::initial_guess__coord_sphere__x_center[2] = $x_punc2
+AHFinderDirect::initial_guess__coord_sphere__y_center[2] = $y_punc2
+AHFinderDirect::initial_guess__coord_sphere__z_center[2] = $z_punc2
+AHFinderDirect::initial_guess__coord_sphere__radius[2]   = 0.29
+
+AHFinderDirect::track_origin_from_grid_scalar[2] = yes
+
+AHFinderDirect::track_origin_source_x[2] = "PunctureTracker::pt_loc_x[1]"
+AHFinderDirect::track_origin_source_y[2] = "PunctureTracker::pt_loc_y[1]"
+AHFinderDirect::track_origin_source_z[2] = "PunctureTracker::pt_loc_z[1]"
+
+AHFinderDirect::patch_system_type[2]                 = "full sphere"
+AHFinderDirect::reset_horizon_after_not_finding[2]   = yes
+##AHFinderDirect::dont_find_after_individual_time[2] = 30.  # FIXME: set this equal to merger time, leave commented until merger time has been figured out
+AHFinderDirect::which_surface_to_store_info[2]       = 1
+
+
+# ***** Parameters for the AH formed at merger *****
+AHFinderDirect::origin_x[3] = 0.
+AHFinderDirect::origin_y[3] = 0.
+AHFinderDirect::origin_z[3] = 0.
+
+AHFinderDirect::initial_guess__coord_sphere__x_center[3] = 0.
+AHFinderDirect::initial_guess__coord_sphere__y_center[3] = 0.
+AHFinderDirect::initial_guess__coord_sphere__z_center[3] = 0.
+AHFinderDirect::initial_guess__coord_sphere__radius[3]   = 0.58
+
+AHFinderDirect::patch_system_type[3]               = "full sphere"
+AHFinderDirect::reset_horizon_after_not_finding[3] = yes
+##AHFinderDirect::find_after_individual_time[3]    = 15.  # FIXME: set this equal to merger time, leave commented until merger time has been figured out
+AHFinderDirect::which_surface_to_store_info[3]     = 2
+
+
+
+# -------------------- Outflow -------------------------------------------------
+Outflow::compute_every = $regrid_analysis_factor
+Outflow::num_detectors = 5
+
+Outflow::surface_index[0] = 0  # Puncture 1
+Outflow::surface_index[1] = 1  # Puncture 2
+Outflow::surface_index[2] = 2  # BH formed at merger
+
+# Analysis surfaces
+Outflow::surface_index[3] = 3
+Outflow::surface_index[4] = 4
+Outflow::surface_index[5] = 5
+
+Outflow::interpolator_name = "Lagrange polynomial interpolation"
+Outflow::interpolator_pars = "order=4"
+
+Outflow::output_2d_data = yes
+Outflow::out_format     = ".10e"
+
+Outflow::verbose = 0
+
+
+
+# -------------------- QuasiLocalMeasures --------------------------------------
+QuasiLocalMeasures::interpolator         = "Lagrange polynomial interpolation"
+QuasiLocalMeasures::interpolator_options = "order=4"
+QuasiLocalMeasures::spatial_order        = 4
+
+QuasiLocalMeasures::num_surfaces = 3  ##10
+
+QuasiLocalMeasures::surface_index[0] = 0  # Puncture 1
+QuasiLocalMeasures::surface_index[1] = 1  # Puncture 2
+QuasiLocalMeasures::surface_index[2] = 2  # BH formed at merger
+
+# Analysis surfaces
+##QuasiLocalMeasures::surface_index[3] = 3
+##QuasiLocalMeasures::surface_index[4] = 4
+##QuasiLocalMeasures::surface_index[5] = 5
+##QuasiLocalMeasures::surface_index[6] = 6
+##QuasiLocalMeasures::surface_index[7] = 7
+##QuasiLocalMeasures::surface_index[8] = 8
+##QuasiLocalMeasures::surface_index[9] = 9
+
+QuasiLocalMeasures::verbose = no
+
+
+
+# -------------------- Multipole -----------------------------------------------
+Multipole::nradii = 5
+Multipole::ntheta = 120
+Multipole::nphi   = 240
+
+Multipole::radius[0] = 50.
+Multipole::radius[1] = 70.
+Multipole::radius[2] = 100.
+Multipole::radius[3] = 150.
+Multipole::l_max = 4
+
+Multipole::variables = "
+    WeylScal4::Psi4r{sw=-2 cmplx='WeylScal4::Psi4i' name='Psi4'}
+"
+
+# -------------------- WeylScal4 -----------------------------------------------
+WeylScal4::offset   = 1.e-08  # Defaults to 1.e-15
+WeylScal4::fd_order = "4th"
+WeylScal4::verbose  = 0
+
+
+# -------------------- ADMMass -------------------------------------------------
+##ADMMass::ADMMass_surface_distance[0]                   = 200.
+##ADMMass::ADMMass_use_all_volume_as_volume_radius       = no
+##ADMMass::ADMMass_use_surface_distance_as_volume_radius = no
+##ADMMass::ADMMass_volume_radius[0]                      = 1000.
+
+
+
+# FIXME: activate or not?
+# -------------------- Hydro_Analysis ------------------------------------------
+##Hydro_Analysis::restmass_rho_min        = 1.e-13 #This should be equal to rho_abs_min
+##Hydro_Analysis::restmass_masses_nr      = 0 #Zero means 'compute only the total baryonic mass'
+##Hydro_Analysis::restmass_compute_masses = yes
+
+
+
+# -------------------- NaNChecker ----------------------------------------------
+NaNChecker::action_if_found = "terminate"
+NaNChecker::check_after     = 0
+NaNChecker::out_nanmask     = yes
+NaNChecker::check_every     = $regrid_analysis_factor
+NaNChecker::check_vars      = "
+    IllinoisGRMHD::grmhd_primitives_allbutBi
+    IllinoisGRMHD::grmhd_primitives_Bi
+    IllinoisGRMHD::grmhd_conservatives
+"
+
+
+
+
+
+# ==============================================================================
+# Output
+# ==============================================================================
+
+# -------------------- CarpetIOBasic -------------------------------------------
+CarpetIOBasic::outInfo_every      = $regrid_analysis_factor
+CarpetIOBasic::outInfo_reductions = "minimum maximum"
+CarpetIOBasic::outInfo_vars       = "
+    ADMBase::lapse
+##    Compute_Anorm_Bnorm::Anorm  # **WARNING** Only meaningful every $reflevel_factor iterations
+##    Compute_Anorm_Bnorm::Bnorm  # **WARNING** Only meaningful every $reflevel_factor iterations
+    IllinoisGRMHD::rho_b
+##    IllinoisGRMHD::grmhd_primitives_Bi
+    smallbPoynET::smallb2       # **WARNING** Only meaningful every $reflevel_factor iterations
+    ML_ADMConstraints::ml_ham
+"
+
+
+
+# -------------------- CarpetIOScalar ------------------------------------------
+#CarpetIOScalar::outScalar_dir         = "Scalars"
+#CarpetIOScalar::outScalar_every       = $reflevel_factor
+#CarpetIOScalar::outScalar_reductions  = "minimum maximum average norm1 norm2 norm_inf"
+#CarpetIOScalar::outScalar_vars        = "
+#    ADMBase::lapse
+#    ADMBase::shift
+#    ADMBase::metric
+#    ADMBase::curv
+###    Compute_Anorm_Bnorm::Anorm
+###    Compute_Anorm_Bnorm::Bnorm
+###    HydroBase::rho
+###    HydroBase::press
+#    HydroBase::eps
+#    Hydrobase::vel
+#    HydroBase::w_lorentz
+###    HydroBase::Avec
+###    HydroBase::Bvec
+#    ML_ADMConstraints::ml_ham
+#    ML_ADMConstraints::ml_mom
+#    IllinoisGRMHD::rho_b
+#    IllinoisGRMHD::P
+###    IllinoisGRMHD::vx
+###    IllinoisGRMHD::vy
+###    IllinoisGRMHD::vz
+#    IllinoisGRMHD::Bx
+#    IllinoisGRMHD::By
+#    IllinoisGRMHD::Bz
+#    IllinoisGRMHD::Ax
+#    IllinoisGRMHD::Ay
+#    IllinoisGRMHD::Az
+#    IllinoisGRMHD::psi6phi
+#    BBH_radiative_cooling::radcool_gf
+#    smallbPoynET::smallb2
+#    smallbPoynET::minus_one_minus_u_0
+#    SystemStatistics::maxrss_mb
+#    SystemStatistics::swap_used_mb
+#    Carpet::memory_procs
+#"
+#
+#
+#
+## -------------------- CarpetIOASCII -------------------------------------------
+#CarpetIOASCII::out0d_dir       = "Scalars"
+#CarpetIOASCII::out0d_criterion = "divisor"
+#CarpetIOASCII::out0d_every     = $reflevel_factor
+#CarpetIOASCII::out0d_vars      = "
+###    ADMMass::ADMMass_masses
+#    Carpet::timing
+#    CarpetRegrid2::positions
+###    Hydro_Analysis::total_rest_mass
+###    ML_ADMConstraints::ML_Ham
+###    ML_ADMConstraints::ML_mom
+#    SphericalSurface::sf_active
+#    SphericalSurface::sf_valid
+#    SphericalSurface::sf_info
+#    SphericalSurface::sf_radius
+#    SphericalSurface::sf_origin
+#    SphericalSurface::sf_coordinate_descriptors
+#    Outflow::Outflow_flux[0]
+#    Outflow::Outflow_flux[1]
+#    Outflow::Outflow_flux[2]
+#    Outflow::Outflow_flux[3]
+#    Outflow::Outflow_flux[4]
+#    Outflow::Outflow_flux[5]
+#    Outflow::Outflow_flux[6]
+#    Outflow::Outflow_flux[7]
+#    Outflow::Outflow_flux[8]
+#    Outflow::Outflow_flux[9]
+#    PunctureTracker::pt_loc
+#    QuasiLocalMeasures::qlm_state
+#    QuasiLocalMeasures::qlm_grid_int
+#    QuasiLocalMeasures::qlm_grid_real
+#    QuasiLocalMeasures::qlm_scalars
+#    QuasiLocalMeasures::qlm_multipole_moments
+#    WeylScal4::Psi4r
+#    WeylScal4::Psi4i
+#"
+#
+#
+
+# -------------------- CarpetIOHDF5 --------------------------------------------
+CarpetIOHDF5::checkpoint                         = yes
+CarpetIOHDF5::compression_level                  = 1  # Compress data a bit before output to reduce stress on the filesysytem
+CarpetIOHDF5::open_one_input_file_at_a_time      = yes
+CarpetIOHDF5::use_checksums                      = yes
+CarpetIOHDF5::use_grid_structure_from_checkpoint = yes
+
+#CarpetIOHDF5::out1D_dir       = "HDF5_1D"
+#CarpetIOHDF5::out1D_every     = 4*$reflevel_factor
+#CarpetIOHDF5::out1D_d         = no
+#CarpetIOHDF5::out1D_criterion = "divisor"
+#CarpetIOHDF5::out1D_vars      = "
+#    IllinoisGRMHD::rho_b
+#    ML_ADMConstraints::ml_ham
+#    ML_ADMConstraints::ml_mom
+#"
+
+CarpetIOHDF5::out2D_dir       = "HDF5_2D"
+CarpetIOHDF5::out2D_every     = 4*$reflevel_factor
+CarpetIOHDF5::out2D_criterion = "divisor"
+CarpetIOHDF5::out2D_vars      = "
+    ADMBase::lapse
+##    ADMBase::shift
+##    ADMBase::metric
+##    ADMBase::curv
+##    Compute_Anorm_Bnorm::Anorm
+##    Compute_Anorm_Bnorm::Bnorm
+##    HydroBase::rho
+##    HydroBase::press
+##    HydroBase::eps
+##    Hydrobase::vel
+    HydroBase::w_lorentz
+##    HydroBase::Avec
+##    HydroBase::Bvec
+    ML_ADMConstraints::ml_ham
+    ML_ADMConstraints::ml_mom
+    IllinoisGRMHD::rho_b
+    IllinoisGRMHD::P
+##    IllinoisGRMHD::vx
+##    IllinoisGRMHD::vy
+##    IllinoisGRMHD::vz
+##    IllinoisGRMHD::Bx
+##    IllinoisGRMHD::By
+##    IllinoisGRMHD::Bz
+##    IllinoisGRMHD::Ax
+##    IllinoisGRMHD::Ay
+##    IllinoisGRMHD::Az
+##    IllinoisGRMHD::psi6phi
+##    smallbPoynET::minus_one_minus_u_0
+"
+
+#CarpetIOHDF5::out3D_dir       = "HDF5_3D"
+#CarpetIOHDF5::out3D_every     = 16*$reflevel_factor  # Output every t = 32M (256 iterations = 2M)
+#CarpetIOHDF5::out3D_criterion = "divisor"
+#CarpetIOHDF5::out3D_vars      = "
+#    ADMBase::lapse
+#    ADMBase::shift
+#    ADMBase::metric
+#    ADMBase::curv
+###    Compute_Anorm_Bnorm::Anorm
+###    Compute_Anorm_Bnorm::Bnorm
+###    HydroBase::rho
+###    HydroBase::press
+#    HydroBase::eps
+#    Hydrobase::vel
+#    HydroBase::w_lorentz
+###    HydroBase::Avec
+###    HydroBase::Bvec
+###    ML_ADMConstraints::ml_ham
+###    ML_ADMConstraints::ml_mom
+#    IllinoisGRMHD::rho_b
+#    IllinoisGRMHD::P
+###    IllinoisGRMHD::vx
+###    IllinoisGRMHD::vy
+###    IllinoisGRMHD::vz
+#    IllinoisGRMHD::Bx
+#    IllinoisGRMHD::By
+#    IllinoisGRMHD::Bz
+#    IllinoisGRMHD::Ax
+#    IllinoisGRMHD::Ay
+#    IllinoisGRMHD::Az
+#    IllinoisGRMHD::psi6phi
+#    BBH_radiative_cooling::radcool_gf
+#    smallbPoynET::smallb2
+#    smallbPoynET::Poynx
+#    smallbPoynET::Poyny
+#    smallbPoynET::Poynz
+###    smallbPoynET::minus_one_minus_u_0
+#"

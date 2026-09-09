@@ -1,0 +1,26 @@
+# Interface definition for thorn AnalyticalSpacetimeX
+IMPLEMENTS: AnalyticalSpacetimeX
+
+INHERITS: ADMBaseX BoxInBox AsterMasks
+
+USES INCLUDE HEADER: loop_device.hxx
+
+CCTK_REAL BH_PN_Trajectories TYPE=scalar
+{
+  xbh1,
+  ybh1,
+  zbh1,
+  xbh2,
+  ybh2,
+  zbh2,
+  vxbh1,
+  vybh1,
+  vzbh1,
+  vxbh2, 
+  vybh2,
+  vzbh2,
+  init_separation,
+  current_separation
+}
+
+INCLUDE HEADER: AST_Spacetime_SetMetric.hxx IN AST_Spacetime_SetMetric.hxx

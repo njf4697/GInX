@@ -1,0 +1,2387 @@
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc100.out <==
+   Maximum allocated memory:  747 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 175 MB
+   Total allocated free system memory: 39.5 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3282756
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc101.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3253380
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc102.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 228 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254900
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc103.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 42.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3281396
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc104.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 243 MB
+   Total allocated free system memory: 42 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3280340
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc105.out <==
+   Maximum allocated memory:  763 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 44.5 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271396
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc106.out <==
+   Maximum allocated memory:  743 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 228 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3250676
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc107.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3253812
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc108.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 187 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc109.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 193 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259540
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc10.out <==
+   Maximum allocated memory:  756 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 167 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258628
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc110.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 185 MB
+   Total allocated free system memory: 39.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260788
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc111.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265508
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc112.out <==
+   Maximum allocated memory:  756 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 176 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263780
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc113.out <==
+   Maximum allocated memory:  764 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 46.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252148
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc114.out <==
+   Maximum allocated memory:  777 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258644
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc115.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 232 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268420
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc116.out <==
+   Maximum allocated memory:  766 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3275476
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc117.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 189 MB
+   Total allocated free system memory: 35.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262708
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc118.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263956
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc119.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269508
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc11.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 164 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255812
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc120.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 195 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3280804
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc121.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 187 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258580
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc122.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 193 MB
+   Total allocated free system memory: 39.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3276148
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc123.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 180 MB
+   Total allocated free system memory: 23.4 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271028
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc124.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 192 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271844
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc125.out <==
+   Maximum allocated memory:  764 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 191 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3272244
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc126.out <==
+   Maximum allocated memory:  766 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 191 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267876
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc127.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 203 MB
+   Total allocated free system memory: 35.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3297092
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc128.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 203 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3293348
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc129.out <==
+   Maximum allocated memory:  742 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 192 MB
+   Total allocated free system memory: 35.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3281380
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc12.out <==
+   Maximum allocated memory:  745 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 169 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255412
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc130.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260436
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc131.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 175 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3251508
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc132.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 195 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3278212
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc133.out <==
+   Maximum allocated memory:  744 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 198 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3289332
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc134.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 44.5 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3285876
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc135.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252788
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc136.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254548
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc137.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 169 MB
+   Total allocated free system memory: 46.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3250148
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc138.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252260
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc139.out <==
+   Maximum allocated memory:  743 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3253588
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc13.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 169 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3253828
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc140.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 175 MB
+   Total allocated free system memory: 40.4 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267732
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc141.out <==
+   Maximum allocated memory:  772 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 180 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271012
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc142.out <==
+   Maximum allocated memory:  772 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 183 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268980
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc143.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271268
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc144.out <==
+   Maximum allocated memory:  768 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 183 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3273044
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc145.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263108
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc146.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 40.4 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262628
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc147.out <==
+   Maximum allocated memory:  772 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3261332
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc148.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 185 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266340
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc149.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 189 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3274004
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc14.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 169 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260628
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc150.out <==
+   Maximum allocated memory:  775 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 183 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3290068
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc151.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260772
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc152.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269156
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc153.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 187 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3270068
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc154.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 188 MB
+   Total allocated free system memory: 42.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265860
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc155.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 184 MB
+   Total allocated free system memory: 43.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3278724
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc156.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 175 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267876
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc157.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 39.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265508
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc158.out <==
+   Maximum allocated memory:  769 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 183 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264228
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc159.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 181 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264212
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc15.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 221 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264132
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc160.out <==
+   Maximum allocated memory:  779 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 191 MB
+   Total allocated free system memory: 28.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3287396
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc161.out <==
+   Maximum allocated memory:  764 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 185 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc162.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 188 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3276548
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc163.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262916
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc164.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263012
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc165.out <==
+   Maximum allocated memory:  770 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262436
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc166.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262916
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc167.out <==
+   Maximum allocated memory:  737 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3256916
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc168.out <==
+   Maximum allocated memory:  751 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 42 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265012
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc169.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258884
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc16.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263476
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc170.out <==
+   Maximum allocated memory:  751 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258244
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc171.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267588
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc172.out <==
+   Maximum allocated memory:  726 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 228 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3277044
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc173.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 175 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266276
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc174.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 231 MB
+   Total allocated free system memory: 44.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267828
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc175.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 44.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258564
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc176.out <==
+   Maximum allocated memory:  748 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 228 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271380
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc177.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 225 MB
+   Total allocated free system memory: 39.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260020
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc178.out <==
+   Maximum allocated memory:  733 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 168 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259572
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc179.out <==
+   Maximum allocated memory:  734 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 219 MB
+   Total allocated free system memory: 42 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259620
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc17.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 223 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255332
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc180.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 167 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265988
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc181.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 222 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265764
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc182.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 222 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266676
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc183.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 165 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264836
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc184.out <==
+   Maximum allocated memory:  732 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 222 MB
+   Total allocated free system memory: 27.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255252
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc185.out <==
+   Maximum allocated memory:  740 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 168 MB
+   Total allocated free system memory: 39.5 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3250948
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc186.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 221 MB
+   Total allocated free system memory: 31.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3257668
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc187.out <==
+   Maximum allocated memory:  748 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 165 MB
+   Total allocated free system memory: 31.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262132
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc188.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 169 MB
+   Total allocated free system memory: 44.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259492
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc189.out <==
+   Maximum allocated memory:  740 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 39.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3251908
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc18.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 165 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258132
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc190.out <==
+   Maximum allocated memory:  744 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 180 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252148
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc191.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 166 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264852
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc192.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263012
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc193.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 166 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252228
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc194.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 165 MB
+   Total allocated free system memory: 45.1 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3251428
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc195.out <==
+   Maximum allocated memory:  726 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 216 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262292
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc196.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 165 MB
+   Total allocated free system memory: 42.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3282692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc197.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 164 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263540
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc198.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 163 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263460
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc199.out <==
+   Maximum allocated memory:  719 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 215 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3282612
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc19.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 219 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3274260
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc1.out <==
+   Maximum allocated memory:  745 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 167 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263940
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc20.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262340
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc21.out <==
+   Maximum allocated memory:  766 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254500
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc22.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3257972
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc23.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 167 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255540
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc24.out <==
+   Maximum allocated memory:  747 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3257988
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc25.out <==
+   Maximum allocated memory:  764 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3276052
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc26.out <==
+   Maximum allocated memory:  764 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266276
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc27.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260276
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc28.out <==
+   Maximum allocated memory:  745 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 227 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267140
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc29.out <==
+   Maximum allocated memory:  729 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 230 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271444
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc2.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 221 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262260
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc30.out <==
+   Maximum allocated memory:  742 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 176 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263492
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc31.out <==
+   Maximum allocated memory:  736 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 225 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260372
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc32.out <==
+   Maximum allocated memory:  743 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3251428
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc33.out <==
+   Maximum allocated memory:  730 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 229 MB
+   Total allocated free system memory: 44.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264276
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc34.out <==
+   Maximum allocated memory:  746 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 229 MB
+   Total allocated free system memory: 25.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267748
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc35.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3273860
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc36.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 227 MB
+   Total allocated free system memory: 25.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3270916
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc37.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 173 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264900
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc38.out <==
+   Maximum allocated memory:  758 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 228 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252788
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc39.out <==
+   Maximum allocated memory:  738 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262452
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc3.out <==
+   Maximum allocated memory:  742 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 164 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269684
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc40.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3277492
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc41.out <==
+   Maximum allocated memory:  768 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3275044
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc42.out <==
+   Maximum allocated memory:  774 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3277844
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc43.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc44.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 235 MB
+   Total allocated free system memory: 28.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266068
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc45.out <==
+   Maximum allocated memory:  756 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3274676
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc46.out <==
+   Maximum allocated memory:  759 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 230 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269732
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc47.out <==
+   Maximum allocated memory:  773 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3274932
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc48.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 240 MB
+   Total allocated free system memory: 33.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258964
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc49.out <==
+   gh::allmemory:    1507256
+   dh::allmemory:    3264916
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+INFO (AHFinderDirect): proc 49: dummy horizon(s) only
+INFO (AHFinderDirect): proc 49: dummy horizon(s) only
+INFO (IllinoisGRMHD): Font fix failed!
+INFO (IllinoisGRMHD): i,j,k = 31 14 13, stats.failure_checker = 1000000 x,y,z = -5.000000e+00 0.000000e+00 -6.250000e-02 , index=13716 st_i = 3.998664e-03 -2.837856e-03 1.784166e-03, rhostar = 3.087228e-06, Bi = 3.489515e-02 5.162566e-02 4.018088e-03, gij = 1.091436e+00 -1.015510e-01 3.535675e-02 6.687502e+00 -1.710327e+00 1.514583e+00, Psi6 = 2.801879e+00
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc4.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 222 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3276548
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc50.out <==
+   gh::allmemory:    1507256
+   dh::allmemory:    3273396
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+INFO (AHFinderDirect): proc 50: dummy horizon(s) only
+INFO (AHFinderDirect): proc 50: dummy horizon(s) only
+INFO (IllinoisGRMHD): Font fix failed!
+INFO (IllinoisGRMHD): i,j,k = 2 14 13, stats.failure_checker = 1000000 x,y,z = -5.000000e+00 0.000000e+00 -6.250000e-02 , index=13687 st_i = 3.998664e-03 -2.837856e-03 1.784166e-03, rhostar = 3.087228e-06, Bi = 3.489515e-02 5.162566e-02 4.018088e-03, gij = 1.091436e+00 -1.015510e-01 3.535675e-02 6.687502e+00 -1.710327e+00 1.514583e+00, Psi6 = 2.801879e+00
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc51.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 176 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3251812
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc52.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260436
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc53.out <==
+   Maximum allocated memory:  775 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 187 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3272292
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc54.out <==
+   Maximum allocated memory:  781 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 193 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3278084
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc55.out <==
+   Maximum allocated memory:  778 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 184 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258964
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc56.out <==
+   Maximum allocated memory:  781 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 180 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264772
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc57.out <==
+   Maximum allocated memory:  755 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 232 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259988
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc58.out <==
+   Maximum allocated memory:  749 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 232 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3261268
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc59.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 179 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3267588
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc5.out <==
+   Maximum allocated memory:  731 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 221 MB
+   Total allocated free system memory: 46.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3258148
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc60.out <==
+   Maximum allocated memory:  763 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 239 MB
+   Total allocated free system memory: 40.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263812
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc61.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 42.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269956
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc62.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 236 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265012
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc63.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 232 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254548
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc64.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 189 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264820
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc65.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 243 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268244
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc66.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 188 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3270660
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc67.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 230 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254820
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc68.out <==
+   Maximum allocated memory:  739 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 34.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252980
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc69.out <==
+   Maximum allocated memory:  756 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3285060
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc6.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 167 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3254068
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc70.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 189 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3290740
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc71.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 39 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3278884
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc72.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 174 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255860
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc73.out <==
+   Maximum allocated memory:  738 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 227 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260260
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc74.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 184 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3296100
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc75.out <==
+   Maximum allocated memory:  760 MB
+   Current administrative memory: 5.51 MB
+   Total allocated used system memory: 249 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3299220
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc76.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.51 MB
+   Total allocated used system memory: 193 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3298004
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc77.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 237 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260644
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc78.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 185 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262532
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc79.out <==
+   Maximum allocated memory:  745 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3266324
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc7.out <==
+   Maximum allocated memory:  756 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 220 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3256852
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc80.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 182 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3271204
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc81.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 187 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3265572
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc82.out <==
+   Maximum allocated memory:  765 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 188 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3261444
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc83.out <==
+   Maximum allocated memory:  768 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 178 MB
+   Total allocated free system memory: 43.7 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3283268
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc84.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 183 MB
+   Total allocated free system memory: 46.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3272692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc85.out <==
+   Maximum allocated memory:  752 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3250468
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc86.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 230 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3261636
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc87.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 241 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3269764
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc88.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 36.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262004
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc89.out <==
+   Maximum allocated memory:  762 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 242 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3262836
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc8.out <==
+   Maximum allocated memory:  761 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 168 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3256692
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc90.out <==
+   Maximum allocated memory:  753 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 172 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3252900
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc91.out <==
+   Maximum allocated memory:  747 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 222 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3261108
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc92.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 235 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3264596
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc93.out <==
+   Maximum allocated memory:  771 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 43.6 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268084
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc94.out <==
+   Maximum allocated memory:  767 MB
+   Current administrative memory: 5.48 MB
+   Total allocated used system memory: 237 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3268548
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc95.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 171 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3263092
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc96.out <==
+   Maximum allocated memory:  741 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 224 MB
+   Total allocated free system memory: 37.3 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3260804
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc97.out <==
+   Maximum allocated memory:  750 MB
+   Current administrative memory: 5.46 MB
+   Total allocated used system memory: 170 MB
+   Total allocated free system memory: 42.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3255620
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc98.out <==
+   Maximum allocated memory:  754 MB
+   Current administrative memory: 5.49 MB
+   Total allocated used system memory: 177 MB
+   Total allocated free system memory: 42.8 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3277940
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc99.out <==
+   Maximum allocated memory:  748 MB
+   Current administrative memory: 5.5 MB
+   Total allocated used system memory: 186 MB
+   Total allocated free system memory: 44.2 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3291444
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0
+
+==> /scratch/d/dsiegel/lcombi/Simulations/BBH_Gas_SKS_Opt_Upd8it_GapHighB/output-0000/CCTK_Proc9.out <==
+   Maximum allocated memory:  757 MB
+   Current administrative memory: 5.47 MB
+   Total allocated used system memory: 223 MB
+   Total allocated free system memory: 48.9 MB
+   gh::allmemory:    1507256
+   dh::allmemory:    3259748
+   th::allmemory:    18440
+   ggf::allmemory:   533616
+   gdata::allmemory: 148224
+INFO (TimerReport): Timer Report at iteration 0 time 0

@@ -1,0 +1,7 @@
+# Configuration definitions for thorn AnalyticalSpacetimeX
+
+REQUIRES Loop
+
+OPTIONAL HDF5
+{
+}

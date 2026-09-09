@@ -1,0 +1,58 @@
+Cactus Code Thorn AnalyticalSpacetime
+Author(s)    : Luciano Combi
+Maintainer(s): Lucinao Combi
+Licence      : Private
+--------------------------------------------------------------------------
+
+1. Purpose
+
+Code to run analytical metrics in the ETK using a general structure. Thought to be used with BBH metric.
+
+2. Instructions.
+
+To run a superposed binary black hole run follow roughlt these steps:
+	
+	1) Generate trajectories for the BBHs. For this you need to generate an hdf5 file using the program CBWave inside this repo.
+	   Once you compile inside CBWave/src/ (make all) you can run it using driver_PN_run.py (python driver_PN_run.py). You can
+	   open this .py file to change initial data and other properties.
+
+	2) Once you have the trajectories, you might run it in the ETK using the following in your parfile:
+
+             #=======================
+             # Analytical Spacetime
+             # ======================
+             
+             ActiveThorns = "AnalyticalSpacetime"
+             AnalyticalSpacetime::analytical_metric_type = "SuperposedBBH" 
+             AnalyticalSpacetime::traj_read_table = "yes"
+             
+             # Replace this with your trajectory table
+             AnalyticalSpacetime::traj_table_name ="/home/d/dsiegel/lcombi/repository/analyticalbbh/CBwaves/src/CircularOrbit_a0_m05_sep10.h5"
+             # This will adjust the mass. Useful for very near merger where the (fake) mass grows (sperations <5M).
+             AnalyticalSpacetime::AST_adjust_mass1 = 1.0
+             AnalyticalSpacetime::AST_adjust_mass2 = 1.0
+             
+             # This sets a scalar with the position of the black hole similar to TwoPuncture tracker
+             AnalyticalSpacetime::set_positions = "yes"
+             AnalyticalSpacetime::surf_storage_BH1 = 0
+             AnalyticalSpacetime::surf_storage_BH2 = 1
+             
+             ADMBase::initial_lapse = "analytical_spacetime"
+             ADMBase::initial_shift = "analytical_spacetime"
+             ADMBase::initial_data = "analytical_spacetime"
+             ADMBase::evolution_method = "analytical_spacetime"
+             ADMBase::metric_type = "physical"
+             
+             # The following is to evolve the metric only once every 128 iterations.
+             # Change standard options if evolving every timestep.
+             
+             AnalyticalSpacetime::evolve_metric_every = 128
+             ADMBase::lapse_prolongation_type = "none"
+             ADMBase::shift_prolongation_type = "none"
+             ADMBase::metric_prolongation_type = "none"
+             
+             ADMBase::metric_timelevels = 3
+             ADMBase::lapse_timelevels = 3
+             ADMBase::shift_timelevels = 3
+
+             

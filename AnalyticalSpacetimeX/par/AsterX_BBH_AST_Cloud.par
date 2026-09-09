@@ -1,0 +1,314 @@
+###############################
+# Simple test of a FM torus
+##############################
+ActiveThorns = "
+    ADMBaseX
+    BoxInBox
+    CarpetX
+    CoordinatesX
+    HydroBaseX
+    IOUtil
+    ODESolvers
+    TimerReport
+    TmunuBaseX
+    AsterX
+    AsterSeeds
+#    AHFinderX
+    AnalyticalSpacetimeX
+"
+
+$nlevels	= 1
+$ncells 	= 384
+
+Cactus::cctk_show_schedule = yes
+
+CarpetX::verbose = "no"
+Cactus::presync_mode = "mixed-error"
+CarpetX::poison_undefined_values = yes
+
+CarpetX::xmin = -50.0
+CarpetX::ymin = -50.0
+CarpetX::zmin = -50.0
+
+CarpetX::xmax = 50.0
+CarpetX::ymax = 50.0
+CarpetX::zmax = 50.0
+
+CarpetX::ncells_x = $ncells
+CarpetX::ncells_y = $ncells
+CarpetX::ncells_z = $ncells
+
+CarpetX::boundary_x =  "linear extrapolation"
+CarpetX::boundary_y =  "linear extrapolation"
+CarpetX::boundary_z =  "linear extrapolation"
+CarpetX::boundary_upper_x =  "linear extrapolation"
+CarpetX::boundary_upper_y =  "linear extrapolation"
+CarpetX::boundary_upper_z =  "linear extrapolation"
+
+CarpetX::max_num_levels = $nlevels
+CarpetX::regrid_every = 0
+
+CarpetX::blocking_factor_x = 8
+CarpetX::blocking_factor_y = 8
+CarpetX::blocking_factor_z = 8
+
+# the regrid_error_threshold should be in the same units of the 
+# parameter in comparison, see AsterX/src/estimate_error.cxx 
+# for which parameter to use
+CarpetX::regrid_error_threshold = 5.0e-5
+
+CarpetX::prolongation_type = "ddf"
+CarpetX::ghost_size = 3
+CarpetX::dtfac = 0.2
+
+#=======================
+# BoxInBox
+# ======================
+
+BoxInBox::num_regions = 1
+
+# Region 1
+BoxInBox::shape_1 = "cube"
+BoxInBox::num_levels_1 = 1
+BoxInBox::position_x_1 = 0.0 #-6.508727e+00
+BoxInBox::position_y_1 = 0.0 #-7.591869e+00
+
+#BoxInBox::radius_1 = [-1., 2.0]
+
+# Region 2
+#BoxInBox::shape_2 = "cube"
+#BoxInBox::num_levels_2 = 2
+#BoxInBox::position_x_2 = 6.508727e+00
+#BoxInBox::position_y_2 = 7.591869e+00
+#BoxInBox::radius_2 =   [-1., 2.0]
+
+# Region 3
+#BoxInBox::shape_3 = "cube"
+#BoxInBox::num_levels_3 = 2
+#BoxInBox::position_x_3 = 0.0
+#BoxInBox::radius_3 = [-1., 2.0]
+
+ADMBaseX::initial_data       = "analytical_spacetime"
+ADMBaseX::initial_lapse      = "analytical_spacetime"
+ADMBaseX::initial_shift      = "analytical_spacetime"
+ADMBaseX::initial_dtlapse    = "zero"
+ADMBaseX::initial_dtshift    = "zero"
+
+#=======================
+# Analytical Spacetime
+# ======================
+
+AnalyticalSpacetimeX::analytical_metric_type = "SuperposedBBH" #"BoostedBH"
+AnalyticalSpacetimeX::traj_read_table = "yes"
+AnalyticalSpacetimeX::traj_print_every = 1
+AnalyticalSpacetimeX::traj_print = "yes"
+AnalyticalSpacetimeX::traj_table_name = "../CircularOrbit_pp08_q1_sep20.h5"
+AnalyticalSpacetimeX::AST_adjust_mass1 = 1.0
+AnalyticalSpacetimeX::AST_adjust_mass2 = 1.0
+AnalyticalSpacetimeX::set_positions = "yes"
+#AnalyticalSpacetimeX::surf_storage_BH1 = 0
+#AnalyticalSpacetimeX::surf_storage_BH2 = 1
+AnalyticalSpacetimeX::AST_cutoff_floor = 1e-1
+AnalyticalSpacetimeX::AST_a1_buffer = 0.01
+AnalyticalSpacetimeX::AST_a2_buffer = 0.01
+
+# =============
+# Evolve the metric only every some amount of iterations.
+# The logic to set this number is as follows:
+#
+#       If the coarser level has a given CFL factor of dtfac, then dt = dtfac dx.
+#       The black holes move with a velocity of vBH, so the typical timestep is
+#       dt_metric = (1/vBH) dx. For separations of >10M, vBH~0.1c, so dt_metric = 10 dx.
+#       This means that the metric will change significantly in time after dt_metric/dt_hydro iterations.
+#
+#       Since we use dtfac = 0.3, this is ~>30 iterations. For this purpose, we can choose to
+#       update the metric after N iterations where N < 30 in this case. Let's choose 8 iterations
+#       for concretness. Then we evolve_metric_every has to be set for the finest level. If we have
+#       9 active levels, then evolve_metric_every = 8 * 2^(9-1) = 2048.
+#
+# =============
+
+AnalyticalSpacetimeX::move_every = 1
+AnalyticalSpacetimeX::evolve_metric_every = 1
+AnalyticalSpacetimeX::set_analytic_metric_always = "yes"
+
+AsterSeeds::test_type = "BBHCloud"
+
+AsterSeeds::initial_distribution = "constant"
+AsterSeeds::zr_0 = 0.0
+AsterSeeds::rad_ztheta_0 = 0.0
+AsterSeeds::rad_zphi_0 = 0.0
+AsterSeeds::rho_disk = 1.0
+AsterSeeds::disk_width = 10.0
+AsterSeeds::press_disk = 0.001
+AsterSeeds::isentropic = "yes"
+AsterSeeds::add_magnetic_fields = "yes"
+AsterSeeds::nrho = 1.5
+AsterSeeds::npress = 2.5
+AsterSeeds::B_initial = 0.001
+
+AsterX::debug_mode = "yes"
+AsterX::flux_type = "HLLE"
+AsterX::vector_potential_gauge = "generalized Lorentz" #"algebraic"
+AsterX::lorenz_damp_fac = 2.0 # 1.5/largest dt
+AsterX::local_spatial_order = 4
+AsterX::local_estimate_error = "no"
+AsterX::update_tmunu = "no"
+
+AsterX::recon_type = "z_vec"
+AsterX::use_uct = "yes"
+
+AsterX::Psi6thresh = 500.0 #5.0
+AsterX::qmin = 1e-2
+
+AsterX::fix_flow_insideBH = "no"
+AsterX::rho_fix_BH        = 0.1
+AsterX::eps_fix_BH        = 0.01
+AsterX::zr_fix_BH         = -0.7
+AsterX::rad_ztheta_fix_BH = 0.0
+AsterX::rad_zphi_fix_BH   = 0.2
+
+ReconX::reconstruction_method = "minmod" #"PPM"
+#ReconX::ppm_zone_flattening = "yes"
+#ReconX::ppm_shock_detection = "no"
+
+Con2PrimFactory::c2p_prime = "Noble"
+Con2PrimFactory::c2p_second = "Palenzuela"
+Con2PrimFactory::c2p_tol = 1e-12
+Con2PrimFactory::max_iter = 100
+Con2PrimFactory::rho_abs_min = 1e-12 #1e-6
+Con2PrimFactory::atmo_tol = 1e-3
+Con2PrimFactory::unit_test = "yes"
+Con2PrimFactory::B_lim = 1e8
+Con2PrimFactory::vw_lim = 8 #1e8
+Con2PrimFactory::Ye_lenient = "yes"
+Con2PrimFactory::rho_strict = 1e100
+Con2PrimFactory::eps_atmo = 1e-10
+
+Con2PrimFactory::Psi6_thresh = 10000.0
+Con2PrimFactory::rho_BH     = 5.0
+Con2PrimFactory::eps_BH     = 1.0
+Con2PrimFactory::vwlim_BH   = 2.0
+
+EOSX::evolution_eos = "IdealGas"
+EOSX::gl_gamma = 4./3.
+EOSX::poly_gamma = 4./3.
+EOSX::poly_k = 4.249572342020723e-03
+EOSX::rho_max = 1e8
+EOSX::eps_max = 1e8
+EOSX::eps_min = 1e-10
+
+Cactus::terminate = "time"
+Cactus::cctk_final_time = 10000.
+
+#Cactus::terminate = "iteration"
+#Cactus::cctk_itlast = 20
+
+ODESolvers::method = "SSPRK3"
+ODESolvers::verbose = "no"
+
+#AHFinder::npoints = 81
+#AHFinder::initial_pos_x = 0.0
+#AHFinder::initial_pos_y = 0.0
+#AHFinder::initial_pos_z = 0.0   # 0.0
+#AHFinder::initial_radius = 2.0
+#AHFinder::max_iters = 100
+
+IO::out_every = 200
+IO::out_dir = "./data"
+
+CarpetX::out_norm_vars = "all"
+CarpetX::out_norm_omit_unstable = yes
+CarpetX::out_norm_every = 10
+
+#CarpetX::openpmd_format = "HDF5"
+CarpetX::out_openpmd_every = 100
+CarpetX::out_openpmd_vars = "
+    AsterX::con2prim_flag
+#    AsterX::Avec_x
+#    AsterX::Avec_y
+#    AsterX::Avec_z
+#    AsterX::dB
+    AsterX::dens
+    AsterX::mom
+    AsterX::tau
+    AsterX::aux_fields
+    AsterX::aux_fields_B
+#    AsterX::taurhs
+    HydroBaseX::Bvec
+    HydroBaseX::rho
+    HydroBaseX::vel
+    HydroBaseX::eps
+    HydroBaseX::press
+#    CarpetX::regrid_error
+    ADMBaseX::lapse
+#    ADMBaseX::shift
+#    ADMBaseX::metric
+#    ADMBaseX::curv
+"
+
+CarpetX::out_silo_every = 100
+CarpetX::out_silo_vars = "
+    AsterX::con2prim_flag
+#    AsterX::Avec_x
+#    AsterX::Avec_y
+#    AsterX::Avec_z
+#    AsterX::dB
+    AsterX::dens
+    AsterX::mom
+    AsterX::tau
+    AsterX::aux_fields
+    AsterX::aux_fields_B
+#    AsterX::taurhs
+    HydroBaseX::Bvec
+    HydroBaseX::rho
+    HydroBaseX::vel
+    HydroBaseX::eps
+    HydroBaseX::press
+#    CarpetX::regrid_error
+    ADMBaseX::lapse
+#    ADMBaseX::shift
+#    ADMBaseX::metric
+#    ADMBaseX::curv
+"
+
+CarpetX::out_tsv_every = 100
+CarpetX::out_tsv_vars = "
+    AsterX::con2prim_flag
+    AsterX::Avec_x
+    AsterX::Avec_y
+    AsterX::Avec_z
+    AsterX::dens
+    AsterX::mom
+    AsterX::tau
+    AsterX::dB
+    AsterX::aux_fields
+    AsterX::aux_fields_B
+    HydroBaseX::Bvec
+    HydroBaseX::rho
+    HydroBaseX::vel
+    HydroBaseX::press
+    HydroBaseX::eps
+#    CarpetX::regrid_error
+#    ADMBaseX::lapse
+#    ADMBaseX::shift
+#    ADMBaseX::metric
+#    ADMBaseX::curv
+"
+
+TimerReport::out_every = 100
+TimerReport::out_filename = "TimerReport"
+TimerReport::output_all_timers_together = yes
+TimerReport::output_all_timers_readable = yes
+TimerReport::n_top_timers = 50
+
+IO::checkpoint_dir = "../checkpoint"
+IO::recover_dir    = "../checkpoint"
+IO::checkpoint_ID = no
+#IO::checkpoint_every = 2000
+IO::checkpoint_every_walltime_hours = 15.0
+IO::checkpoint_on_terminate = yes
+IO::recover                 = "autoprobe"
+
+CarpetX::checkpoint_method = "openpmd"
+CarpetX::recover_method    = "openpmd"

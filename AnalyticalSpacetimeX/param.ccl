@@ -1,0 +1,198 @@
+# Parameter definitions for thorn AnalyticalSpacetimeX
+
+BOOLEAN do_AST "controls whether AST routines are scheduled"
+{
+} "yes"
+
+SHARES: ADMBaseX
+
+EXTENDS KEYWORD initial_data 
+{
+  "analytical_spacetime" :: "Analytical Spacetime"
+} 
+
+EXTENDS KEYWORD initial_lapse 
+{
+  "analytical_spacetime" :: "Analytical Spacetime"
+} 
+
+EXTENDS KEYWORD initial_shift 
+{
+  "analytical_spacetime" :: "Analytical Spacetime"
+} 
+
+KEYWORD evolution_method "Evolution method of metric used"
+{
+  "analytical_spacetime" :: ""
+} "analytical_spacetime"
+
+KEYWORD lapse_evolution_method "Evolution method of lapse used"
+{
+  "analytical_spacetime" :: ""
+} "analytical_spacetime"
+
+KEYWORD shift_evolution_method "Evolution method of shift used"
+{
+  "analytical_spacetime" :: ""
+} "analytical_spacetime"
+
+#========================================#
+# Custom metric spacetime
+#========================================#
+
+KEYWORD analytical_metric_type "Type of custom metric"
+{ 
+  "KerrSchild" :: "Kerr-Schild metric"
+  "SuperposedBBH" :: "A superposed BBH"
+} "SuperposedBBH"
+
+CCTK_INT resize_every "How often resize radii"
+{
+  0:* :: "zero means deactivated"
+} 0
+CCTK_INT move_every "How often move grids"
+{
+  0:* :: "zero means deactivated"
+} 0
+CCTK_INT resize_region "region to apply resizing"
+{
+  0:* :: "positive"
+} 2
+CCTK_INT resize_level_1 "level to apply resizing"
+{
+  -1:* :: "negative is deactivated"
+} -1
+CCTK_INT resize_level_2 "level to apply resizing"
+{
+  -1:* :: "negative is deactivated"
+} -1
+CCTK_INT resize_level_3 "level to apply resizing"
+{
+  -1:* :: "negative is deactivated"
+} -1
+CCTK_REAL init_radius_level_1 "radius of the level"
+{
+  0:* :: "positive"
+} 16
+CCTK_REAL init_radius_level_2 "radius of the level"
+{
+  0:* :: "positive"
+} 32
+CCTK_REAL init_radius_level_3 "radius of the level"
+{
+  0:* :: "positive"
+} 64
+CCTK_REAL resize_factor_limit "limit to which we stop refining"
+{
+  0:* :: "positive"
+} 0.5
+
+BOOLEAN traj_read_table "Read in trajectory table?" STEERABLE=RECOVER
+{ 
+} "No"
+
+BOOLEAN traj_print  "Print trajectories in table?" STEERABLE=RECOVER
+{ 
+} "No"
+
+CCTK_INT traj_print_every "Print trajectories?"
+{
+  0:* :: "Zero means deactivated"
+} 0
+
+STRING traj_table_name "traj table name (hdf5)" STEERABLE=RECOVER
+{
+ .* :: "Can be anything"
+} "blah.h5"
+
+private:
+
+BOOLEAN set_positions "Save position of BHs to a surface"
+{
+} "no"
+
+BOOLEAN set_analytic_metric_always "Be sure to compute the Analytical metric even without analytical_spacetime"
+{
+} "no"
+
+BOOLEAN verbose "Talk?"
+{
+} "no"
+
+CCTK_REAL finite_difference_h "step size for finite difference"
+{
+  (0:* :: "positive"
+} 1.0e-4
+
+RESTRICTED: CCTK_INT evolve_metric_every "Evolve the metric every a certain number of iterations"
+{
+  0:* :: "positive"
+} 0
+
+# ==================================#
+# Vertical Gravity
+# ==================================#
+
+REAL AST_VerticalGravity_g "Strength of gravitational field" STEERABLE=RECOVER
+{
+0.0:* :: "any real number"
+} 0.0
+REAL AST_VerticalGravity_z0 "Zero of gravitational field"
+{
+*:* :: "any real number"
+} 0.0
+
+# ==================================#
+# Kerr-Schild
+# ==================================#
+
+REAL AST_KerrSchild__boost_v "Kerr/Kerr-Schild: boost velocity of black hole in z direction"
+{
+(-1:1) :: "any real number with absolute value < 1"
+} 0.0
+REAL AST_KerrSchild__mass "Kerr/Kerr-Schild: BH mass"
+{
+(0.0:* :: "any real number > 0"
+} 1.0
+
+REAL AST_KerrSchild__spin \
+  "Kerr/Kerr-Schild: dimensionless spin parameter a = J/m^2"
+{
+-1.0:1.0 :: "dimensionless spin parameter a = J/m^2 for Kerr black hole"
+} 0.6
+
+# ==================================#
+# Superposed BBH
+# ==================================#
+
+REAL AST_a1_buffer  "SuperposedBBH: factor to avoid the singularity taking into account the spin" STEERABLE=RECOVER
+{
+0.0:* :: "any real number >= 0.0"
+} 5e-2
+REAL AST_a2_buffer  "SuperposedBBH: factor to avoid the singularity taking into account the spin" STEERABLE=RECOVER
+{
+0.0:* :: "any real number >= 0.0"
+} 5e-2
+REAL AST_cutoff_floor "SuperposedBBH: minimum value to not hit the singularity" STEERABLE=RECOVER 
+{
+0.0:* :: "any real number >= 0.0"
+} 1e-3
+
+REAL AST_adjust_mass1 "SuperposedBBH: Adjust mass for black hole I" STEERABLE=RECOVER
+{
+0.0:* :: "any real number >= 0.0"
+} 1.0
+
+REAL AST_adjust_mass2 "SuperposedBBH: Adjust mass for black hole II" STEERABLE=RECOVER
+{
+0.0:* :: "any real number >= 0.0"
+} 1.0
+
+REAL AST_t0 "Initial time for the metric" STEERABLE=RECOVER
+{
+0.0:* :: "any real number >= 0.0"
+} 0.0
+
+SHARES: IO
+
+USES STRING out_dir

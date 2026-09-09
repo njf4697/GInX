@@ -1,0 +1,297 @@
+# This parameter file sets up Kerr/Kerr-Schild initial data, then
+# finds the apparent horizon in it.  The local coordinate system origin
+# is centered on the black hole, but the initial guess is (deliberately)
+# de-centered with respect to the black hole, so this is still a non-trivial
+# test for the apparent horizon finder.
+## mclachlan tov_static
+ActiveThorns = "Time TimerReport"
+ActiveThorns = "Coordbase CartGrid3d Boundary StaticConformal TmunuBase"
+ActiveThorns = "SymBase ADMBase ADMCoupling ADMMacros ML_ADMConstraints MoL"
+ActiveThorns = "IOUtil Formaline"
+ActiveThorns = "SpaceMask CoordGauge Constants LocalReduce LoopControl"
+ActiveThorns = "Carpet CarpetLib CarpetReduce CarpetRegrid2 CarpetInterp"
+ActiveThorns = "CarpetIOASCII CarpetIOScalar CarpetIOHDF5 CarpetIOBasic CarpetMask"
+
+# grid parameters
+CartGrid3D::type         = "coordbase"
+CartGrid3D::domain       = "full"
+CartGrid3D::avoid_origin = "no"
+CoordBase::xmin = -15.0
+CoordBase::ymin = -15.0
+CoordBase::zmin = -15.0
+CoordBase::xmax =  15.0
+CoordBase::ymax =  15.0
+CoordBase::zmax =  15.0
+CoordBase::dx   =  0.1 #05
+CoordBase::dy   =  0.1 #05
+CoordBase::dz   =  0.1 #05
+
+TimerReport::out_every    = 128
+TimerReport::out_filename = "TimerReport"
+TimerReport::output_all_timers          = "no"
+TimerReport::output_all_timers_together = "no"
+TimerReport::output_all_timers_readable = "yes"
+TimerReport::n_top_timers               = 40
+Cactus::terminate           = "never" #iteration" #"time"
+
+CoordBase::boundary_size_x_lower     = 3
+CoordBase::boundary_size_y_lower     = 3
+CoordBase::boundary_size_z_lower     = 3
+CoordBase::boundary_size_x_upper     = 3
+CoordBase::boundary_size_y_upper     = 3
+CoordBase::boundary_size_z_upper     = 3
+
+
+MethodOfLines::ode_method             = "generic"
+MethodOfLines::generic_type           = "RK"
+MethodOfLines::MoL_Intermediate_Steps = 1
+MethodOfLines::MoL_Num_Scratch_Levels = 1
+
+CarpetMask::excluded_surface       [0] = 0
+CarpetMask::excluded_surface_factor[0] = 1.0
+CarpetMask::excluded_surface       [1] = 1
+CarpetMask::excluded_surface_factor[1] = 1.0
+CarpetMask::excluded_surface       [2] = 2
+CarpetMask::excluded_surface_factor[2] = 1.0
+#
+TmunuBase::stress_energy_storage = yes
+TmunuBase::stress_energy_at_RHS  = yes
+TmunuBase::timelevels            =  1
+TmunuBase::prolongation_type     = none
+
+Carpet::domain_from_coordbase = "yes"
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+
+#Carpet::enable_all_storage       = no
+#Carpet::use_buffer_zones         = "yes"
+#
+#Carpet::poison_new_timelevels    = "yes"
+#Carpet::check_for_poison         = "no"
+#Carpet::poison_value             = 113
+#
+Carpet::init_each_timelevel = yes
+Carpet::init_3_timelevels        = yes
+Carpet::init_fill_timelevels     = "yes"
+#
+#CarpetLib::poison_new_memory = "yes"
+#CarpetLib::poison_value      = 114
+
+# system specific Carpet paramters
+driver::ghost_size               = 3
+
+# flesh
+#cactus::cctk_itlast = 512
+
+Time::timestep_method = "given"
+Time::timestep = 1 #0.5
+
+#ActiveThorns = "CoordBase SymBase CartGrid3D"
+#ActiveThorns = "ADMBase ADMCoupling CoordGauge SpaceMask Exact StaticConformal"
+#ADMBase::initial_lapse = "exact"
+#ADMBase::initial_shift = "exact"
+#ADMBase::initial_dtlapse = "exact"
+#ADMBase::initial_dtshift = "exact"
+#ADMBase::initial_data = "exact"
+#ADMBase::evolution_method = "exact"
+#ADMBase::lapse_evolution_method = "exact"
+#ADMBase::shift_evolution_method = "exact"
+#ADMBase::metric_type = "physical"
+
+ADMBase::initial_lapse = "analytical_spacetime"
+ADMBase::initial_shift = "analytical_spacetime"
+#ADMBase::initial_dtlapse = "exact"
+#ADMBase::initial_dtshift = "exact"
+ADMBase::initial_data = "analytical_spacetime"
+ADMBase::evolution_method = "analytical_spacetime"
+#ADMBase::lapse_evolution_method = "analytical_spacetime"
+#ADMBase::shift_evolution_method = "analytical_spacetime"
+ADMBase::metric_type = "physical"
+
+
+################## EXACT ######
+#Exact::exact_model = "Custom_Metric"
+ActiveThorns = "AnalyticalSpacetime"
+AnalyticalSpacetime::analytical_metric_type = "SuperposedBBH" #BoostedBH"
+AnalyticalSpacetime::traj_read_table = "yes"
+#Exact::traj_table_name = "/home/d/dsiegel/lcombi/ET_devel/Cactus/repos/einsteininitialdata/Exact/src/metrics/circular_orbit_PN_sep20.h5"
+#AnalyticalSpacetime::traj_table_name = "/home/d/dsiegel/lcombi/ET_devel/Cactus/repos/einsteininitialdata/Exact/src/metrics/CircularOrbit_ZeroSpin_MergeAt4.h5"
+AnalyticalSpacetime::traj_table_name ="/home/d/dsiegel/lcombi/repository/analyticalbbh/CBwaves/src/CircularOrbit_Spin05_q2_MergeAt4.h5"
+#CircularOrbit_Spin05_MergeAt4.h5"
+#Exact::SuperposedBBH__mass1 = 0.5
+#Exact::SuperposedBBH__mass2 = 0.5
+#Exact::SuperposedBBH__sep =   10.0
+#Exact::SuperposedBBH__spin1 = 0.0 #46
+#Exact::SuperposedBBH__spin2 = 0.0 #46
+AnalyticalSpacetime::SuperposedBBH__RHorBH1 = 1000
+AnalyticalSpacetime::SuperposedBBH__RHorBH2 = 3000
+AnalyticalSpacetime::SuperposedBBH__ExpHor = 5
+########################################
+
+IOUtil::parfile_write = "no"
+IOBasic::outInfo_every      = 4 #20*@RHO@
+IOBasic::outInfo_reductions = "maximum"
+IOBasic::outInfo_vars       = "
+grid::r
+ML_ADMConstraints::H{reductions = 'norm1'}
+#QuasiLocalMeasures::qlm_spin[0]{reductions = 'norm2'}
+#QuasiLocalMeasures::qlm_radius[0]{reductions = 'norm2'}
+#QuasiLocalMeasures::qlm_mass[0]{reductions = 'norm2'}
+#QuasiLocalMeasures::qlm_3det[0]{reductions = 'norm2'}
+ADMBase::lapse
+#QuasiLocalMeasures::qlm_mass[0]{reductions = 'norm2'}
+#QuasiLocalMeasures::qlm_mass[1]{reductions = 'norm2'}
+#QuasiLocalMeasures::qlm_mass[2]{reductions = 'norm2'}
+"
+
+
+# --- 2D output ---
+# Parameters of thorn CarpetIOHDF5 (implementing IOHDF5)
+#CarpetIOHDF5::checkpoint                         = "yes"
+CarpetIOHDF5::compression_level                  = 0
+CarpetIOHDF5::open_one_input_file_at_a_time      = "yes"
+CarpetIOHDF5::out2D_dir                          = "hdf5_2D"
+CarpetIOHDF5::out2D_every                        = 32
+CarpetIOHDF5::out2D_vars                         = "
+  ADMBase::lapse
+  ADMBase::shift
+  ADMBase::metric
+  ML_ADMConstraints::H
+"
+
+########################################
+
+
+
+ActiveThorns = "AEILocalInterp SphericalSurface AHFinderDirect"
+
+#--------SphericalSurface-------------#
+SphericalSurface::nsurfaces = 12
+SphericalSurface::maxntheta = 55
+SphericalSurface::maxnphi = 96
+
+# These two surfaces are used by BNS Tracker and AH Finder
+SphericalSurface::ntheta      [0] = 55
+SphericalSurface::nphi        [0] = 96
+SphericalSurface::nghoststheta[0] = 2
+SphericalSurface::nghostsphi  [0] = 2
+
+SphericalSurface::ntheta      [1] = 55
+SphericalSurface::nphi        [1] = 96
+SphericalSurface::nghoststheta[1] = 2
+SphericalSurface::nghostsphi  [1] = 2
+
+SphericalSurface::ntheta      [2] = 55
+SphericalSurface::nphi        [2] = 96
+SphericalSurface::nghoststheta[2] = 2
+SphericalSurface::nghostsphi  [2] = 2
+#SphericalSurface::radius  [2] = 8
+
+SphericalSurface::ntheta      [3] = 55
+SphericalSurface::nphi        [3] = 96
+SphericalSurface::nghoststheta[3] = 2
+SphericalSurface::nghostsphi  [3] = 2
+SphericalSurface::radius  [3] = 8
+
+
+#AHFinderDirect::print_timing_stats = "true"
+#AHFinderDirect::output_Theta_every = 1
+#AHFinderDirect::h_base_file_name     = "Kerr.h"
+#AHFinderDirect::Theta_base_file_name = "Kerr.Theta"
+
+AHFinderDirect::N_horizons = 3
+#AHFinderDirect::origin_x[1] = 10.0
+AHFinderDirect::origin_x[1] = 3.0
+AHFinderDirect::origin_y[1] = 0.0
+AHFinderDirect::origin_z[1] = 0.0
+AHFinderDirect::which_surface_to_store_info[1]  = 0
+#AHFinderDirect::dont_find_after_individual_time[1] = 10.0
+
+#AHFinderDirect::origin_x[2] = -10.0
+AHFinderDirect::origin_x[2] = -5.0
+AHFinderDirect::origin_y[2] = 0.0
+AHFinderDirect::origin_z[2] = 0.0
+AHFinderDirect::which_surface_to_store_info[2]  = 1
+#AHFinderDirect::dont_find_after_individual_time[2] = 20. 
+
+#AHFinderDirect::find_after_individual_time[3] = 30 
+
+AHFinderDirect::origin_x[3] = 0.0
+AHFinderDirect::origin_y[3] = 0.0
+AHFinderDirect::origin_z[3] = 0.0
+AHFinderDirect::which_surface_to_store_info[3]  = 2
+
+AHFinderDirect::max_Newton_iterations__initial	= 50
+AHFinderDirect::max_Newton_iterations__subsequent	= 50
+AHFinderDirect::max_allowable_Theta_growth_iterations	= 50
+AHFinderDirect::max_allowable_Theta_nonshrink_iterations	= 50
+AHFinderDirect::geometry_interpolator_name	= "Lagrange polynomial interpolation"
+AHFinderDirect::geometry_interpolator_pars	= "order=4"
+AHFinderDirect::surface_interpolator_name	= "Lagrange polynomial interpolation"
+AHFinderDirect::surface_interpolator_pars	= "order=4"
+#AHFinderDirect::verbose_level		= "physics details"
+
+AHFinderDirect::move_origins            = yes
+AHFinderDirect::reshape_while_moving    = yes
+AHFinderDirect::predict_origin_movement = yes
+
+
+AHFinderDirect::initial_guess_method[1] = "coordinate sphere"
+#AHFinderDirect::initial_guess__coord_sphere__x_center[1] =  10.0
+AHFinderDirect::initial_guess__coord_sphere__x_center[1] =  3.0
+AHFinderDirect::initial_guess__coord_sphere__y_center[1] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__z_center[1] =  0.0
+#AHFinderDirect::initial_guess__coord_sphere__radius[1] = 1.0
+AHFinderDirect::initial_guess__coord_sphere__radius[1] = 1.3333
+AHFinderDirect::reset_horizon_after_not_finding    [1] = no
+AHFinderDirect::initial_guess_method[2] = "coordinate sphere"
+AHFinderDirect::initial_guess__coord_sphere__x_center[2] =  -5.0
+AHFinderDirect::initial_guess__coord_sphere__y_center[2] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__z_center[2] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__radius[2] = 0.66667
+AHFinderDirect::reset_horizon_after_not_finding    [2] = no
+
+AHFinderDirect::initial_guess_method[3] = "coordinate sphere"
+AHFinderDirect::initial_guess__coord_sphere__x_center[3] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__y_center[3] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__z_center[3] =  0.0
+AHFinderDirect::initial_guess__coord_sphere__radius[3] = 2.0
+AHFinderDirect::reset_horizon_after_not_finding    [3] = no
+
+#ActiveThorns = "QuasiLocalMeasures"
+#
+#QuasiLocalMeasures::verbose              = yes
+#QuasiLocalMeasures::interpolator         = "Lagrange polynomial interpolation"
+#QuasiLocalMeasures::interpolator_options = "order=4"
+#QuasiLocalMeasures::spatial_order        = 4
+#
+#QuasiLocalMeasures::num_surfaces     = 3
+#QuasiLocalMeasures::surface_index[0] = 0
+#QuasiLocalMeasures::surface_index[1] = 1
+#QuasiLocalMeasures::surface_index[2] = 2
+
+#IOASCII::out1D_every = 1
+#IOASCII::out1D_vars  = "
+#        CarpetReduce::weight
+#        ADMBase::metric
+#        ADMBase::curv
+#        ADMBase::lapse
+#        ADMBase::shift
+#        ML_ADMConstraints::ML_Ham
+#        ML_ADMConstraints::ML_mom
+#        SphericalSurface::sf_radius
+#        QuasiLocalMeasures::qlm_shapes
+#        QuasiLocalMeasures::qlm_coordinates
+#        QuasiLocalMeasures::qlm_tetrad_l
+#        QuasiLocalMeasures::qlm_tetrad_n
+#        QuasiLocalMeasures::qlm_tetrad_m
+#        QuasiLocalMeasures::qlm_newman_penrose
+#        QuasiLocalMeasures::qlm_weyl_scalars
+#        QuasiLocalMeasures::qlm_ricci_scalars
+#        QuasiLocalMeasures::qlm_twometric
+#        QuasiLocalMeasures::qlm_killing_vector
+#        QuasiLocalMeasures::qlm_killed_twometric
+#        QuasiLocalMeasures::qlm_invariant_coordinates
+#        QuasiLocalMeasures::qlm_3determinant
+#"
+

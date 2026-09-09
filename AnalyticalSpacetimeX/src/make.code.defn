@@ -1,0 +1,10 @@
+# Main make.code.defn file for thorn PNSpacetime
+
+# Source files in this directory
+SRCS = \
+  AST_Spacetime.cxx \
+  AST_Readtable_CactusWrapper.cxx \
+  AST_MoveGrids.cxx
+
+# Subdirectories containing source files
+SUBDIRS = 

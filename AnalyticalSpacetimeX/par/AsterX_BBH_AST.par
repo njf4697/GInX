@@ -1,0 +1,207 @@
+# q1
+$itlast = 1025
+$final_time = 1000
+$xmin = -20.0
+$xmax = +20.0
+$ncells = 64
+$nlevels = 3
+$error_threshold = 0.9
+$dtfac = 0.25
+$out_every = 8
+
+ActiveThorns = "
+    ADMBaseX
+    CarpetX
+    CoordinatesX
+    BoxInBox
+    HydroBaseX
+    Formaline
+    IOUtil
+    ODESolvers
+    TimerReport
+    TmunuBaseX
+    AsterX
+    AsterSeeds
+"
+
+Cactus::cctk_show_schedule = yes
+
+Cactus::presync_mode = "mixed-error"
+
+Cactus::terminate = "any"
+Cactus::cctk_itlast = $itlast
+Cactus::cctk_final_time = $final_time
+# Cactus::max_runtime = 30   # minutes
+Cactus::max_runtime = 23*60+30   # minutes
+
+CarpetX::verbose = no
+CarpetX::poison_undefined_values = no
+
+CarpetX::xmin = $xmin
+CarpetX::ymin = $xmin
+CarpetX::zmin = $xmin
+
+CarpetX::xmax = $xmax
+CarpetX::ymax = $xmax
+CarpetX::zmax = $xmax
+
+CarpetX::ncells_x = $ncells
+CarpetX::ncells_y = $ncells
+CarpetX::ncells_z = $ncells
+
+CarpetX::max_tile_size_x = 1024000
+CarpetX::max_tile_size_y = 4
+CarpetX::max_tile_size_z = 4
+
+#CarpetX::blocking_factor_x = 8
+#CarpetX::blocking_factor_y = 8
+#CarpetX::blocking_factor_z = 8
+
+#CarpetX::max_grid_size_x = 64
+#CarpetX::max_grid_size_y = 64
+#CarpetX::max_grid_size_z = 32
+
+CarpetX::boundary_x = "neumann" #"dirichlet"
+CarpetX::boundary_y = "neumann" #"dirichlet"
+CarpetX::boundary_z = "neumann" #"dirichlet"
+CarpetX::boundary_upper_x = "neumann" #"dirichlet"
+CarpetX::boundary_upper_y = "neumann" #"dirichlet"
+CarpetX::boundary_upper_z = "neumann" #"dirichlet"
+
+CarpetX::ghost_size = 3
+#CarpetX::interpolation_order = 3
+
+CarpetX::max_num_levels = $nlevels
+CarpetX::regrid_every = 4 #128
+CarpetX::regrid_error_threshold = $error_threshold
+
+#CarpetX::out_performance_every = 256
+
+# -------------------- BoxInBox -------------------------------------------------
+BoxInBox::num_regions = 3
+
+# Region 1
+BoxInBox::shape_1 = "cube"
+BoxInBox::num_levels_1 = 3
+BoxInBox::position_x_1 = -6.508727e+00
+BoxInBox::position_y_1 = -7.591869e+00
+
+BoxInBox::radius_1 = [-1., 4., 2.]
+
+# Region 2
+BoxInBox::shape_2 = "cube"
+BoxInBox::num_levels_2 = 3
+BoxInBox::position_x_2 = 6.508727e+00
+BoxInBox::position_y_2 = 7.591869e+00
+BoxInBox::radius_2 =   [-1., 4., 2.]
+
+# Region 3
+BoxInBox::shape_3 = "cube"
+BoxInBox::num_levels_3 = 2
+BoxInBox::position_x_3 = 0.0
+BoxInBox::radius_x_3 = [-1., 20.]
+BoxInBox::radius_y_3 = [-1., 20.]
+BoxInBox::radius_z_3 = [-1., 20.]
+
+CarpetX::prolongation_type = "ddf"
+CarpetX::prolongation_order = 5
+
+ODESolvers::verbose = no
+ODESolvers::method = "RK4"
+CarpetX::dtfac = $dtfac
+
+
+ADMBaseX::initial_data = "analytical_spacetime"
+ADMBaseX::initial_lapse = "analytical_spacetime"
+ADMBaseX::initial_shift = "analytical_spacetime"
+
+#=======================
+# Analytical Spacetime
+# ======================
+ActiveThorns = "AnalyticalSpacetimeX"
+AnalyticalSpacetimeX::analytical_metric_type = "SuperposedBBH" #BoostedBH"
+AnalyticalSpacetimeX::traj_read_table = "yes"
+AnalyticalSpacetimeX::traj_print = "no"
+AnalyticalSpacetimeX::traj_table_name ="/global/homes/j/jkalinan/ET/ET_2024_05/Cactus/AST/CircularOrbit_pp08_q1_sep20.h5"
+AnalyticalSpacetimeX::traj_print_every = 1.0
+AnalyticalSpacetimeX::AST_adjust_mass1 = 1.0
+AnalyticalSpacetimeX::AST_adjust_mass2 = 1.0
+AnalyticalSpacetimeX::set_positions = "yes"
+#AnalyticalSpacetimeX::surf_storage_BH1 = 0
+#AnalyticalSpacetimeX::surf_storage_BH2 = 1
+AnalyticalSpacetimeX::AST_cutoff_floor = 1e-1
+AnalyticalSpacetimeX::AST_a1_buffer = 0.01
+AnalyticalSpacetimeX::AST_a2_buffer = 0.01
+# =============
+# Evolve the metric only every some amount of iterations.
+# The logic to set this number is as follows:
+#
+#       If the coarser level has a given CFL factor of dtfac, then dt = dtfac dx.
+#       The black holes move with a velocity of vBH, so the typical timestep is
+#       dt_metric = (1/vBH) dx. For separations of >10M, vBH~0.1c, so dt_metric = 10 dx.
+#       This means that the metric will change significantly in time after dt_metric/dt_hydro iterations.
+#
+#       Since we use dtfac = 0.3, this is ~>30 iterations. For this purpose, we can choose to
+#       update the metric after N iterations where N < 30 in this case. Let's choose 8 iterations
+#       for concretness. Then we evolve_metric_every has to be set for the finest level. If we have
+#       9 active levels, then evolve_metric_every = 8 * 2^(9-1) = 2048.
+#
+# =============
+AnalyticalSpacetimeX::move_every = 8 # 4*2^(12-1)
+AnalyticalSpacetimeX::evolve_metric_every = 8 # 4*2^(12-1)
+
+#AsterX
+AsterSeeds::test_type = "Atmosphere"
+AsterSeeds::rho_atmosphere = 1e-6
+
+AsterX::local_estimate_error = no
+AsterX::debug_mode = "yes"
+AsterX::flux_type = "LxF"
+AsterX::vector_potential_gauge = "algebraic"
+AsterX::local_spatial_order = 4
+AsterX::update_tmunu = "no"
+
+ReconX::reconstruction_method = "minmod"
+ReconX::ppm_zone_flattening = "yes"
+ReconX::ppm_shock_detection = "no"
+
+Con2PrimFactory::c2p_prime = "Noble"
+Con2PrimFactory::c2p_second = "Palenzuela"
+Con2PrimFactory::c2p_tol = 1e-3
+Con2PrimFactory::max_iter = 100
+Con2PrimFactory::rho_abs_min = 1e-3
+Con2PrimFactory::atmo_tol = 1e-1
+Con2PrimFactory::unit_test = "no"
+Con2PrimFactory::B_lim = 1e8
+Con2PrimFactory::vw_lim = 1e8
+Con2PrimFactory::Ye_lenient = "yes"
+Con2PrimFactory::rho_strict = 1e8 #6.4e-05
+
+EOSX::evolution_eos = "IdealGas"
+EOSX::gl_gamma = 1.666
+EOSX::poly_gamma = 1.666
+EOSX::poly_k = 1
+EOSX::rho_max = 1e8
+EOSX::eps_max = 1e8
+EOSX::eps_min = 1e-20
+
+IO::out_dir = $parfile
+IO::out_every = $out_every
+IO::out_mode = "np"                       # "proc", "np", "onefile"
+IO::out_proc_every = 1
+CarpetX::out_silo_vars = "
+    ADMBaseX::alp
+#    HydroBaseX::rho
+#    HydroBaseX::vel
+#    HydroBaseX::eps
+#    HydroBaseX::press
+#    HydroBaseX::Bvec
+#    CarpetX::regrid_error
+"
+CarpetX::out_metadata = no
+
+TimerReport::out_every = 1000 #$out_every
+TimerReport::out_filename = "TimerReport"
+TimerReport::output_all_timers_together = yes
+TimerReport::output_all_timers_readable = yes
+TimerReport::n_top_timers = 100

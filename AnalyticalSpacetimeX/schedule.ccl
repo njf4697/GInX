@@ -1,0 +1,177 @@
+if (do_AST) {
+
+#================================
+# Read table for BH trajectories
+#================================
+
+if (traj_read_table)
+{
+  SCHEDULE traj_readtable_cactus_wrapper AT wragh #CCTK_BASEGRID
+  {
+    LANG: C
+    OPTIONS: global
+  } "Read EOS HDF5 table"
+}
+
+#======================================
+# Print trajectories at every timestep
+#======================================
+
+if (traj_print){
+  schedule traj_at_time_t_cactus_wrapper in ODESolvers_PostStep
+  {
+    LANG: C
+  } "Print trajectories"
+}
+
+#====================================
+# Routines for tracking BHs
+#====================================
+
+if (set_positions){
+
+   STORAGE: BH_PN_Trajectories
+
+   SCHEDULE AST_SetPositions IN ANALYTIC_METRIC_REGRID
+   {
+     LANG: C
+     OPTIONS: global
+     WRITES: BH_PN_Trajectories
+   } "Copy BH positions"
+
+   if (move_every>0){
+
+     SCHEDULE AST_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+     {
+       LANG: C
+       OPTIONS: global
+       READS: BH_PN_Trajectories
+       READS: BoxInBox::positions
+       WRITES: BoxInBox::positions
+     } "Change grid based on BH position"
+
+   }
+
+   if (resize_every>0){
+
+     SCHEDULE AST_ResizeGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+     {
+       LANG: C
+       OPTIONS: global
+       READS: BH_PN_Trajectories
+       READS: BoxInBox::radii
+       WRITES: BoxInBox::radii
+     } "Change grid based on BH position"
+
+   }
+
+} else {
+
+   SCHEDULE AST_SetPositions AT wragh AFTER traj_readtable_cactus_wrapper
+   {
+     LANG: C
+     OPTIONS: global
+     WRITES: BH_PN_Trajectories
+   } "Copy BH positions"
+
+}
+
+# ===================================================
+# Schedule definitions for thorn AnalyticalSpacetimeX
+# ===================================================
+
+SCHEDULE GROUP ANALYTIC_METRIC_REGRID AT postinitial BEFORE EstimateError
+{
+} "Group interfacing with BoxInBox"
+
+SCHEDULE GROUP ANALYTIC_METRIC_REGRID AT poststep BEFORE EstimateError
+{
+} "Group interfacing with BoxInBox"
+
+SCHEDULE GROUP ANALYTIC_METRIC_REGRID AT CCTK_POST_RECOVER_VARIABLES
+{
+} "Group interfacing with BoxInBox"
+
+SCHEDULE GROUP ANALYTIC_METRIC IN ADMBaseX_SetADMVars #ODESolvers_PostStep
+{
+} "Group for analytic metric"
+
+SCHEDULE GROUP ANALYTIC_METRIC AT CCTK_POST_RECOVER_VARIABLES
+{
+} "Group for analytic metric"
+
+# ===================================================
+# Schedule main functions if we are evolving with AST
+# ===================================================
+
+if (CCTK_Equals(evolution_method, "analytical_spacetime") || set_analytic_metric_always)
+{
+
+  SCHEDULE AnalyticalSpacetimeX_Setup AT wragh
+  {
+    LANG: C
+    OPTIONS: GLOBAL
+  } "set up for calculating analytical spacetime metric"
+
+  SCHEDULE GROUP ANALYTIC_METRIC_INIT IN ADMBaseX_InitialData
+  {
+  } "Group for analytic metric"
+
+  #========================================
+  # Set metric in metric bins
+  # =======================================
+  SCHEDULE AnalyticalSpacetimeX_SetMetric IN ANALYTIC_METRIC_INIT
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+  } "fill metric with analytic data"
+  
+  SCHEDULE AnalyticalSpacetimeX_SwitchOffSettingMetric IN ANALYTIC_METRIC_INIT AFTER AnalyticalSpacetimeX_SetMetric
+  {
+    LANG: C
+    OPTIONS: global
+  } "reset flag is_setting_metric to false"
+
+  SCHEDULE AnalyticalSpacetimeX_SetMetric IN ANALYTIC_METRIC
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+  } "fill metric with analytic data"
+  
+  SCHEDULE AnalyticalSpacetimeX_SwitchOffSettingMetric IN ANALYTIC_METRIC AFTER AnalyticalSpacetimeX_SetMetric
+  {
+    LANG: C
+    OPTIONS: global
+  } "reset flag is_setting_metric to false"
+
+  #=============================================================
+  # Switch to check whether we are in POSTREGRID or POSTRECOVER
+  # This used to avoid not computing the metric at those steps
+  #=============================================================
+  SCHEDULE AnalyticalSpacetimeX_SwitchOnSettingMetric AT POSTREGRID BEFORE ODESolvers_PostStep
+  {
+    LANG: C
+    OPTIONS: global
+  } "set flag is_setting_metric to true after regrid"
+
+  SCHEDULE AnalyticalSpacetimeX_SwitchOnSettingMetric AT POST_RECOVER_VARIABLES BEFORE ANALYTIC_METRIC
+  {
+    LANG: C
+    OPTIONS: global
+  } "set flag is_setting_metric to true after recovering from checkpoint"
+  
+}
+
+} 

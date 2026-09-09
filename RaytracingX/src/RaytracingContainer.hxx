@@ -108,11 +108,7 @@ namespace RaytracingX
             const CCTK_REAL point,
             const CCTK_REAL lower,
             const CCTK_REAL upper,
-            const CCTK_REAL dx,
-            const int lower_tile_index,
-            const int upper_tile_index,
-            const int ghost_lower, 
-            const int ghost_upper);
+            const CCTK_REAL dx);
 
         static void write_to_one_file(
             std::string filename,
@@ -138,13 +134,7 @@ namespace RaytracingX
             const amrex::GpuArray<double, 3> &dx,
             const int lev,
             const amrex::GpuArray<double, 3> &plo,
-            const amrex::GpuArray<double, 3> &phi,
-            const amrex::GpuArray<int, 3> &idxlo,
-            const amrex::GpuArray<int, 3> &idxhi,
-            const amrex::GpuArray<int, 3> &nglo,
-            const amrex::GpuArray<int, 3> &nghi,
-            const CCTK_REAL max_energy, 
-            const CCTK_REAL mass);
+            const amrex::GpuArray<double, 3> &phi);
 
         void evolve_k1(
             const int iteration,
@@ -194,14 +184,15 @@ namespace RaytracingX
         CCTK_REAL check_bounds(
             const amrex::GpuArray<CCTK_REAL, 9> u,
             const amrex::GpuArray<double, 3> &plo,
-            const amrex::GpuArray<double, 3> &phi);
+            const amrex::GpuArray<double, 3> &phi,
+            const amrex::GpuArray<double, 3> &dx,
+            amrex::Array4<CCTK_REAL const> const &lapse_array,
+            CCTK_REAL max_energy)
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_validity(
             const amrex::GpuArray<CCTK_REAL, 9> rhs,
             const amrex::GpuArray<CCTK_REAL, 9> u,
-            const CCTK_REAL lapse,
-            const CCTK_REAL max_energy,
             const int index);
 
         void check_horizon(

@@ -66,21 +66,15 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const amrex::GpuArray<double, 3> &dx,
     const int lev,
     const amrex::GpuArray<double, 3> &plo,
-    const amrex::GpuArray<double, 3> &phi,
-    const amrex::GpuArray<int, 3> &idxlo,
-    const amrex::GpuArray<int, 3> &idxhi,
-    const amrex::GpuArray<int, 3> &nglo,
-    const amrex::GpuArray<int, 3> &nghi,
-    const CCTK_REAL max_energy, 
-    const CCTK_REAL mass)
+    const amrex::GpuArray<double, 3> &phi)
 {
 
     // RaytracingX: Add space for optical depth variable.
     amrex::GpuArray<CCTK_REAL, 9> rhs = {0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
-    const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0], idxlo[0], idxhi[0], nglo[0], nghi[0]);
-    const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1], idxlo[1], idxhi[1], nglo[1], nghi[1]);
-    const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2], idxlo[2], idxhi[2], nglo[2], nghi[2]);
+    const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
+    const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
+    const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
 
     // Interpolate lapse & partial lapse at \vect{x}
     CCTK_REAL lapse_x;
@@ -216,7 +210,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     //const CCTK_REAL ds = mag2_massless(dx[0], dx[1], dx[2], gamma_inv_x);
     rhs[Uidx::tau] = 0.0; //(0.4 * cgs2cactusOpacity) * (rho_x * cgs2cactusDensity) * (ds / dt);
 
-    rhs[Uidx::del_rsn] = check_validity(rhs, u, lapse_x, max_energy, index);
+    rhs[Uidx::del_rsn] = check_validity(rhs, u, index);
 
     return rhs;
 } // RaytracingParticlesContainer::compute_rhs
@@ -276,13 +270,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = pti.tilebox();
-        const amrex::Box& fbox = pti.fabbox();
-        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
-        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
-
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.
@@ -320,7 +307,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k =
           self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0, phi0, idxlo, idxhi, nglo, nghi, max_energy, m); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add density for optical depth.
 
       particles[i].pos(0) += (1. / 6.) * dt * k[Uidx::x];
       particles[i].pos(1) += (1. / 6.) * dt * k[Uidx::y];
@@ -391,13 +378,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
-        const amrex::Box& box = pti.tilebox();
-        const amrex::Box& fbox = pti.fabbox();
-        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
-        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
-
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.
@@ -440,7 +420,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -448,11 +428,9 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
         return;
       }
 
-      SKIP_DELETED_PARTICLES
-
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, idxlo, idxhi, nglo, nghi, max_energy, m);
+                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0);
 
       particles[i].pos(0) += (1. / 3.) * dt * k[Uidx::x];
       particles[i].pos(1) += (1. / 3.) * dt * k[Uidx::y];
@@ -523,13 +501,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = pti.tilebox();
-        const amrex::Box& fbox = pti.fabbox();
-        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
-        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
-        
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.
@@ -572,19 +543,17 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         particles[i].id() = -1;
         return;
       }
-
-      SKIP_DELETED_PARTICLES
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, idxlo, idxhi, nglo, nghi, max_energy, m); //RaytracingX: Add optical depth.
+                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
 
       particles[i].pos(0) += (1. / 3.) * dt * k[Uidx::x];
       particles[i].pos(1) += (1. / 3.) * dt * k[Uidx::y];
@@ -655,13 +624,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
-        const amrex::Box& box = pti.tilebox();
-        const amrex::Box& fbox = pti.fabbox();
-        const amrex::GpuArray<int, 3> idxlo = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> idxhi = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
-        const amrex::GpuArray<int, 3> nglo = {idxlo[0]-fbox.smallEnd(0), idxlo[1]-fbox.smallEnd(1), idxlo[2]-fbox.smallEnd(2)};
-        const amrex::GpuArray<int, 3> nghi = {fbox.bigEnd(0)-idxhi[0], fbox.bigEnd(1)-idxhi[1], fbox.bigEnd(2)-idxhi[2]};
-
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.
@@ -704,7 +666,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -712,11 +674,9 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
         return;
       }
 
-      SKIP_DELETED_PARTICLES
-
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
       k = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, idxlo, idxhi, nglo, nghi, max_energy, m); //RaytracingX: Add optical depth.
+                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0); //RaytracingX: Add optical depth.
 
       // Update particles with the f3 and f4 from RK4
       particles[i].pos(0) += (1. / 6.) * dt * k[Uidx::x];
@@ -737,7 +697,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::lnE] = ln_energy[i];
       U_tmp[Uidx::tau] = tau[i];
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -753,15 +713,9 @@ AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
 CCTK_REAL RaytracingParticlesContainer<StructType>::check_validity(
     const amrex::GpuArray<CCTK_REAL, 9> rhs,
     const amrex::GpuArray<CCTK_REAL, 9> u,
-    const CCTK_REAL lapse,
-    const CCTK_REAL max_energy,
     const int index)
 {
     CCTK_REAL deletion_reason = u[Uidx::del_rsn];
-
-    if (u[Uidx::lnE] > log(max_energy * lapse)) {
-        deletion_reason = DelReason::HORIZON;
-    }
 
     if (!(std::isfinite(rhs[Uidx::x]) &&
           std::isfinite(rhs[Uidx::y]) &&
@@ -787,7 +741,10 @@ AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
 CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
     const amrex::GpuArray<CCTK_REAL, 9> u,
     const amrex::GpuArray<double, 3> &plo,
-    const amrex::GpuArray<double, 3> &phi)
+    const amrex::GpuArray<double, 3> &phi,
+    const amrex::GpuArray<double, 3> &dx,
+    amrex::Array4<CCTK_REAL const> const &lapse_array,
+    CCTK_REAL max_energy)
 {
     if (u[Uidx::x] > phi[0]) {
         return DelReason::XHI;
@@ -811,4 +768,15 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
         return DelReason::PHOTOSPHERE;
     }
     return u[Uidx::del_rsn];
+
+    const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
+    const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
+    const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
+
+    CCTK_REAL lapse;
+    GInX::interpolate_array<5>(lapse, lapse_array, i0, j0, k0, u[0], u[1], u[2], dx, plo);
+
+    if (u[Uidx::lnE] > log(max_energy * lapse)) {
+        return DelReason::HORIZON;
+    }
 }

@@ -178,7 +178,7 @@ void RaytracingParticlesContainer<StructType>::check_banned_zones(
           const CCTK_REAL R2minusa2 = dx*dx + dy*dy + dz*dz - a[check]*a[check];
           const CCTK_REAL r = sqrt(R2minusa2 + sqrt(R2minusa2*R2minusa2+4*a[check]*a[check]*z[check]*z[check])) / 2;
 
-          if (!(r > 0)) { CCTK_ERROR("Issue with calculating distance to banned zone."); }
+          //if (!(r > 0)) { CCTK_ERROR("Issue with calculating distance to banned zone."); }
           
           if (r <= (radius[check] + sqrt(radius[check]*radius[check]-4*a[check]*a[check])) / 2.0) {
             particles[i].id() = -1;

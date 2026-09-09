@@ -128,6 +128,9 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
     const auto dx = this->Geom(lev).CellSizeArray();
 
+    CCTK_REAL* d_min_dt = static_cast<CCTK_REAL*>(amrex::The_Managed_Arena()->alloc(sizeof(CCTK_REAL)));
+    *d_min_dt = std::numeric_limits<CCTK_REAL>::max();
+
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
@@ -142,6 +145,8 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         CCTK_REAL *AMREX_RESTRICT dt = attribs[StructType::dt].data();
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
+        CCTK_REAL *min_dt = d_min_dt;
+
         // Get the array of each parameter.
         auto const lapse_array = lapse.array(pti);
         auto const shift_array = shift.array(pti);
@@ -149,11 +154,6 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
         // Needed for GPU
         auto self = this;
-
-        CCTK_REAL* d_min_dt = static_cast<CCTK_REAL*>(amrex::The_Managed_Arena()->alloc(sizeof(CCTK_REAL)));
-        *d_min_dt = std::numeric_limits<CCTK_REAL>::max();
-
-        auto min_dt = d_min_dt.dataPtr();
 
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
         {   
@@ -185,7 +185,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
                                                           dx[2] / fmax(fabs(V_up[2]), eps)};
             dt[i] = dtfac * fmin(dt_vec[0], fmin(dt_vec[1], dt_vec[2]));
 
-            amrex::Gpu::Atomic::Min(min_dt, dt_i);
+            amrex::Gpu::Atomic::Min(min_dt, dt[i]);
         });
     }
     amrex::Gpu::streamSynchronize();

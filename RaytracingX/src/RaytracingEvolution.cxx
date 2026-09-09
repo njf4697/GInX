@@ -630,7 +630,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
           const amrex::MultiFab &shift = *gd_shift.mfab[tl];
           const auto &gd_metric = *ld.groupdata.at(gi_metric);
           const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-          dt_local = std::min(pc->calculate_dt(laspe, shift, metric, dtfac, lev), dt_local);
+          dt_local = std::min(pc->calculate_dt(lapse, shift, metric, dtfac, lev), dt_local);
       }
   }
 
@@ -643,7 +643,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
     MPI_MIN,
     MPI_COMM_WORLD);
 
-  valid_dt = n_global;
+  valid_dt = dt_global;
 
   CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 }

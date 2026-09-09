@@ -180,7 +180,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
 
             const amrex::GpuArray<CCTK_REAL, 3> V_coord = {lapse_x*V_up[0]-shift_x[0], 
-                                                           lapse_x*V_up[1]-shift_x[1]
+                                                           lapse_x*V_up[1]-shift_x[1],
                                                            lapse_x*V_up[2]-shift_x[2]};
 
             const CCTK_REAL eps = 1e-14;

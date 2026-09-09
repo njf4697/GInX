@@ -233,4 +233,88 @@ void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const 
   amrex::The_Managed_Arena()->free(bbh_traj_p1);
 }
 
+struct traj_stencil {
+  double *traj_m2;
+}
+
+void GetMetricAtPoint(const double *bbh_traj_loc0, const double *bbh_traj_loc0) {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
+  
+  const auto superposed_bbh_func =
+      [=] CCTK_DEVICE(const double *xx, struct four_metric *met,
+                      const double *bbh_traj_loc, bool &maskL) CCTK_ATTRIBUTE_ALWAYS_INLINE {
+        double gcov[NDIM][NDIM];
+
+        SuperposedBBH(xx, gcov, bbh_traj_loc, AST_adjust_mass1,
+                      AST_adjust_mass2, AST_a1_buffer, AST_a2_buffer,
+                      AST_cutoff_floor, maskL);
+        met->g.tt = gcov[TT][TT];
+        met->g.tx = gcov[TT][XX];
+        met->g.ty = gcov[TT][YY];
+        met->g.tz = gcov[TT][ZZ];
+        met->g.xx = gcov[XX][XX];
+        met->g.xy = gcov[XX][YY];
+        met->g.xz = gcov[XX][ZZ];
+        met->g.yy = gcov[YY][YY];
+        met->g.yz = gcov[YY][ZZ];
+        met->g.zz = gcov[ZZ][ZZ];
+      };
+
+  const auto kerrschild_func =
+      [=] CCTK_DEVICE(const double *xx, struct four_metric *met,
+                      const double *bbh_traj_loc, bool &maskL) CCTK_ATTRIBUTE_ALWAYS_INLINE {
+        double gcov[NDIM][NDIM];
+
+        // Note mask not used below yet
+        KerrSchild(xx, gcov, AST_KerrSchild__mass, AST_KerrSchild__spin);
+        met->g.tt = gcov[TT][TT];
+        met->g.tx = gcov[TT][XX];
+        met->g.ty = gcov[TT][YY];
+        met->g.tz = gcov[TT][ZZ];
+        met->g.xx = gcov[XX][XX];
+        met->g.xy = gcov[XX][YY];
+        met->g.xz = gcov[XX][ZZ];
+        met->g.yy = gcov[YY][YY];
+        met->g.yz = gcov[YY][ZZ];
+        met->g.zz = gcov[ZZ][ZZ];
+      };
+  const auto vertical_gravity_func =
+      [=] CCTK_DEVICE(const double *xx, struct four_metric *met,
+                      const double *bbh_traj_loc, bool &maskL) CCTK_ATTRIBUTE_ALWAYS_INLINE {
+        double gcov[NDIM][NDIM];
+
+        // Note mask not used used below yet
+        VerticalGravity(xx, gcov, bbh_traj_loc, AST_VerticalGravity_z0,
+                        AST_VerticalGravity_g);
+        met->g.tt = gcov[TT][TT];
+        met->g.tx = gcov[TT][XX];
+        met->g.ty = gcov[TT][YY];
+        met->g.tz = gcov[TT][ZZ];
+        met->g.xx = gcov[XX][XX];
+        met->g.xy = gcov[XX][YY];
+        met->g.xz = gcov[XX][ZZ];
+        met->g.yy = gcov[YY][YY];
+        met->g.yz = gcov[YY][ZZ];
+        met->g.zz = gcov[ZZ][ZZ];
+      };
+
+  switch (metricType) {
+  case metric_t::kerrschild: {
+    SetMetric(CCTK_PASS_CTOC, kerrschild_func, finite_difference_h, time + AST_t0);
+    break;
+  }
+  case metric_t::superposed_bbh: {
+    SetMetric(CCTK_PASS_CTOC, superposed_bbh_func, finite_difference_h, time + AST_t0);
+    break;
+  }
+  case metric_t::vertical_gravity: {
+    SetMetric(CCTK_PASS_CTOC, vertical_gravity_func, finite_difference_h, time + AST_t0);
+    break;
+  }
+  default:
+    assert(0);
+  }
+}
+
 } // namespace AnalyticalSpacetimeX

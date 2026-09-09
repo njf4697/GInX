@@ -237,9 +237,9 @@ void RaytracingParticlesContainer<StructType>::normalize_velocity(
             // Generate a random position
             const auto &p = p_struct[i];
             
-            const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0], idxlo[0]);
-            const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1], idxlo[1]);
-            const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2], idxlo[2]);
+            const long int i0 = get_interpolation_center(p.pos(0), p_lo[0], p_hi[0], dx[0]);
+            const long int j0 = get_interpolation_center(p.pos(1), p_lo[1], p_hi[1], dx[1]);
+            const long int k0 = get_interpolation_center(p.pos(2), p_lo[2], p_hi[2], dx[2]);
             
             // Interpolate metric
             amrex::GpuArray<CCTK_REAL, 6> gamma_x;

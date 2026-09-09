@@ -171,7 +171,7 @@ void RaytracingParticlesContainer<StructType>::check_banned_zones(
                            {
         for (int check = 0; check < zones; check++) {
           if (radius[check] < a[check] * 2) {
-            CCTK_VERROR("Banned Zone %i exceeds its maximum spin");
+            CCTK_VERROR("Banned Zone %i exceeds its maximum spin", check);
           }
 
           const CCTK_REAL dx = particles[i].pos(0) - x[check];

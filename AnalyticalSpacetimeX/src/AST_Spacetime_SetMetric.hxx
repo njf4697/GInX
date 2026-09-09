@@ -20,6 +20,4 @@ void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const 
 
 void GetTraj(CCTK_ARGUMENTS, const double tt, double* out);
 
-void GetMetricAtPoint(const double *xx, const double *bbh_traj, four_metric *met);
-
 } // namespace AnalyticalSpacetimeX

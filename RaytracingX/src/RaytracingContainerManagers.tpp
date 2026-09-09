@@ -170,15 +170,19 @@ void RaytracingParticlesContainer<StructType>::check_banned_zones(
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                            {
         for (int check = 0; check < zones; check++) {
+          if (radius[check] < a[check] * 2) {
+            CCTK_VERROR("Banned Zone %i exceeds its maximum spin");
+          }
+
           const CCTK_REAL dx = particles[i].pos(0) - x[check];
           const CCTK_REAL dy = particles[i].pos(1) - y[check];
           const CCTK_REAL dz = particles[i].pos(2) - z[check];
 
           //RaytracingX: Change to work for spinning BHs.
           const CCTK_REAL R2minusa2 = dx*dx + dy*dy + dz*dz - a[check]*a[check];
-          const CCTK_REAL r = sqrt(R2minusa2 + sqrt(R2minusa2*R2minusa2+4*a[check]*a[check]*z[check]*z[check])) / 2;
+          const CCTK_REAL r = sqrt((R2minusa2 + sqrt(R2minusa2*R2minusa2+4*a[check]*a[check]*z[check]*z[check])) / 2);
 
-          if (!(r > 0)) { fprintf(stderr, "%f %f %f %f %f", particles[i].pos(0), particles[i].pos(1), particles[i].pos(2), R2minusa2, r); CCTK_ERROR("Issue with calculating distance to banned zone."); }
+          if (!(r > 0)) { CCTK_ERROR("Issue with calculating distance to banned zone."); }
           
           if (r <= (radius[check] + sqrt(radius[check]*radius[check]-4*a[check]*a[check])) / 2.0) {
             particles[i].id() = -1;

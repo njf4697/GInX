@@ -115,6 +115,98 @@ void RaytracingParticlesContainer<StructType>::calculate_kerr_conserved_quantiti
     }
 }
 
+template <typename StructType>
+CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
+    const amrex::MultiFab &lapse,
+    const amrex::MultiFab &shift,
+    const amrex::MultiFab &metric,
+    const CCTK_REAL dtfac,
+    const int &lev)
+{
+    const auto plo0 = this->Geom(0).ProbLoArray();
+    const auto phi0 = this->Geom(0).ProbHiArray();
+
+    const auto dx = this->Geom(lev).CellSizeArray();
+
+    for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
+         ++pti)
+    {   
+        const int np = pti.numParticles();
+
+        // Get the information relate to the velocities and energy.
+        auto &attribs = pti.GetAttributes();
+        
+        CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
+        CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
+        CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
+        CCTK_REAL *AMREX_RESTRICT dt = attribs[StructType::dt].data();
+        auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
+
+        // Get the array of each parameter.
+        auto const lapse_array = lapse.array(pti);
+        auto const shift_array = shift.array(pti);
+        auto const metric_array = metric.array(pti);
+
+        // Needed for GPU
+        auto self = this;
+
+        amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
+        {   
+            if (particles[i].id() == -1) { return; }
+
+            //RaytracingX: Delete particle when geodesic reaches event horizon.
+            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
+            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
+            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
+            // Interpolate lapse & partial lapse at \vect{x}
+            CCTK_REAL lapse_x;
+            GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
+            amrex::GpuArray<CCTK_REAL, 3> shift_x;
+            GInX::interpolate_array<5>(shift_x, shift_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
+            amrex::GpuArray<CCTK_REAL, 6> gamma_x;
+            GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
+                                         particles[i].pos(2), dx, plo0);
+            
+            const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
+            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
+            const amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
+            const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
+
+            const CCTK_REAL eps = 1e-14;
+            const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(V_up[0]), eps),
+                                                          dx[1] / fmax(fabs(V_up[1]), eps),
+                                                          dx[2] / fmax(fabs(V_up[2]), eps)};
+            dt[i] = dtfac * fmin(dt_vec[0], fmin(dt_vec[1], dt_vec[2]));
+        });
+    }
+
+    CCTK_REAL local_min_dt = std::numeric_limits<CCTK_REAL>::max();
+
+    for (GInX::ParticleIterator<StructType> pti(*this, level);
+         pti.isValid(); ++pti)
+    {
+        const int np = pti.numParticles();
+
+        auto &attribs = pti.GetAttributes();
+
+        CCTK_REAL *AMREX_RESTRICT dt =
+            attribs[StructType::dt].data();
+
+        CCTK_REAL tile_min_dt =
+            amrex::ReduceMin(
+                np,
+                [=] AMREX_GPU_DEVICE(int i) noexcept -> CCTK_REAL {
+                    return dt[i];
+                });
+
+        local_min_dt = std::min(local_min_dt, tile_min_dt);
+    }
+
+    return local_min_dt;
+}
+
 /**
  * The check banned zones function check for user defined invalid particles
  * zones.

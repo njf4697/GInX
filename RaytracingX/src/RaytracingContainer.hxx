@@ -35,6 +35,8 @@ namespace RaytracingX
             pixel_number, /**< Number used to match particle to corresponding pixel in the image. Defined as a real since BaseParticleContainer does not have options for int parameters, unless defined at runtime, in which case they will not print with WriteAsciiFile*/
             deletion_reason,
 
+            dt,
+
             U0, U1, U2, U3, U4, U5, U6, U7,
             k0, k1, k2, k3, k4, k5, k6, k7,
 
@@ -218,6 +220,13 @@ namespace RaytracingX
         void normalize_velocity(
             const amrex::MultiFab &metric,
             const int level);
+
+        CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
+            const amrex::MultiFab &lapse,
+            const amrex::MultiFab &shift,
+            const amrex::MultiFab &metric,
+            const CCTK_REAL dtfac,
+            const int &lev);
         
         void redistribute_particles()
         {

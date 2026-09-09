@@ -180,7 +180,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     //V_down[2] *= A / v; 
 
     // Compute the upper index velocity terms.
-    amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
+    const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
 
     // Compute the rhs for position
     rhs[0] = lapse_x * V_up[0] - shift_x[0];

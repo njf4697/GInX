@@ -40,6 +40,7 @@ using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
 long num_photons;
+CCTK_REAL valid_dt;
 
 /**
  * \brief Initialize particles' data
@@ -598,4 +599,51 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
   num_photons = n_global;
 
   CCTK_VINFO("Found %ld particles remaining.", n_global);
+}
+
+extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  
+  CCTK_REAL dt_local = std::numeric_limits<CCTK_REAL>::max();;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
+          const auto &ld = pd.leveldata.at(lev);
+          const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+          const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+          const auto &gd_shift = *ld.groupdata.at(gi_shift);
+          const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+          const auto &gd_metric = *ld.groupdata.at(gi_metric);
+          const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+          dt_local = std::min(pc->calculate_dt(laspe, shift, metric, dtfac, lev), dt_local);
+      }
+  }
+
+  CCTK_REAL dt_global = dt_local;
+  MPI_Allreduce(
+    &dt_local,
+    &dt_global,
+    1,
+    MPI_DOUBLE,
+    MPI_MIN,
+    MPI_COMM_WORLD);
+
+  valid_dt = n_global;
+
+  CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 }

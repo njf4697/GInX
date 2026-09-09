@@ -20,6 +20,11 @@ CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = 
     (0.:* :: "Any real number"
 } 5.0
 
+CCTK_REAL dtfac "Size of dt relative to dx for photon integration" STEERABLE = ALWAYS
+{
+    (0.:1.] :: "Any real number between 0 and 1"
+} 0.5
+
 CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
 {
     (0.:180.) :: "Any real number 0<vertical_fov<180"

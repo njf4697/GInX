@@ -150,6 +150,11 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         // Needed for GPU
         auto self = this;
 
+        amrex::Gpu::DeviceScalar<CCTK_REAL> d_min_dt(
+        std::numeric_limits<CCTK_REAL>::max());
+
+        auto min_dt = d_min_dt.dataPtr();
+
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
         {   
             if (particles[i].id() == -1) { return; }
@@ -179,33 +184,12 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
                                                           dx[1] / fmax(fabs(V_up[1]), eps),
                                                           dx[2] / fmax(fabs(V_up[2]), eps)};
             dt[i] = dtfac * fmin(dt_vec[0], fmin(dt_vec[1], dt_vec[2]));
+
+            amrex::Gpu::Atomic::Min(min_dt, dt_i);
         });
     }
 
-    CCTK_REAL local_min_dt = std::numeric_limits<CCTK_REAL>::max();
-
-    for (GInX::ParticleIterator<StructType> pti(*this, level);
-         pti.isValid(); ++pti)
-    {
-        const int np = pti.numParticles();
-
-        auto &attribs = pti.GetAttributes();
-
-        CCTK_REAL *AMREX_RESTRICT dt =
-            attribs[StructType::dt].data();
-
-        CCTK_REAL tile_min_dt =
-            amrex::ReduceMin(
-                *this,
-                lev,
-                [=] AMREX_GPU_DEVICE(int i) noexcept -> CCTK_REAL {
-                    return dt[i];
-                });
-
-        local_min_dt = std::min(local_min_dt, tile_min_dt);
-    }
-
-    return local_min_dt;
+    return d_min_dt.value();
 }
 
 /**

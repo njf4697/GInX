@@ -196,7 +196,8 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
         CCTK_REAL tile_min_dt =
             amrex::ReduceMin(
-                np,
+                *this,
+                level,
                 [=] AMREX_GPU_DEVICE(int i) noexcept -> CCTK_REAL {
                     return dt[i];
                 });

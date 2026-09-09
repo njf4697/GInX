@@ -543,7 +543,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, lapse_array, dx, max_energy);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];

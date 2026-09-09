@@ -187,7 +187,7 @@ namespace RaytracingX
             const amrex::GpuArray<double, 3> &phi,
             const amrex::GpuArray<double, 3> &dx,
             amrex::Array4<CCTK_REAL const> const &lapse_array,
-            CCTK_REAL max_energy)
+            CCTK_REAL max_energy);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_validity(

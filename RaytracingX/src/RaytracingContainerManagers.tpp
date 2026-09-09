@@ -179,11 +179,15 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             const amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
             const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
 
+            const amrex::GpuArray<CCTK_REAL, 3> V_coord = {lapse_x*V_up[0]-shift_x[0], 
+                                                           lapse_x*V_up[1]-shift_x[1]
+                                                           lapse_x*V_up[2]-shift_x[2]};
+
             const CCTK_REAL eps = 1e-14;
-            const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(V_up[0]), eps),
-                                                          dx[1] / fmax(fabs(V_up[1]), eps),
-                                                          dx[2] / fmax(fabs(V_up[2]), eps)};
-            dt[i] = dtfac * fmin(dt_vec[0], fmin(dt_vec[1], dt_vec[2]));
+            const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(V_coord[0]), eps),
+                                                          dx[1] / fmax(fabs(V_coord[1]), eps),
+                                                          dx[2] / fmax(fabs(V_coord[2]), eps)};
+            dt[i] = dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
 
             amrex::Gpu::Atomic::Min(min_dt, dt[i]);
         });

@@ -150,8 +150,8 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         // Needed for GPU
         auto self = this;
 
-        amrex::Gpu::DeviceScalar<CCTK_REAL> d_min_dt(
-        std::numeric_limits<CCTK_REAL>::max());
+        CCTK_REAL* d_min_dt = static_cast<CCTK_REAL*>(amrex::The_Managed_Arena()->alloc(sizeof(CCTK_REAL)));
+        *d_min_dt = std::numeric_limits<CCTK_REAL>::max();
 
         auto min_dt = d_min_dt.dataPtr();
 
@@ -188,8 +188,10 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             amrex::Gpu::Atomic::Min(min_dt, dt_i);
         });
     }
-
-    return d_min_dt.value();
+    amrex::Gpu::streamSynchronize();
+    const CCTK_REAL dt_local = *d_min_dt;
+    amrex::The_Managed_Arena()->free(d_min_dt);
+    return dt_local;
 }
 
 /**

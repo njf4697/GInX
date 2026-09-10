@@ -143,6 +143,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
         CCTK_REAL *AMREX_RESTRICT dt = attribs[StructType::dt].data();
+        CCTK_REAL *AMREX_RESTRICT del_rsn = attribs[StructType::deletion_reason].data();
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
         CCTK_REAL *min_dt = d_min_dt;
@@ -159,35 +160,23 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         {   
             if (particles[i].id() == -1) { return; }
 
-            //RaytracingX: Delete particle when geodesic reaches event horizon.
-            const long int i0 = get_interpolation_center(particles[i].pos(0), plo0[0], phi0[0], dx[0]);
-            const long int j0 = get_interpolation_center(particles[i].pos(1), plo0[1], phi0[1], dx[1]);
-            const long int k0 = get_interpolation_center(particles[i].pos(2), plo0[2], phi0[2], dx[2]);
-            // Interpolate lapse & partial lapse at \vect{x}
-            CCTK_REAL lapse_x;
-            GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                         particles[i].pos(2), dx, plo0);
-            amrex::GpuArray<CCTK_REAL, 3> shift_x;
-            GInX::interpolate_array<5>(shift_x, shift_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                         particles[i].pos(2), dx, plo0);
-            amrex::GpuArray<CCTK_REAL, 6> gamma_x;
-            GInX::interpolate_array<5>(gamma_x, metric_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
-                                         particles[i].pos(2), dx, plo0);
-            
-            const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
-            const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
-            const amrex::GpuArray<CCTK_REAL, 3> V_down = {vels_x[i], vels_y[i], vels_z[i]};
-            const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
+            amrex::GpuArray<double, 3> xvec = {particles[i].pos(0), particles[i].pos(1), particles[i].pos(2)};
+            amrex::GpuArray<double, 3> vvec = {vels_x[i], vels_y[i], vels_z[i]};
+            amrex::GpuArray<double, 3> dxvecdt = {0.0, 0.0, 0.0};
+            amrex::GpuArray<double, 3> dvvecdt = {0.0, 0.0, 0.0};
 
-            const amrex::GpuArray<CCTK_REAL, 3> V_coord = {lapse_x*V_up[0]-shift_x[0], 
-                                                           lapse_x*V_up[1]-shift_x[1],
-                                                           lapse_x*V_up[2]-shift_x[2]};
+            const CCTK_REAL max_dx = fmax(dx[0], fmax(dx[1], dx[2]));
 
-            const CCTK_REAL eps = 1e-14;
-            const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(V_coord[0]), eps),
-                                                          dx[1] / fmax(fabs(V_coord[1]), eps),
-                                                          dx[2] / fmax(fabs(V_coord[2]), eps)};
-            dt[i] = dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
+            const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.0, lev);
+            if (dt1 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
+            const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
+            if (dt2 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
+            const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
+            if (dt3 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
+            const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 1.0, lev);
+            if (dt4 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
+
+            dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
 
             amrex::Gpu::Atomic::Min(min_dt, dt[i]);
         });
@@ -196,6 +185,81 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
     const CCTK_REAL dt_local = *d_min_dt;
     amrex::The_Managed_Arena()->free(d_min_dt);
     return dt_local;
+}
+
+template <typename StructType>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
+    const CCTK_REAL prev_dt;
+    amrex::GpuArray<double, 3> &dxvecdt,
+    amrex::GpuArray<double, 3> &dvvecdt,
+    amrex::GpuArray<double, 3> xvec,
+    amrex::GpuArray<double, 3> vvec,
+    const amrex::GpuArray<double, 3> plo0,
+    const amrex::GpuArray<double, 3> phi0,
+    const amrex::GpuArray<double, 3> dx,
+    const amrex::MultiFab &lapse,
+    const amrex::MultiFab &shift,
+    const amrex::MultiFab &metric,
+    const CCTK_REAL dtfac,
+    const CCTK_REAL rk4_dtfac,
+    const int &lev)
+{
+    const amrex::GpuArray<double, 3> xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
+    const amrex::GpuArray<double, 3> vvec = {vvec[0] - rk4_dtfac*dvvecdt[0]*prev_dt, vvec[1] - rk4_dtfac*dvvecdt[1]*prev_dt, vvec[2] - rk4_dtfac*dvvecdt[2]*prev_dt};
+
+    const long int i0 = get_interpolation_center(xvec[0], plo0[0], phi0[0], dx[0]);
+    const long int j0 = get_interpolation_center(xvec[1], plo0[1], phi0[1], dx[1]);
+    const long int k0 = get_interpolation_center(xvec[2], plo0[2], phi0[2], dx[2]);
+    
+    // Interpolate lapse & partial lapse at \vect{x}
+    CCTK_REAL lapse_x;
+    amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
+    GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, xvec[0], xvec[1],
+                                 xvec[2], dx, plo);
+
+    // Interpolate shift & partial shift at \vect{x}
+    amrex::GpuArray<CCTK_REAL, 3> shift_x;
+    amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
+    GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, xvec[0], xvec[1],
+                                 xvec[2], dx, plo);
+
+    // Interpolate metric & partial metric at \vect{x}
+    amrex::GpuArray<CCTK_REAL, 6> gamma_x;
+    amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
+    GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, xvec[0], xvec[1],
+                                 xvec[2], dx, plo);
+
+    // Interpolate Curvature at \vect{x}
+    amrex::GpuArray<CCTK_REAL, 6> curv_x;
+    GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, xvec[0], xvec[1], xvec[2], dx, plo);
+    
+    const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
+    const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);
+    const amrex::GpuArray<CCTK_REAL, 3> V_down = {vvec[0], vvec[1], vvec[2]};
+    const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
+
+    dxvecdt[0] = lapse_x*V_up[0]-shift_x[0];
+    dxvecdt[1] = lapse_x*V_up[1]-shift_x[1];
+    dxvecdt[2] = lapse_x*V_up[2]-shift_x[2];
+
+    for (int i = 0; i < 3; i++)  //Uidx::vx = 3, Uidx::vx + 1 = Uidx::vy = 4, etc.
+    {
+        dvvecdt[i] =
+            -d_lapse_x[i] +
+            (VecVecMul(d_lapse_x, V_up) -
+             lapse_x * VecVecMul(SMatVecMul(curv_x, V_up), V_up)) *
+                V_down[i] +
+            0.5 * lapse_x * VecVecMul(SMatVecMul(d_gamma_x[i], V_up), V_up) +
+            VecVecMul(V_down, d_shift_x[i]);
+    }
+
+
+    const CCTK_REAL eps = 1e-14;
+    const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(dxvecdt[0]), eps),
+                                                  dx[1] / fmax(fabs(dxvecdt[1]), eps),
+                                                  dx[2] / fmax(fabs(dxvecdt[2]), eps)};
+    return dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
 }
 
 /**

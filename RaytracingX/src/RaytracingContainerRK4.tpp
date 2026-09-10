@@ -187,7 +187,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     if (!((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]))) {
         fprintf(stderr, "dt is too big (v*dt>dx): (%f, %f, %f) * %f > (%f, %f, %f)", UNPACKV(photon_delta_x), dt, UNPACKV(dx));
-        assert(photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]);
+        assert((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]));
     }
 
     rhs[0] = photon_delta_x[0];

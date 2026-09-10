@@ -193,20 +193,20 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const CCTK_REAL prev_dt,
     amrex::GpuArray<CCTK_REAL, 3> &dxvecdt,
     amrex::GpuArray<CCTK_REAL, 3> &dvvecdt,
-    amrex::GpuArray<CCTK_REAL, 3> xvec,
-    amrex::GpuArray<CCTK_REAL, 3> vvec,
+    amrex::GpuArray<CCTK_REAL, 3> &xvec,
+    amrex::GpuArray<CCTK_REAL, 3> &vvec,
     const amrex::GpuArray<double, 3> plo0,
     const amrex::GpuArray<double, 3> phi0,
     const amrex::GpuArray<double, 3> dx,
-    const const amrex::Array4<CCTK_REAL const> &lapse,
-    const const amrex::Array4<CCTK_REAL const> &shift,
-    const const amrex::Array4<CCTK_REAL const> &metric,
+    const amrex::Array4<CCTK_REAL const> &lapse,
+    const amrex::Array4<CCTK_REAL const> &shift,
+    const amrex::Array4<CCTK_REAL const> &metric,
     const CCTK_REAL dtfac,
     const CCTK_REAL rk4_dtfac,
     const int &lev)
 {
-    const amrex::GpuArray<CCTK_REAL, 3> xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
-    const amrex::GpuArray<CCTK_REAL, 3> vvec = {vvec[0] - rk4_dtfac*dvvecdt[0]*prev_dt, vvec[1] - rk4_dtfac*dvvecdt[1]*prev_dt, vvec[2] - rk4_dtfac*dvvecdt[2]*prev_dt};
+    xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
+    vvec = {vvec[0] - rk4_dtfac*dvvecdt[0]*prev_dt, vvec[1] - rk4_dtfac*dvvecdt[1]*prev_dt, vvec[2] - rk4_dtfac*dvvecdt[2]*prev_dt};
 
     const long int i0 = get_interpolation_center(xvec[0], plo0[0], phi0[0], dx[0]);
     const long int j0 = get_interpolation_center(xvec[1], plo0[1], phi0[1], dx[1]);
@@ -216,23 +216,23 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     CCTK_REAL lapse_x;
     amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
     GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, xvec[0], xvec[1],
-                                 xvec[2], dx, plo);
+                                 xvec[2], dx, plo0);
 
     // Interpolate shift & partial shift at \vect{x}
     amrex::GpuArray<CCTK_REAL, 3> shift_x;
     amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
     GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, xvec[0], xvec[1],
-                                 xvec[2], dx, plo);
+                                 xvec[2], dx, plo0);
 
     // Interpolate metric & partial metric at \vect{x}
     amrex::GpuArray<CCTK_REAL, 6> gamma_x;
     amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
     GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, xvec[0], xvec[1],
-                                 xvec[2], dx, plo);
+                                 xvec[2], dx, plo0);
 
     // Interpolate Curvature at \vect{x}
     amrex::GpuArray<CCTK_REAL, 6> curv_x;
-    GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, xvec[0], xvec[1], xvec[2], dx, plo);
+    GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, xvec[0], xvec[1], xvec[2], dx, plo0);
     
     const CCTK_REAL inv_det_gamma = INV_DET_GAMMA(gamma_x);
     const amrex::GpuArray<CCTK_REAL, 6> gamma_inv_x = INV_GAMMA(gamma_x, inv_det_gamma);

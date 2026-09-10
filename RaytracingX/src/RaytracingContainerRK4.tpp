@@ -193,6 +193,8 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     rhs[1] = photon_delta_x[1];
     rhs[2] = photon_delta_x[2];
 
+    sdfsdfsd
+
     // Compute the rhs for velocity
     for (int i = 0; i < 3; i++)  //Uidx::vx = 3, Uidx::vx + 1 = Uidx::vy = 4, etc.
     {

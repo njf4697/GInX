@@ -225,6 +225,7 @@ namespace RaytracingX
             const amrex::MultiFab &lapse,
             const amrex::MultiFab &shift,
             const amrex::MultiFab &metric,
+            const amrex::MultiFab &curv,
             const CCTK_REAL dtfac,
             const int &lev);
         
@@ -241,6 +242,7 @@ namespace RaytracingX
             const const amrex::Array4<CCTK_REAL const> &lapse,
             const const amrex::Array4<CCTK_REAL const> &shift,
             const const amrex::Array4<CCTK_REAL const> &metric,
+            const const amrex::Array4<CCTK_REAL const> &curv,
             const CCTK_REAL dtfac,
             const CCTK_REAL rk4_dtfac,
             const int &lev);

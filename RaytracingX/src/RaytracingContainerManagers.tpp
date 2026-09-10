@@ -120,6 +120,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
     const amrex::MultiFab &lapse,
     const amrex::MultiFab &shift,
     const amrex::MultiFab &metric,
+    const amrex::MultiFab &curv,
     const CCTK_REAL dtfac,
     const int &lev)
 {
@@ -201,6 +202,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const amrex::Array4<CCTK_REAL const> &lapse,
     const amrex::Array4<CCTK_REAL const> &shift,
     const amrex::Array4<CCTK_REAL const> &metric,
+    const amrex::Array4<CCTK_REAL const> &curv,
     const CCTK_REAL dtfac,
     const CCTK_REAL rk4_dtfac,
     const int &lev)

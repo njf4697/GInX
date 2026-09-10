@@ -617,9 +617,11 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
   const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
   assert(gi_lapse >= 0 && "Failed to get the lapse group index");
   assert(gi_shift >= 0 && "Failed to get the shift group index");
   assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
   
   CCTK_REAL dt_local = std::numeric_limits<CCTK_REAL>::max();;
 
@@ -635,7 +637,9 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
           const amrex::MultiFab &shift = *gd_shift.mfab[tl];
           const auto &gd_metric = *ld.groupdata.at(gi_metric);
           const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-          dt_local = std::min(pc->calculate_dt(lapse, shift, metric, dtfac, lev), dt_local);
+          const auto &gd_curv = *ld.groupdata.at(gi_curv);
+          const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+          dt_local = fmin(pc->calculate_dt(lapse, shift, metric, curv, dtfac, lev), dt_local);
       }
   }
 

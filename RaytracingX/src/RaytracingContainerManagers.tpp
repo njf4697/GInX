@@ -153,7 +153,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         auto const lapse_array = lapse.array(pti);
         auto const shift_array = shift.array(pti);
         auto const metric_array = metric.array(pti);
-        auto const curv = curv.array(pti);
+        auto const curv_array = curv.array(pti);
 
         // Needed for GPU
         auto self = this;

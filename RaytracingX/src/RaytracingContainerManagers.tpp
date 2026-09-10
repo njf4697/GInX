@@ -167,13 +167,13 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
             const CCTK_REAL max_dx = fmax(dx[0], fmax(dx[1], dx[2]));
 
-            const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.0, lev);
+            const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.0, lev);
             if (dt1 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
-            const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
+            const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
             if (dt2 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
-            const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
+            const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 0.5, lev);
             if (dt3 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
-            const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvectdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 1.0, lev);
+            const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, dtfac, 1.0, lev);
             if (dt4 > max_dx) { particles[i].id() == -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
 
             dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
@@ -190,7 +190,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 template <typename StructType>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
 CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
-    const CCTK_REAL prev_dt;
+    const CCTK_REAL prev_dt,
     amrex::GpuArray<double, 3> &dxvecdt,
     amrex::GpuArray<double, 3> &dvvecdt,
     amrex::GpuArray<double, 3> xvec,

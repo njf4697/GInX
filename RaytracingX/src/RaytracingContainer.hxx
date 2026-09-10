@@ -221,7 +221,7 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const int level);
 
-        CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
+        CCTK_REAL calculate_dt(
             const amrex::MultiFab &lapse,
             const amrex::MultiFab &shift,
             const amrex::MultiFab &metric,

@@ -183,9 +183,13 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const amrex::GpuArray<CCTK_REAL, 3> V_up = RAISE_SPATIAL(V_down, gamma_inv_x);
 
     // Compute the rhs for position
-    rhs[0] = lapse_x * V_up[0] - shift_x[0];
-    rhs[1] = lapse_x * V_up[1] - shift_x[1];
-    rhs[2] = lapse_x * V_up[2] - shift_x[2];
+    const amrex::GpuArray<CCTK_REAL, 3> photon_delta_x = {lapse_x*V_up[0] - shift_x[0], lapse_x*V_up[1] - shift_x[1], lapse_x*V_up[2] - shift_x[2]};
+
+    assert(photon_delta_x[0] * dt < dx, photon_delta_x[1] * dt < dx, photon_delta_x[2] * dt < dx);
+
+    rhs[0] = photon_delta_x[0];
+    rhs[1] = photon_delta_x[1];
+    rhs[2] = photon_delta_x[2];
 
     // Compute the rhs for velocity
     for (int i = 0; i < 3; i++)  //Uidx::vx = 3, Uidx::vx + 1 = Uidx::vy = 4, etc.

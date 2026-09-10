@@ -231,16 +231,16 @@ namespace RaytracingX
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL get_dt(
             const CCTK_REAL prev_dt,
-            amrex::GpuArray<double, 3> &dxvecdt,
-            amrex::GpuArray<double, 3> &dvvecdt,
-            amrex::GpuArray<double, 3> xvec,
-            amrex::GpuArray<double, 3> vvec,
+            amrex::GpuArray<CCTK_REAL, 3> &dxvecdt,
+            amrex::GpuArray<CCTK_REAL, 3> &dvvecdt,
+            amrex::GpuArray<CCTK_REAL, 3> xvec,
+            amrex::GpuArray<CCTK_REAL, 3> vvec,
             const amrex::GpuArray<double, 3> plo0,
             const amrex::GpuArray<double, 3> phi0,
             const amrex::GpuArray<double, 3> dx,
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
+            const const amrex::Array4<CCTK_REAL const> &lapse,
+            const const amrex::Array4<CCTK_REAL const> &shift,
+            const const amrex::Array4<CCTK_REAL const> &metric,
             const CCTK_REAL dtfac,
             const CCTK_REAL rk4_dtfac,
             const int &lev);

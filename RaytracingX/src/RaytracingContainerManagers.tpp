@@ -160,10 +160,10 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
         {   
             if (particles[i].id() == -1) { return; }
 
-            amrex::GpuArray<double, 3> xvec = {particles[i].pos(0), particles[i].pos(1), particles[i].pos(2)};
-            amrex::GpuArray<double, 3> vvec = {vels_x[i], vels_y[i], vels_z[i]};
-            amrex::GpuArray<double, 3> dxvecdt = {0.0, 0.0, 0.0};
-            amrex::GpuArray<double, 3> dvvecdt = {0.0, 0.0, 0.0};
+            amrex::GpuArray<CCTK_REAL, 3> xvec = {particles[i].pos(0), particles[i].pos(1), particles[i].pos(2)};
+            amrex::GpuArray<CCTK_REAL, 3> vvec = {vels_x[i], vels_y[i], vels_z[i]};
+            amrex::GpuArray<CCTK_REAL, 3> dxvecdt = {0.0, 0.0, 0.0};
+            amrex::GpuArray<CCTK_REAL, 3> dvvecdt = {0.0, 0.0, 0.0};
 
             const CCTK_REAL max_dx = fmax(dx[0], fmax(dx[1], dx[2]));
 
@@ -191,22 +191,22 @@ template <typename StructType>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
 CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const CCTK_REAL prev_dt,
-    amrex::GpuArray<double, 3> &dxvecdt,
-    amrex::GpuArray<double, 3> &dvvecdt,
-    amrex::GpuArray<double, 3> xvec,
-    amrex::GpuArray<double, 3> vvec,
+    amrex::GpuArray<CCTK_REAL, 3> &dxvecdt,
+    amrex::GpuArray<CCTK_REAL, 3> &dvvecdt,
+    amrex::GpuArray<CCTK_REAL, 3> xvec,
+    amrex::GpuArray<CCTK_REAL, 3> vvec,
     const amrex::GpuArray<double, 3> plo0,
     const amrex::GpuArray<double, 3> phi0,
     const amrex::GpuArray<double, 3> dx,
-    const amrex::MultiFab &lapse,
-    const amrex::MultiFab &shift,
-    const amrex::MultiFab &metric,
+    const const amrex::Array4<CCTK_REAL const> &lapse,
+    const const amrex::Array4<CCTK_REAL const> &shift,
+    const const amrex::Array4<CCTK_REAL const> &metric,
     const CCTK_REAL dtfac,
     const CCTK_REAL rk4_dtfac,
     const int &lev)
 {
-    const amrex::GpuArray<double, 3> xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
-    const amrex::GpuArray<double, 3> vvec = {vvec[0] - rk4_dtfac*dvvecdt[0]*prev_dt, vvec[1] - rk4_dtfac*dvvecdt[1]*prev_dt, vvec[2] - rk4_dtfac*dvvecdt[2]*prev_dt};
+    const amrex::GpuArray<CCTK_REAL, 3> xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
+    const amrex::GpuArray<CCTK_REAL, 3> vvec = {vvec[0] - rk4_dtfac*dvvecdt[0]*prev_dt, vvec[1] - rk4_dtfac*dvvecdt[1]*prev_dt, vvec[2] - rk4_dtfac*dvvecdt[2]*prev_dt};
 
     const long int i0 = get_interpolation_center(xvec[0], plo0[0], phi0[0], dx[0]);
     const long int j0 = get_interpolation_center(xvec[1], plo0[1], phi0[1], dx[1]);

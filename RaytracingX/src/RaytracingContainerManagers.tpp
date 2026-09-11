@@ -188,7 +188,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
             dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
 
-            if (dt[i] < 0.000001) {particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = max_dx; }
+            if (dt[i] < 0.0001) {particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = max_dx; }
 
             amrex::Gpu::Atomic::Min(min_dt, dt[i]);
         });

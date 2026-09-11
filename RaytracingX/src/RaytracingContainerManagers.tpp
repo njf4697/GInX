@@ -172,13 +172,13 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             CCTK_REAL lapse_x = 0.0;
 
             const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.0, lapse_x, lev);
-            if (dt1 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
+            if (dt1 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
             const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
-            if (dt2 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
+            if (dt2 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
             const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
-            if (dt3 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
+            if (dt3 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
             const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 1.0, lapse_x, lev);
-            if (dt4 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
+            if (dt4 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
 
             dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
 

@@ -171,13 +171,13 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             const CCTK_REAL max_dx = fmax(dx[0], fmax(dx[1], dx[2]));
             CCTK_REAL lapse_x = 0.0;
 
-            const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.0, lev);
+            const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.0, lapse_x, lev);
             if (dt1 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
-            const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lev);
+            const CCTK_REAL dt2 = get_dt(dt1, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
             if (dt2 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
-            const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lev);
+            const CCTK_REAL dt3 = get_dt(dt2, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
             if (dt3 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
-            const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 1.0, lev);
+            const CCTK_REAL dt4 = get_dt(dt3, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 1.0, lapse_x, lev);
             if (dt4 > max_dx) { fprintf(stderr, "E=%f/%f=%f", exp(lnE[i]), lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
 
             dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
@@ -219,7 +219,6 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const long int k0 = get_interpolation_center(xvec[2], plo0[2], phi0[2], dx[2]);
     
     // Interpolate lapse & partial lapse at \vect{x}
-    CCTK_REAL lapse_x;
     amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
     GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, xvec[0], xvec[1],
                                  xvec[2], dx, plo0);

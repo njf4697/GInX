@@ -245,7 +245,7 @@ namespace RaytracingX
             const amrex::Array4<CCTK_REAL const> &curv,
             const CCTK_REAL dtfac,
             const CCTK_REAL rk4_dtfac,
-            CCTK_REAL *lapse_x,
+            CCTK_REAL &lapse_x,
             const int &lev);
         
         void redistribute_particles()

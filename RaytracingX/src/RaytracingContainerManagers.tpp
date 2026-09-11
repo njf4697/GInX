@@ -167,7 +167,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             amrex::GpuArray<CCTK_REAL, 3> vvec = {vels_x[i], vels_y[i], vels_z[i]};
             amrex::GpuArray<CCTK_REAL, 3> dxvecdt = {0.0, 0.0, 0.0};
             amrex::GpuArray<CCTK_REAL, 3> dvvecdt = {0.0, 0.0, 0.0};
-            CCTK_REAL* lapse_x = 0.0;
+            CCTK_REAL lapse_x = 0.0;
 
             const CCTK_REAL max_dx = fmax(dx[0], fmax(dx[1], dx[2]));
 
@@ -208,7 +208,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const amrex::Array4<CCTK_REAL const> &curv,
     const CCTK_REAL dtfac,
     const CCTK_REAL rk4_dtfac,
-    CCTK_REAL &lapse_x,
+    CCTK_REAL *lapse_x,
     const int &lev)
 {
     xvec = {xvec[0] - rk4_dtfac*dxvecdt[0]*prev_dt, xvec[1] - rk4_dtfac*dxvecdt[1]*prev_dt, xvec[2] - rk4_dtfac*dxvecdt[2]*prev_dt};
@@ -219,7 +219,6 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const long int k0 = get_interpolation_center(xvec[2], plo0[2], phi0[2], dx[2]);
     
     // Interpolate lapse & partial lapse at \vect{x}
-    lapse_x;
     amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
     GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, xvec[0], xvec[1],
                                  xvec[2], dx, plo0);

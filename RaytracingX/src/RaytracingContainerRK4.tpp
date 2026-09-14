@@ -67,8 +67,8 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const int lev,
     const amrex::GpuArray<double, 3> &plo,
     const amrex::GpuArray<double, 3> &phi,
-    const amrex::GpuArray<double, 3> &lower_valid_bounds,
-    const amrex::GpuArray<double, 3> &upper_valid_bounds)
+    const amrex::GpuArray<int, 3> &lower_valid_bounds,
+    const amrex::GpuArray<int, 3> &upper_valid_bounds)
 {
 
     // RaytracingX: Add space for optical depth variable.

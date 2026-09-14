@@ -55,6 +55,4 @@
 #define REDEFINE_RK4_ARRAYS amrex::GpuArray<CCTK_REAL, 9> U = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
                             amrex::GpuArray<CCTK_REAL, 9> k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-#define SKIP_DELETED_PARTICLES if (particles[i].id() == -1) { return; }
-
 #endif

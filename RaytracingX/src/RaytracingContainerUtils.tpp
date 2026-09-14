@@ -14,6 +14,20 @@ int RaytracingParticlesContainer<StructType>::get_interpolation_center(
 }
 
 template <typename StructType>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+bool RaytracingParticlesContainer<StructType>::interp_index_is_in_bounds(
+    const long i0,
+    const long j0,
+    const long k0,
+    const amrex::GpuArray<int, 3> lower,
+    const amrex::GpuArray<int, 3> upper)
+{   
+    return lower[0] > i0 || upper[0] < i0 ||
+           lower[1] > j0 || upper[1] < j0 ||
+           lower[2] > k0 || upper[2] < k0;
+}
+
+template <typename StructType>
 void RaytracingParticlesContainer<StructType>::write_to_one_file(
     std::string filename,
     std::string data)

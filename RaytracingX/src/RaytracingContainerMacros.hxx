@@ -26,4 +26,6 @@
                                           inv_gamma[G3_xy] * V_down[0] + inv_gamma[G3_yy] * V_down[1] + inv_gamma[G3_yz] * V_down[2], \
                                           inv_gamma[G3_xz] * V_down[0] + inv_gamma[G3_yz] * V_down[1] + inv_gamma[G3_zz] * V_down[2]}
 
+#define SKIP_DELETED_PARTICLES if (particles[i].id() == -1) { return; }
+
 #endif

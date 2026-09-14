@@ -69,6 +69,7 @@ namespace RaytracingX
         static constexpr CCTK_REAL HORIZON = -7;
         static constexpr CCTK_REAL PHOTOSPHERE = -8;
         static constexpr CCTK_REAL BANNED_REGION_OFFSET = -9;
+        static constexpr CCTK_REAL FAILED_INTERP = -996;
         static constexpr CCTK_REAL UNSTABLE = -997;
         static constexpr CCTK_REAL NONFINITE = -998;
         static constexpr CCTK_REAL DEFAULT = -999;

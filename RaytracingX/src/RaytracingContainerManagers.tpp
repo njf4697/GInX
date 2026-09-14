@@ -14,6 +14,10 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
+        const amrex::Box& box = lapse.box(pti.index());
+        const amrex::GpuArray<double, 3> lower_valid_bounds = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
+        const amrex::GpuArray<double, 3> upper_valid_bounds = {box.largeEnd(0), box.largeEnd(1), box.largeEnd(2)};
+
         const int np = pti.numParticles();
 
         // Get the information relate to the velocities and energy.

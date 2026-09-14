@@ -613,6 +613,11 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
+  if (!adaptive_timestepping) {
+    valid_dt = CCTK_DELTA_TIME;
+    return;
+  }
+
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -655,8 +660,4 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
   valid_dt = -dt_global;
 
   CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
-
-  if (!adaptive_timestepping) {
-    valid_dt = CCTK_DELTA_TIME;
-  }
 }

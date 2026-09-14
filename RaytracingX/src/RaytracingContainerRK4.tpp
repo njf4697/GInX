@@ -78,10 +78,10 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
     const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
 
-    //if (!(interp_index_is_in_bounds(i0, j0, k0, lower_valid_bounds, upper_valid_bounds))) {
-    //    rhs[Uidx::del_rsn] = DelReason::FAILED_INTERP;
-    //    return rhs;
-    //}
+    if (!(interp_index_is_in_bounds(i0, j0, k0, lower_valid_bounds, upper_valid_bounds))) {
+        rhs[Uidx::del_rsn] = DelReason::FAILED_INTERP;
+        return rhs;
+    }
 
     // Interpolate lapse & partial lapse at \vect{x}
     CCTK_REAL lapse_x;

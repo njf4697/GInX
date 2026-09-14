@@ -19,6 +19,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
         // Get the information relate to the velocities and energy.
         auto &attribs = pti.GetAttributes();
         CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
+        CCTK_REAL *AMREX_RESTRICT p_upt = attribs[StructType::p_upt].data();
         CCTK_REAL *AMREX_RESTRICT deletion_reasons = attribs[StructType::deletion_reason].data(); // RaytracingX: Add deletion reason.
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
@@ -38,6 +39,7 @@ void RaytracingParticlesContainer<StructType>::check_horizon(
             CCTK_REAL lapse_x;
             GInX::interpolate_array<5>(lapse_x, lapse_array, i0, j0, k0, particles[i].pos(0), particles[i].pos(1),
                                          particles[i].pos(2), dx, plo0);
+            p_upt[i] = exp(lnE) / lapse_x;
             if (ln_energy[i] > log(max_energy * lapse_x)) {
               particles[i].id() =-1;
               deletion_reasons[i] = DelReason::HORIZON;

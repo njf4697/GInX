@@ -23,9 +23,9 @@ bool RaytracingParticlesContainer<StructType>::interp_index_is_in_bounds(
     const amrex::GpuArray<int, 3> upper)
 {   
     fprintf(stderr, "\n%i < %i  < %i\n%i < %i  < %i\n%i < %i  < %i\n", lower[0], i0, upper[0], lower[1], j0, upper[1], lower[2], k0, upper[2]);
-    return lower[0] > i0 || upper[0] < i0 ||
-           lower[1] > j0 || upper[1] < j0 ||
-           lower[2] > k0 || upper[2] < k0;
+    return lower[0] <= i0 &&  i0 <= upper[0] &&
+           lower[1] <= j0 &&  j0 <= upper[1] &&
+           lower[2] <= k0 &&  k0 <= upper[2];
 }
 
 template <typename StructType>

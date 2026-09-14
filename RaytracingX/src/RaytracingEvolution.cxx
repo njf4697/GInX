@@ -657,6 +657,6 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
   CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 
   if (!adaptive_timestepping) {
-    valid_dt = -CCTK_DELTA_TIME;
+    valid_dt = CCTK_DELTA_TIME;
   }
 }

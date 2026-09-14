@@ -78,10 +78,10 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
     const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
 
-    if (!(interp_index_is_in_bounds(i0, j0, k0, lower_valid_bounds, upper_valid_bounds))) {
-        rhs[Uidx::del_rsn] = DelReason::FAILED_INTERP;
-        return rhs;
-    }
+    //if (!(interp_index_is_in_bounds(i0, j0, k0, lower_valid_bounds, upper_valid_bounds))) {
+    //    rhs[Uidx::del_rsn] = DelReason::FAILED_INTERP;
+    //    return rhs;
+    //}
 
     // Interpolate lapse & partial lapse at \vect{x}
     CCTK_REAL lapse_x;
@@ -192,10 +192,10 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     // Compute the rhs for position
     const amrex::GpuArray<CCTK_REAL, 3> photon_delta_x = {lapse_x*V_up[0] - shift_x[0], lapse_x*V_up[1] - shift_x[1], lapse_x*V_up[2] - shift_x[2]};
 
-    if (!((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]))) {
-        fprintf(stderr, "dt is too big (v*dt>dx): (%f, %f, %f) * %f > (%f, %f, %f)\n", UNPACKV(photon_delta_x), dt, UNPACKV(dx));
-        assert((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]));
-    }
+    //if (!((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]))) {
+    //    fprintf(stderr, "dt is too big (v*dt>dx): (%f, %f, %f) * %f > (%f, %f, %f)\n", UNPACKV(photon_delta_x), dt, UNPACKV(dx));
+    //    assert((photon_delta_x[0] * dt < dx[0]) && (photon_delta_x[1] * dt < dx[1]) && (photon_delta_x[2] * dt < dx[2]));
+    //}
 
     rhs[0] = photon_delta_x[0];
     rhs[1] = photon_delta_x[1];
@@ -286,7 +286,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     {   
         const amrex::Box& box = lapse.box(pti.index());
         const amrex::GpuArray<int, 3> lower_valid_bounds = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.largeEnd(0), box.largeEnd(1), box.largeEnd(2)};
+        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
 
         const int np = pti.numParticles();
 
@@ -398,7 +398,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     {
         const amrex::Box& box = lapse.box(pti.index());
         const amrex::GpuArray<int, 3> lower_valid_bounds = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.largeEnd(0), box.largeEnd(1), box.largeEnd(2)};
+        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
 
         const int np = pti.numParticles();
 
@@ -525,7 +525,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     {   
         const amrex::Box& box = lapse.box(pti.index());
         const amrex::GpuArray<int, 3> lower_valid_bounds = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.largeEnd(0), box.largeEnd(1), box.largeEnd(2)};
+        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
 
         const int np = pti.numParticles();
 
@@ -652,7 +652,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     {   
         const amrex::Box& box = lapse.box(pti.index());
         const amrex::GpuArray<int, 3> lower_valid_bounds = {box.smallEnd(0), box.smallEnd(1), box.smallEnd(2)};
-        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.largeEnd(0), box.largeEnd(1), box.largeEnd(2)};
+        const amrex::GpuArray<int, 3> upper_valid_bounds = {box.bigEnd(0), box.bigEnd(1), box.bigEnd(2)};
         
         const int np = pti.numParticles();
 

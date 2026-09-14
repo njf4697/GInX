@@ -112,6 +112,14 @@ namespace RaytracingX
             const CCTK_REAL lower,
             const CCTK_REAL upper,
             const CCTK_REAL dx);
+        
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        static bool RaytracingParticlesContainer<StructType>::interp_index_is_in_bounds(
+            const long i0,
+            const long j0,
+            const long k0,
+            const amrex::GpuArray<int, 3> lower,
+            const amrex::GpuArray<int, 3> upper);
 
         static void write_to_one_file(
             std::string filename,
@@ -137,7 +145,9 @@ namespace RaytracingX
             const amrex::GpuArray<double, 3> &dx,
             const int lev,
             const amrex::GpuArray<double, 3> &plo,
-            const amrex::GpuArray<double, 3> &phi);
+            const amrex::GpuArray<double, 3> &phi,
+            const amrex::GpuArray<int, 3> lower_valid_index,
+            const amrex::GpuArray<int, 3> lower_valid_index);
 
         void evolve_k1(
             const int iteration,

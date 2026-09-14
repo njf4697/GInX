@@ -146,8 +146,8 @@ namespace RaytracingX
             const int lev,
             const amrex::GpuArray<double, 3> &plo,
             const amrex::GpuArray<double, 3> &phi,
-            const amrex::GpuArray<int, 3> lower_valid_index,
-            const amrex::GpuArray<int, 3> upper_valid_index);
+            const amrex::GpuArray<int, 3> &lower_valid_index,
+            const amrex::GpuArray<int, 3> &upper_valid_index);
 
         void evolve_k1(
             const int iteration,

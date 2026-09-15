@@ -177,7 +177,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
 
             const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.0, lapse_x, lev);
 
-            dt[i] = fmax(dxvecdt[0], fmax(dxvecdt[1], dxvecdt[2]));
+            dt[i] = fmax(fabs(dxvecdt[0]), fmax(fabs(dxvecdt[1]), fabs(dxvecdt[2])));
             ////if (dt1 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt1, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
             //if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
             //const CCTK_REAL dt2 = get_dt(fmin(max_dx, dt1), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);

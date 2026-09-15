@@ -23,6 +23,8 @@
 #define UNPACKM(X) X[0], X[1], X[2], \
                    X[1], X[3], X[4], \
                    X[2], X[4], X[5]
+#define UNPACKML(X) X[0], X[1], X[2], X[3], X[4], X[5]
+#define UNPACK4ML(X) X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9]
 #define UNPACK4M(X) X[0], X[1], X[2], X[3], \
                     X[1], X[4], X[5], X[6], \
                     X[2], X[5], X[7], X[8], \

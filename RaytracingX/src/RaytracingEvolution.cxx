@@ -652,11 +652,11 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
     MPI_MIN,
     MPI_COMM_WORLD);
 
+  valid_dt = -dt_global;
+
   if (!adaptive_timestepping) {
     valid_dt = CCTK_DELTA_TIME;
   }
-
-  valid_dt = -dt_global;
 
   CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 }

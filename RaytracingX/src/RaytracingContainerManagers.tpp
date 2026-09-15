@@ -176,22 +176,24 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::calculate_dt(
             dt[i] = max_dx;
 
             const CCTK_REAL dt1 = get_dt(0.0, dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.0, lapse_x, lev);
-            //if (dt1 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt1, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
-            if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
-            const CCTK_REAL dt2 = get_dt(fmin(max_dx, dt1), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
-            //if (dt2 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt2, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
-            if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
-            const CCTK_REAL dt3 = get_dt(fmin(max_dx, dt2), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
-            //if (dt3 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt3, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
-            if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
-            const CCTK_REAL dt4 = get_dt(fmin(max_dx, dt3), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 1.0, lapse_x, lev);
-            //if (dt4 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt4, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
-            if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
 
-            dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
-
-            if (dt[i] < 0.0001) {particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = max_dx; }
-
+            dt[i] = fmax(dxvecdt[0], fmax(dxvecdt[1], dxvecdt[2]));
+            ////if (dt1 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt1, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt1; return; }
+            //if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
+            //const CCTK_REAL dt2 = get_dt(fmin(max_dx, dt1), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
+            ////if (dt2 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt2, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt2; return; }
+            //if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
+            //const CCTK_REAL dt3 = get_dt(fmin(max_dx, dt2), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 0.5, lapse_x, lev);
+            ////if (dt3 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt3, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt3; return; }
+            //if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
+            //const CCTK_REAL dt4 = get_dt(fmin(max_dx, dt3), dxvecdt, dvvecdt, xvec, vvec, plo0, phi0, dx, lapse_array, shift_array, metric_array, curv_array, dtfac, 1.0, lapse_x, lev);
+            ////if (dt4 > max_dx) { fprintf(stderr, "dt=%f>dx=%f, E=%f/%f=%f\n", dt4, max_dx, exp(lnE[i]), lapse_x, exp(lnE[i])/lapse_x); particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = dt4; return; }
+            //if (exp(lnE[i]) / lapse_x > 5.0) {particles[i].id() = -1; del_rsn[i] = DelReason::HORIZON; dt[i] = max_dx; return;}
+            //
+            //dt[i] = fmin(fmin(dt1, dt2), fmin(dt3, dt4));
+            //
+            //if (dt[i] < 0.0001) {particles[i].id() = -1; del_rsn[i] = DelReason::UNSTABLE; dt[i] = max_dx; }
+            //
             amrex::Gpu::Atomic::Min(min_dt, dt[i]);
         });
     }
@@ -274,8 +276,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(dxvecdt[0]), eps),
                                                   dx[1] / fmax(fabs(dxvecdt[1]), eps),
                                                   dx[2] / fmax(fabs(dxvecdt[2]), eps)};
-    //return dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
-    return fmax(dxvecdt[0], fmax(dxvecdt[1], dxvecdt[2]));
+    return dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
 }
 
 /**

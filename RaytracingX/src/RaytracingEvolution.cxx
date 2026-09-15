@@ -486,7 +486,7 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
   {
     auto &pc = r_photons.at(patch);
     auto &pd = CarpetX::ghext->patchdata.at(patch);
-    for (int lev = 0; (lev < pd.leveldata.size()) & banned_regions; ++lev)
+    for (int lev = 0; (lev < pd.leveldata.size()); ++lev)
     {
       const auto &ld = pd.leveldata.at(lev);
       const auto &gd_lapse = *ld.groupdata.at(gi_lapse);

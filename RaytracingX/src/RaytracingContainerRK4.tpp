@@ -226,6 +226,10 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     rhs[Uidx::del_rsn] = check_validity(rhs, u, index);
 
+    if (index == 1168) {
+        fprintf(stderr, "particle 1168: pos=(%f, %f, %f), vel=(%f, %f, %f), coord_vel=(%f, %f, %f), p^t=%f\n", u[0], u[1], u[2], u[3], u[4], u[5], rhs[0], rhs[1], rhs[2], exp(u[Uidx::lnE]) / lapse_x);
+    }
+
     return rhs;
 } // RaytracingParticlesContainer::compute_rhs
 

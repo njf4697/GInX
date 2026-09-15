@@ -229,7 +229,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     if (index == 1168) {
         fprintf(stderr, "particle 1168: pos=(%f, %f, %f), vel=(%f, %f, %f), coord_vel=(%f, %f, %f), p^t=%f\n", UNPACKML(u), UNPACKV(rhs), exp(u[Uidx::lnE]) / lapse_x);
         fprintf(stderr, "alpha=%f, beta=(%f, %f, %f), gamma=(%f, %f, %f, %f, %f, %f)", lapse_x, UNPACKV(shift_x), UNPACKML(gamma_x));
-        fprintf(stderr, "d_alpha=(%f, %f, %f), d_beta_x=(%f, %f, %f), d_beta_y=(%f, %f, %f), d_beta_z=(%f, %f, %f)", UNPACKV(d_lapse_x[0]), UNPACKV(d_lapse_x[1]), UNPACKV(d_lapse_x[2]));
+        fprintf(stderr, "d_alpha=(%f, %f, %f), d_beta_x=(%f, %f, %f), d_beta_y=(%f, %f, %f), d_beta_z=(%f, %f, %f)", UNPACKV(d_lapse_x), UNPACKV(d_shift_x[0]), UNPACKV(d_shift_x[1]), UNPACKV(d_shift_x[2]));
         fprintf(stderr, "d_gamma_x=(%f, %f, %f, %f, %f, %f), d_gamma_y=(%f, %f, %f, %f, %f, %f), d_gamma_z=(%f, %f, %f, %f, %f, %f)", UNPACKML(d_gamma_x[0]), UNPACKML(d_gamma_x[0]), UNPACKML(d_gamma_x[0]));
         fprintf(stderr, "K=(%f, %f, %f, %f, %f, %f)", UNPACKML(curv_x));
         fprintf(stderr, "inv_det_g=%f, Vup=(%f, %f, %f)", inv_det_gamma, UNPACKV(V_up));

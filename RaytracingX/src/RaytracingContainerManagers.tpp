@@ -274,7 +274,8 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const amrex::GpuArray<CCTK_REAL, 3> dt_vec = {dx[0] / fmax(fabs(dxvecdt[0]), eps),
                                                   dx[1] / fmax(fabs(dxvecdt[1]), eps),
                                                   dx[2] / fmax(fabs(dxvecdt[2]), eps)};
-    return dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
+    //return dtfac * fmin(fmin(1.0, dt_vec[0]), fmin(dt_vec[1], dt_vec[2]));
+    return fmax(dxvecdt[0], fmax(dxvecdt[1], dxvecdt[2]));
 }
 
 /**

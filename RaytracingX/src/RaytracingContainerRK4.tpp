@@ -228,6 +228,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 
     if (index == 1168) {
         fprintf(stderr, "particle 1168: pos=(%f, %f, %f), vel=(%f, %f, %f), coord_vel=(%f, %f, %f), p^t=%f\n", u[0], u[1], u[2], u[3], u[4], u[5], rhs[0], rhs[1], rhs[2], exp(u[Uidx::lnE]) / lapse_x);
+        fprintf(stderr, "alpha=%f, beta=(%f, %f, %f), gamma=\n%f, %f, %f\n%f, %f, %f\n%f, %f, %f\n", lapse_x, shift_x[0], shift_x[1], shift_x[2], gamma_x[0], gamma_x[1], gamma_x[2], gamma_x[1], gamma_x[3], gamma_x[4], gamma_x[2], gamma_x[4], gamma_x[5]);
     }
 
     return rhs;

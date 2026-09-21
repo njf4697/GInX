@@ -5,6 +5,8 @@ INHERITS: ADMBaseX BoxInBox AsterMasks
 
 USES INCLUDE HEADER: loop_device.hxx
 
+public:
+
 CCTK_REAL BH_PN_Trajectories TYPE=scalar
 {
   xbh1,

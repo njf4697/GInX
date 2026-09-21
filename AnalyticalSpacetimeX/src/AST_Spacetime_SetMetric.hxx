@@ -12,11 +12,11 @@
 #include <cctk_Parameters.h>
 
 void MoveGridsHelper(CCTK_ARGUMENTS);
-void SetMetricHelper(CCTK_ARGUMENTS, const double time);
+void SetPositionsHelper(CCTK_ARGUMENTS, const double time);
 
 namespace AnalyticalSpacetimeX {
-
-void SetPositionsHelper(CCTK_ARGUMENTS, const double time);
+    
+void SetMetricHelper(CCTK_ARGUMENTS, const double time);
 
 template <typename GetMetricFunc>
 void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const double tt);

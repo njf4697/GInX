@@ -62,9 +62,15 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
-  assert(move_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1".);
-  assert(resize_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::resize_every to be zero as it does not support it".);
-  assert(evolve_metric_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::evolve_metric_every to be zero. If fast_light is false, RaytracingX uses its own evolve_metric_every=1".);
+  if (move_every != 0) {
+    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1");
+  }
+  if (resize_every != 0) {
+    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::resize_every to be zero as it does not support it");
+  }
+  if (evolve_metric_every != 0) {
+    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::evolve_metric_every to be zero. If fast_light is false, RaytracingX uses its own evolve_metric_every=1");
+  }
 
   assert(cctk_dim == 3);
   int gh[3];

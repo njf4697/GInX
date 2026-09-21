@@ -11,10 +11,6 @@ BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true
 
-BOOLEAN update_metric_between_substeps "Whether or not to update grid to intermediate times during RK4 substeps for geodesic evolution" STEERABLE=ALWAYS
-{
-} false
-
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"
@@ -209,3 +205,5 @@ USES CCTK_REAL out_zline_y
 SHARES: AnalyticalSpacetimeX
 
 USES INT evolve_metric_every
+USES INT move_every
+USES INT resize_every

@@ -8,17 +8,24 @@
 #include <loop_device.hxx>
 #include "AST_Readtable.hxx"
 #include "AST_AnalyticTrajectory.hxx"
+#include "AST_Spacetime_SetMetric.hxx"
 
 namespace AnalyticalSpacetimeX {
 
 extern "C" void AST_SetPositions(CCTK_ARGUMENTS) {
+  DECLARE_CCTK_ARGUMENTSX_AST_SetPositions;
+  DECLARE_CCTK_PARAMETERS;
+
+  SetPositionsHelper(CCTK_PASS_CTOC, cctk_time + AST_t0);
+}
+
+void SetPositionsHelper(CCTK_ARGUMENTS, const double tt) {
 
   DECLARE_CCTK_ARGUMENTSX_AST_SetPositions;
   DECLARE_CCTK_PARAMETERS;
 
   using namespace MoveGrids;
 
-  CCTK_REAL tt = cctk_time;
   double *traj_array =
       (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
   CCTK_INT idt = 0;

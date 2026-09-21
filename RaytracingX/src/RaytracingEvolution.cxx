@@ -62,9 +62,9 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
-  if (evolve_metric_every != 1 && update_metric_between_substeps) {
-    CCTK_ERROR("RaytracingX: When evolving photons between every RK4 substep, parameter AnalyticalSpacetimeX::evolve_metric_every must be 1.");
-  }
+  assert(move_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1".);
+  assert(resize_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::resize_every to be zero as it does not support it".);
+  assert(evolve_metric_every == 0 && "RaytracingX requires AnalyticalSpacetimeX::evolve_metric_every to be zero. If fast_light is false, RaytracingX uses its own evolve_metric_every=1".);
 
   assert(cctk_dim == 3);
   int gh[3];
@@ -437,6 +437,26 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, particle_time + valid_dt);
+}
+
+extern "C" void R_SetPositions(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, particle_time);
+}
+
+extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  AnalyticalSpacetimeX::MoveGridsHelper(CCTK_PASS_CTOC);
 }
 
 /**

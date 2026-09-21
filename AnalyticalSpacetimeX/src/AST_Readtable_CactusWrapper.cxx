@@ -19,12 +19,14 @@ extern "C" void AST_SetPositions(CCTK_ARGUMENTS) {
   SetPositionsHelper(CCTK_PASS_CTOC, cctk_time + AST_t0);
 }
 
-void SetPositionsHelper(CCTK_ARGUMENTS, const double tt) {
+void SetPositionsHelper(CCTK_ARGUMENTS, const double time) {
 
   DECLARE_CCTK_ARGUMENTSX_AST_SetPositions;
   DECLARE_CCTK_PARAMETERS;
 
   using namespace MoveGrids;
+
+  const double tt = time + AST_t0;
 
   double *traj_array =
       (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));

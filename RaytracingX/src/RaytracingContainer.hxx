@@ -105,7 +105,10 @@ namespace RaytracingX
             : Base(amr_core), mass{m} { };
 
         ~RaytracingParticlesContainer() = default;
-
+        
+        CCTK_REAL get_dx(
+            const int &lev);
+            
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         static int get_interpolation_center(
             const CCTK_REAL point,

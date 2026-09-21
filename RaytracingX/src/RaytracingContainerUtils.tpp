@@ -133,3 +133,12 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
 
     write_to_one_file(final_data_file_name, output_str);
 }
+
+template <typename StructType>
+CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
+    const int &lev)
+{
+    const auto dx = this->Geom(lev).CellSizeArray();
+    fprintf(stderr, "%f\n",  fmin(dx[0], fmin(dx[1], dx[2])));
+    return fmin(dx[0], fmin(dx[1], dx[2]));
+}

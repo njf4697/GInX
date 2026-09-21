@@ -96,10 +96,6 @@ SCHEDULE GROUP ANALYTIC_METRIC IN ADMBaseX_SetADMVars #ODESolvers_PostStep
 {
 } "Group for analytic metric"
 
-SCHEDULE GROUP ANALYTIC_METRIC AT CCTK_POST_RECOVER_VARIABLES
-{
-} "Group for analytic metric"
-
 # ===================================================
 # Schedule main functions if we are evolving with AST
 # ===================================================

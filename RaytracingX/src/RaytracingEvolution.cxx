@@ -612,16 +612,6 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTS;
 
   if (num_photons == 0) { return; }
-
-  const int tl = 0;
-  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
-  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
-  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
-  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
-  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
-  assert(gi_shift >= 0 && "Failed to get the shift group index");
-  assert(gi_metric >= 0 && "Failed to get the metric group index");
-  assert(gi_curv >= 0 && "Failed to get the curvature group index");
   
   CCTK_REAL dt_local = std::numeric_limits<CCTK_REAL>::max();;
 
@@ -630,16 +620,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
       auto &pd = CarpetX::ghext->patchdata.at(patch);
 
       for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          const auto &ld = pd.leveldata.at(lev);
-          const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
-          const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-          const auto &gd_shift = *ld.groupdata.at(gi_shift);
-          const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-          const auto &gd_metric = *ld.groupdata.at(gi_metric);
-          const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-          const auto &gd_curv = *ld.groupdata.at(gi_curv);
-          const amrex::MultiFab &curv = *gd_curv.mfab[tl];
-          dt_local = fmin(pc->calculate_dt(lapse, shift, metric, curv, dtfac, lev), dt_local);
+          dt_local = pc->get_dx(lev)*dtfac;
       }
   }
 
@@ -653,10 +634,6 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
     MPI_COMM_WORLD);
 
   valid_dt = -dt_global;
-
-  if (!adaptive_timestepping) {
-    valid_dt = CCTK_DELTA_TIME;
-  }
 
   CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 }

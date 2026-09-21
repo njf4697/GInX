@@ -46,11 +46,11 @@ KEYWORD analytical_metric_type "Type of custom metric"
   "SuperposedBBH" :: "A superposed BBH"
 } "SuperposedBBH"
 
-CCTK_INT resize_every "How often resize radii"
+RESTRICTED: CCTK_INT resize_every "How often resize radii"
 {
   0:* :: "zero means deactivated"
 } 0
-CCTK_INT move_every "How often move grids"
+RESTRICTED: CCTK_INT move_every "How often move grids"
 {
   0:* :: "zero means deactivated"
 } 0

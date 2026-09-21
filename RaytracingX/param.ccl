@@ -7,10 +7,6 @@ BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
-BOOLEAN adaptive_timestepping "Time step-size changes based on proximity to BH"  STEERABLE=ALWAYS
-{
-} true
-
 BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true
@@ -27,7 +23,7 @@ CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = 
 CCTK_REAL dtfac "Size of dt relative to dx for photon integration" STEERABLE = ALWAYS
 {
     (0.:1.] :: "Any real number between 0 and 1"
-} 0.5
+} 1.0
 
 CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
 {

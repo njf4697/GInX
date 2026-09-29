@@ -188,11 +188,11 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  CCTK_SyncGroupI(cctkGH, gi_lapse);
-  CCTK_SyncGroupI(cctkGH, gi_shift);
-  CCTK_SyncGroupI(cctkGH, gi_metric);
-  CCTK_SyncGroupI(cctkGH, gi_curv);
-  CCTK_SyncGroupI(cctkGH, gi_rho);
+  //CCTK_Sync(cctkGH, gi_lapse);
+  //CCTK_Sync(cctkGH, gi_shift);
+  //CCTK_Sync(cctkGH, gi_metric);
+  //CCTK_Sync(cctkGH, gi_curv);
+  //CCTK_Sync(cctkGH, gi_rho);
   CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -251,11 +251,11 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  CCTK_SyncGroupI(cctkGH, gi_lapse);
-  CCTK_SyncGroupI(cctkGH, gi_shift);
-  CCTK_SyncGroupI(cctkGH, gi_metric);
-  CCTK_SyncGroupI(cctkGH, gi_curv);
-  CCTK_SyncGroupI(cctkGH, gi_rho);
+  //CCTK_Sync(cctkGH, gi_lapse);
+  //CCTK_Sync(cctkGH, gi_shift);
+  //CCTK_Sync(cctkGH, gi_metric);
+  //CCTK_Sync(cctkGH, gi_curv);
+  //CCTK_Sync(cctkGH, gi_rho);
   CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -314,11 +314,11 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  CCTK_SyncGroupI(cctkGH, gi_lapse);
-  CCTK_SyncGroupI(cctkGH, gi_shift);
-  CCTK_SyncGroupI(cctkGH, gi_metric);
-  CCTK_SyncGroupI(cctkGH, gi_curv);
-  CCTK_SyncGroupI(cctkGH, gi_rho);
+  //CCTK_Sync(cctkGH, gi_lapse);
+  //CCTK_Sync(cctkGH, gi_shift);
+  //CCTK_Sync(cctkGH, gi_metric);
+  //CCTK_Sync(cctkGH, gi_curv);
+  //CCTK_Sync(cctkGH, gi_rho);
   CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -377,11 +377,11 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
   assert(gi_curv >= 0 && "Failed to get the curvature group index");
   assert(gi_rho >= 0 && "Failed to get the density group index");
 
-  CCTK_SyncGroupI(cctkGH, gi_lapse);
-  CCTK_SyncGroupI(cctkGH, gi_shift);
-  CCTK_SyncGroupI(cctkGH, gi_metric);
-  CCTK_SyncGroupI(cctkGH, gi_curv);
-  CCTK_SyncGroupI(cctkGH, gi_rho);
+  //CCTK_Sync(cctkGH, gi_lapse);
+  //CCTK_Sync(cctkGH, gi_shift);
+  //CCTK_Sync(cctkGH, gi_metric);
+  //CCTK_Sync(cctkGH, gi_curv);
+  //CCTK_Sync(cctkGH, gi_rho);
   CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)

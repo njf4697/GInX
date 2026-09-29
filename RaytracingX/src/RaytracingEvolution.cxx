@@ -651,7 +651,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
       auto &pd = CarpetX::ghext->patchdata.at(patch);
 
       for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          dt_local = pc->get_dx(lev)*dtfac;
+          dt_local = fmin(pc->get_dx(lev)*dtfac, dt_local);
       }
   }
 

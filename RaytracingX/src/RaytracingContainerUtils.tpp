@@ -153,5 +153,6 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
     if (!photons_exist) { return 999999; }
 
     const auto dx = this->Geom(lev).CellSizeArray();
+    fprintf(stderr, "%f\n",  fmin(dx[0], fmin(dx[1], dx[2])));
     return fmin(dx[0], fmin(dx[1], dx[2]));
 }

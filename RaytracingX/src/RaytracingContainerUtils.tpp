@@ -138,6 +138,18 @@ template <typename StructType>
 CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
     const int &lev)
 {
+    bool photons_exist = false;
+
+    for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
+         ++pti)
+    {   
+        const int np = pti.numParticles();
+
+        photons_exist = photons_exist || np > 0;
+    }
+
+    if (!photons_exist) { return 999999; }
+
     const auto dx = this->Geom(lev).CellSizeArray();
     fprintf(stderr, "%f\n",  fmin(dx[0], fmin(dx[1], dx[2])));
     return fmin(dx[0], fmin(dx[1], dx[2]));

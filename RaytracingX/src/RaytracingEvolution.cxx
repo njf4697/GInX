@@ -655,6 +655,8 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
       }
   }
 
+  fprintf(stderr, "%f\n", dt_local);
+
   CCTK_REAL dt_global = dt_local;
   MPI_Allreduce(
     &dt_local,

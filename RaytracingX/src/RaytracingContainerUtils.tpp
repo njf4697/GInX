@@ -145,6 +145,8 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
     {   
         const int np = pti.numParticles();
 
+        fprintf(stderr, "%i\n", np);
+
         photons_exist = photons_exist || np > 0;
     }
 

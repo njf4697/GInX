@@ -146,13 +146,10 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
         const int np = pti.numParticles();
 
         photons_exist = photons_exist || np > 0;
-
-        fprintf(stderr, "%i: %i, %i\n", amrex::ParallelDescriptor::MyProc(), photons_exist, np);
     }
 
     if (!photons_exist) { return 999999; }
 
     const auto dx = this->Geom(lev).CellSizeArray();
-    fprintf(stderr, "%i: %f\n", amrex::ParallelDescriptor::MyProc(), fmin(dx[0], fmin(dx[1], dx[2])));
     return fmin(dx[0], fmin(dx[1], dx[2]));
 }

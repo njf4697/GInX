@@ -654,9 +654,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
           dt_local = fmin(pc->get_dx(lev)*dtfac, dt_local);
       }
   }
-
-  fprintf(stderr, "%i: %f evol\n", amrex::ParallelDescriptor::MyProc(), dt_local);
-
+  
   CCTK_REAL dt_global = dt_local;
   MPI_Allreduce(
     &dt_local,

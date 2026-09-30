@@ -91,7 +91,6 @@ void RaytracingParticlesContainer<StructType>::write_to_one_file(
 template <typename StructType>
 void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
     const int &lev,
-    const CCTK_REAL time,
     std::string final_data_file_name)
 {
     std::string output_str;
@@ -106,6 +105,7 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
         CCTK_REAL *AMREX_RESTRICT vels_x = attribs[StructType::vx].data();
         CCTK_REAL *AMREX_RESTRICT vels_y = attribs[StructType::vy].data();
         CCTK_REAL *AMREX_RESTRICT vels_z = attribs[StructType::vz].data();
+        CCTK_REAL *AMREX_RESTRICT times = attribs[StructType::time].data();
         CCTK_REAL *AMREX_RESTRICT ln_energy = attribs[StructType::ln_E].data();
         CCTK_REAL *AMREX_RESTRICT tau = attribs[StructType::tau].data();                          // RaytracingX: Add optical depth.
         CCTK_REAL *AMREX_RESTRICT index = attribs[StructType::pixel_number].data();               // RaytracingX: Add pixel index.
@@ -127,7 +127,7 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
                         + std::to_string(ln_energy[i]) + "\t"
                         + std::to_string(tau[i]) + "\t"
                         + std::to_string((int)deletion_reasons[i]) + "\t"
-                        + std::to_string(time) + "\n";
+                        + std::to_string(times[i]) + "\n";
         }
     }
 
@@ -152,4 +152,21 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dx(
 
     const auto dx = this->Geom(lev).CellSizeArray();
     return fmin(dx[0], fmin(dx[1], dx[2]));
+}
+
+template <typename StructType>
+AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
+    const CCTK_REAL &global_time,
+    const CCTK_REAL &dt,
+    const CCTK_REAL &particle_time)
+{   
+    const CCTK_REAL time_difference = particle_time - global_time;
+    if (fabs(time_difference) < 1e-6) {
+        return dt;
+    }
+    if (time_difference < 0) {
+        return 0.0;
+    }
+    return -time_difference + dt;
 }

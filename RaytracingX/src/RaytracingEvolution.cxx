@@ -147,7 +147,7 @@ extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
     auto &pd = CarpetX::ghext->patchdata.at(patch);
     for (int lev = 0; lev < pd.leveldata.size(); ++lev)
     { 
-      pc->write_deleted_particle_data(lev, particle_time, std::string(out_dir) + "/" + final_data_file_name);
+      pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
     }
   }}
 
@@ -219,7 +219,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy);
+      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy, dtfac);
     }
   }
 }
@@ -282,7 +282,7 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy);
+      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy, dtfac);
     }
   }
 }
@@ -345,7 +345,7 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy);
+      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy, dtfac);
     }
   }
 }
@@ -408,7 +408,7 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy);
+      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, valid_dt, lev, max_energy, dtfac);
     }
   }
 
@@ -654,7 +654,7 @@ extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
           dt_local = fmin(pc->get_dx(lev)*dtfac, dt_local);
       }
   }
-  
+
   CCTK_REAL dt_global = dt_local;
   MPI_Allreduce(
     &dt_local,

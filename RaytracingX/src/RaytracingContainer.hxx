@@ -35,7 +35,7 @@ namespace RaytracingX
             pixel_number, /**< Number used to match particle to corresponding pixel in the image. Defined as a real since BaseParticleContainer does not have options for int parameters, unless defined at runtime, in which case they will not print with WriteAsciiFile*/
             deletion_reason,
 
-            dt, p_upt,
+            time, dt, p_upt,
 
             U0, U1, U2, U3, U4, U5, U6, U7,
             k0, k1, k2, k3, k4, k5, k6, k7,
@@ -105,10 +105,10 @@ namespace RaytracingX
             : Base(amr_core), mass{m} { };
 
         ~RaytracingParticlesContainer() = default;
-        
+
         CCTK_REAL get_dx(
             const int &lev);
-            
+
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         static int get_interpolation_center(
             const CCTK_REAL point,
@@ -117,12 +117,18 @@ namespace RaytracingX
             const CCTK_REAL dx);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static bool RaytracingParticlesContainer<StructType>::interp_index_is_in_bounds(
+        static bool interp_index_is_in_bounds(
             const long i0,
             const long j0,
             const long k0,
             const amrex::GpuArray<int, 3> lower,
             const amrex::GpuArray<int, 3> upper);
+
+        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
+        static CCTK_REAL get_dt(
+            const CCTK_REAL &global_time,
+            const CCTK_REAL &dt,
+            const CCTK_REAL &particle_time);
 
         static void write_to_one_file(
             std::string filename,
@@ -130,7 +136,6 @@ namespace RaytracingX
 
         void write_deleted_particle_data(
             const int &lev,
-            const CCTK_REAL time,
             std::string final_data_file_name);
 
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
@@ -159,9 +164,10 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const amrex::MultiFab &curv,
             const amrex::MultiFab &rho,
-            const CCTK_REAL &dt,
+            const CCTK_REAL &global_time,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL dtfrac);
 
         void evolve_k2(
             const int iteration,
@@ -170,9 +176,10 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const amrex::MultiFab &curv,
             const amrex::MultiFab &rho,
-            const CCTK_REAL &dt,
+            const CCTK_REAL &global_time,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL dtfrac);
 
         void evolve_k3(
             const int iteration,
@@ -181,9 +188,10 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const amrex::MultiFab &curv,
             const amrex::MultiFab &rho,
-            const CCTK_REAL &dt,
+            const CCTK_REAL &global_time,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL dtfrac);
 
         void evolve_k4(
             const int iteration,
@@ -192,9 +200,10 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const amrex::MultiFab &curv,
             const amrex::MultiFab &rho,
-            const CCTK_REAL &dt,
+            const CCTK_REAL &global_time,
             const int &lev,
-            const CCTK_REAL max_energy);
+            const CCTK_REAL max_energy,
+            const CCTK_REAL dtfrac);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_bounds(
@@ -234,33 +243,6 @@ namespace RaytracingX
         void normalize_velocity(
             const amrex::MultiFab &metric,
             const int level);
-
-        CCTK_REAL calculate_dt(
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
-            const amrex::MultiFab &curv,
-            const CCTK_REAL dtfac,
-            const int &lev);
-        
-        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        CCTK_REAL get_dt(
-            const CCTK_REAL prev_dt,
-            amrex::GpuArray<CCTK_REAL, 3> &dxvecdt,
-            amrex::GpuArray<CCTK_REAL, 3> &dvvecdt,
-            amrex::GpuArray<CCTK_REAL, 3> &xvec,
-            amrex::GpuArray<CCTK_REAL, 3> &vvec,
-            const amrex::GpuArray<double, 3> plo0,
-            const amrex::GpuArray<double, 3> phi0,
-            const amrex::GpuArray<double, 3> dx,
-            const amrex::Array4<CCTK_REAL const> &lapse,
-            const amrex::Array4<CCTK_REAL const> &shift,
-            const amrex::Array4<CCTK_REAL const> &metric,
-            const amrex::Array4<CCTK_REAL const> &curv,
-            const CCTK_REAL dtfac,
-            const CCTK_REAL rk4_dtfac,
-            CCTK_REAL &lapse_x,
-            const int &lev);
         
         void redistribute_particles()
         {

@@ -161,7 +161,6 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::get_dt(
     const CCTK_REAL &dt,
     const CCTK_REAL &particle_time)
 {   
-    fprintf(stderr, "%f, %f\n", particle_time, global_time);
     const CCTK_REAL time_difference = particle_time - global_time;
     if (fabs(time_difference) < 1e-6) {
         return dt;

@@ -461,7 +461,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
 
-      if (index[i] == 0) { fprintf(stderr, "%f, %f\n" global_time, time[i]); } 
+      if (index[i] == 0) { fprintf(stderr, "%f, %f\n", global_time, time[i]); } 
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 

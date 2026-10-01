@@ -456,12 +456,12 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       SKIP_DELETED_PARTICLES
 
       const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
+      if (index[i] == 0) { fprintf(stderr, "%f, %f\n", global_time, time[i]); } 
       if (particle_dt == 0.0) { return; }
 
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
 
-      if (index[i] == 0) { fprintf(stderr, "%f, %f\n", global_time, time[i]); } 
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 

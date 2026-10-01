@@ -456,7 +456,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       SKIP_DELETED_PARTICLES
 
       const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (index[i] == 0) { fprintf(stderr, "%f, %f\n", global_time, time[i]); } 
+      if (index[i] == 0) { fprintf(stderr, "%f, %f, %f\n", global_time, time[i], particle_dt); } 
       if (particle_dt == 0.0) { return; }
 
       REDEFINE_RK4_ARRAYS

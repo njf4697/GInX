@@ -447,8 +447,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       SKIP_DELETED_PARTICLES
 
       const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (index[i] == 0) { fprintf(stderr, "%f, %f, %f\n", global_time, time[i], particle_dt); } 
       if (particle_dt == 0.0) { return; }
+      if (index[i] == 0) { fprintf(stderr, "%f, %f, %f\n", global_time, time[i], particle_dt); } 
 
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
@@ -765,7 +765,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       vels_z[i]           += (1. / 6.) * particle_dt * k[Uidx::vz];
       ln_energy[i]        += (1. / 6.) * particle_dt * k[Uidx::lnE];
       tau[i]              += (1. / 6.) * particle_dt * k[Uidx::tau];
-      time[i]             += dt;
+      time[i]             += particle_dt;
       
       U_tmp[Uidx::x] = particles[i].pos(0);
       U_tmp[Uidx::y] = particles[i].pos(1);
@@ -780,7 +780,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
-        time[i] += particle_dt;
         return;
       }
       });

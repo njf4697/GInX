@@ -271,7 +271,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dtfac)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -385,7 +385,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dtfac)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -516,7 +516,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dtfac)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -647,7 +647,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dtfac)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();

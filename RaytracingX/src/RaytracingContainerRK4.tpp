@@ -282,11 +282,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
 
     const CCTK_REAL m = this->mass;
 
-    const CCTK_REAL dt = dtfac * fmin(dx[0], fmin(dx[1], dx[2]));
-    const CCTK_REAL rem = fmod(global_time / dt, 1.0);
-
-    if (rem > 1e-6 && 1-rem > 1e-6) { return; }
-
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
@@ -329,22 +324,19 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
 
       SKIP_DELETED_PARTICLES
 
-      const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (particle_dt == 0.0) { return; }
-
       // f1 = rhs(u , t) for the runge kutta 4 step
       auto k =
           self->compute_rhs(iteration, index[i], U, 0.0, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, particle_dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add density for optical depth.
+                            curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add density for optical depth.
 
-      particles[i].pos(0) += (1. / 6.) * particle_dt * k[Uidx::x];
-      particles[i].pos(1) += (1. / 6.) * particle_dt * k[Uidx::y];
-      particles[i].pos(2) += (1. / 6.) * particle_dt * k[Uidx::z];
-      vels_x[i]           += (1. / 6.) * particle_dt * k[Uidx::vx];
-      vels_y[i]           += (1. / 6.) * particle_dt * k[Uidx::vy];
-      vels_z[i]           += (1. / 6.) * particle_dt * k[Uidx::vz];
-      ln_energy[i]        += (1. / 6.) * particle_dt * k[Uidx::lnE];
-      tau[i]              += (1. / 6.) * particle_dt * k[Uidx::tau];
+      particles[i].pos(0) += (1. / 6.) * dt * k[Uidx::x];
+      particles[i].pos(1) += (1. / 6.) * dt * k[Uidx::y];
+      particles[i].pos(2) += (1. / 6.) * dt * k[Uidx::z];
+      vels_x[i]           += (1. / 6.) * dt * k[Uidx::vx];
+      vels_y[i]           += (1. / 6.) * dt * k[Uidx::vy];
+      vels_z[i]           += (1. / 6.) * dt * k[Uidx::vz];
+      ln_energy[i]        += (1. / 6.) * dt * k[Uidx::lnE];
+      tau[i]              += (1. / 6.) * dt * k[Uidx::tau];
 
       LOAD_RK4_VARS
       });
@@ -404,11 +396,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
 
     const CCTK_REAL m = this->mass;
 
-    const CCTK_REAL dt = dtfac * fmin(dx[0], fmin(dx[1], dx[2]));
-    const CCTK_REAL rem = fmod(global_time / dt, 1.0);
-
-    if (rem > 1e-6 && 1-rem > 1e-6) { return; }
-
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {
@@ -446,46 +433,41 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
                            {
       SKIP_DELETED_PARTICLES
 
-      const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (particle_dt == 0.0) { return; }
-      if (index[i] == 0) { fprintf(stderr, "%f, %f, %f\n", global_time, time[i], particle_dt); } 
-
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
 
-
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-      U_tmp[Uidx::x] = U[Uidx::x]     + 0.5 * particle_dt * k[Uidx::x];
-      U_tmp[Uidx::y] = U[Uidx::y]     + 0.5 * particle_dt * k[Uidx::y];
-      U_tmp[Uidx::z] = U[Uidx::z]     + 0.5 * particle_dt * k[Uidx::z];
-      U_tmp[Uidx::vx] = U[Uidx::vx]   + 0.5 * particle_dt * k[Uidx::vx];
-      U_tmp[Uidx::vy] = U[Uidx::vy]   + 0.5 * particle_dt * k[Uidx::vy];
-      U_tmp[Uidx::vz] = U[Uidx::vz]   + 0.5 * particle_dt * k[Uidx::vz];
-      U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * particle_dt * k[Uidx::lnE];
-      U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * particle_dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
+      U_tmp[Uidx::x] = U[Uidx::x]     + 0.5 * dt * k[Uidx::x];
+      U_tmp[Uidx::y] = U[Uidx::y]     + 0.5 * dt * k[Uidx::y];
+      U_tmp[Uidx::z] = U[Uidx::z]     + 0.5 * dt * k[Uidx::z];
+      U_tmp[Uidx::vx] = U[Uidx::vx]   + 0.5 * dt * k[Uidx::vx];
+      U_tmp[Uidx::vy] = U[Uidx::vy]   + 0.5 * dt * k[Uidx::vy];
+      U_tmp[Uidx::vz] = U[Uidx::vz]   + 0.5 * dt * k[Uidx::vz];
+      U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
+      U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
-        time[i] += 0.5*particle_dt;
+        time[i] += 0.5*dt;
         particles[i].id() = -1;
         return;
       }
 
       // f2 = rhs(u + 0.5 * dt * f1, t) for the runge kutta 4 step
-      k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * particle_dt, lapse_array, shift_array,
-                            metric_array, curv_array, rho_array, particle_dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds);
+      k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+                            metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds);
 
-      particles[i].pos(0) += (1. / 3.) * particle_dt * k[Uidx::x];
-      particles[i].pos(1) += (1. / 3.) * particle_dt * k[Uidx::y];
-      particles[i].pos(2) += (1. / 3.) * particle_dt * k[Uidx::z];
-      vels_x[i]           += (1. / 3.) * particle_dt * k[Uidx::vx];
-      vels_y[i]           += (1. / 3.) * particle_dt * k[Uidx::vy];
-      vels_z[i]           += (1. / 3.) * particle_dt * k[Uidx::vz];
-      ln_energy[i]        += (1. / 3.) * particle_dt * k[Uidx::lnE];
-      tau[i]              += (1. / 3.) * particle_dt * k[Uidx::tau];
+      particles[i].pos(0) += (1. / 3.) * dt * k[Uidx::x];
+      particles[i].pos(1) += (1. / 3.) * dt * k[Uidx::y];
+      particles[i].pos(2) += (1. / 3.) * dt * k[Uidx::z];
+      vels_x[i]           += (1. / 3.) * dt * k[Uidx::vx];
+      vels_y[i]           += (1. / 3.) * dt * k[Uidx::vy];
+      vels_z[i]           += (1. / 3.) * dt * k[Uidx::vz];
+      ln_energy[i]        += (1. / 3.) * dt * k[Uidx::lnE];
+      tau[i]              += (1. / 3.) * dt * k[Uidx::tau];
       
       LOAD_RK4_VARS
       });
@@ -545,11 +527,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
 
     const CCTK_REAL m = this->mass;
 
-    const CCTK_REAL dt = dtfac * fmin(dx[0], fmin(dx[1], dx[2]));
-    const CCTK_REAL rem = fmod(global_time / dt, 1.0);
-
-    if (rem > 1e-6 && 1-rem > 1e-6) { return; }
-
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
@@ -587,44 +564,41 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
                            {
       SKIP_DELETED_PARTICLES
 
-      const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (particle_dt == 0.0) { return; }
-
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-      U_tmp[Uidx::x]   = U[Uidx::x]   + 0.5 * particle_dt * k[Uidx::x];
-      U_tmp[Uidx::y]   = U[Uidx::y]   + 0.5 * particle_dt * k[Uidx::y];
-      U_tmp[Uidx::z]   = U[Uidx::z]   + 0.5 * particle_dt * k[Uidx::z];
-      U_tmp[Uidx::vx]  = U[Uidx::vx]  + 0.5 * particle_dt * k[Uidx::vx];
-      U_tmp[Uidx::vy]  = U[Uidx::vy]  + 0.5 * particle_dt * k[Uidx::vy];
-      U_tmp[Uidx::vz]  = U[Uidx::vz]  + 0.5 * particle_dt * k[Uidx::vz];
-      U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * particle_dt * k[Uidx::lnE];
-      U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * particle_dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
+      U_tmp[Uidx::x]   = U[Uidx::x]   + 0.5 * dt * k[Uidx::x];
+      U_tmp[Uidx::y]   = U[Uidx::y]   + 0.5 * dt * k[Uidx::y];
+      U_tmp[Uidx::z]   = U[Uidx::z]   + 0.5 * dt * k[Uidx::z];
+      U_tmp[Uidx::vx]  = U[Uidx::vx]  + 0.5 * dt * k[Uidx::vx];
+      U_tmp[Uidx::vy]  = U[Uidx::vy]  + 0.5 * dt * k[Uidx::vy];
+      U_tmp[Uidx::vz]  = U[Uidx::vz]  + 0.5 * dt * k[Uidx::vz];
+      U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
+      U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
-        time[i] += 0.5*particle_dt;
+        time[i] += 0.5*dt;
         particles[i].id() = -1;
         return;
       }
       
       // f3 = rhs(u + 0.5 * dt * f2, t) for the runge kutta 4 step
-      k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * particle_dt, lapse_array, shift_array,
-                                metric_array, curv_array, rho_array, particle_dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add optical depth.
+      k = self->compute_rhs(iteration, index[i], U_tmp, 0.5 * dt, lapse_array, shift_array,
+                                metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add optical depth.
 
-      particles[i].pos(0) += (1. / 3.) * particle_dt * k[Uidx::x];
-      particles[i].pos(1) += (1. / 3.) * particle_dt * k[Uidx::y];
-      particles[i].pos(2) += (1. / 3.) * particle_dt * k[Uidx::z];
-      vels_x[i]           += (1. / 3.) * particle_dt * k[Uidx::vx];
-      vels_y[i]           += (1. / 3.) * particle_dt * k[Uidx::vy];
-      vels_z[i]           += (1. / 3.) * particle_dt * k[Uidx::vz];
-      ln_energy[i]        += (1. / 3.) * particle_dt * k[Uidx::lnE];
-      tau[i]              += (1. / 3.) * particle_dt * k[Uidx::tau];
+      particles[i].pos(0) += (1. / 3.) * dt * k[Uidx::x];
+      particles[i].pos(1) += (1. / 3.) * dt * k[Uidx::y];
+      particles[i].pos(2) += (1. / 3.) * dt * k[Uidx::z];
+      vels_x[i]           += (1. / 3.) * dt * k[Uidx::vx];
+      vels_y[i]           += (1. / 3.) * dt * k[Uidx::vy];
+      vels_z[i]           += (1. / 3.) * dt * k[Uidx::vz];
+      ln_energy[i]        += (1. / 3.) * dt * k[Uidx::lnE];
+      tau[i]              += (1. / 3.) * dt * k[Uidx::tau];
 
       LOAD_RK4_VARS
       });
@@ -684,11 +658,6 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
 
     const CCTK_REAL m = this->mass;
 
-    const CCTK_REAL dt = dtfac * fmin(dx[0], fmin(dx[1], dx[2]));
-    const CCTK_REAL rem = fmod(global_time / dt, 1.0);
-
-    if (rem > 1e-6 && 1-rem > 1e-6) { return; }
-
     for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
          ++pti)
     {   
@@ -726,46 +695,43 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
                            {
       SKIP_DELETED_PARTICLES
 
-      const CCTK_REAL particle_dt = get_dt(global_time, dt, time[i]);
-      if (particle_dt == 0.0) { return; }
-
       REDEFINE_RK4_ARRAYS
       UNLOAD_RK4_VARS
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-      U_tmp[Uidx::x]   = U[Uidx::x]   + particle_dt * k[Uidx::x];
-      U_tmp[Uidx::y]   = U[Uidx::y]   + particle_dt * k[Uidx::y];
-      U_tmp[Uidx::z]   = U[Uidx::z]   + particle_dt * k[Uidx::z];
-      U_tmp[Uidx::vx]  = U[Uidx::vx]  + particle_dt * k[Uidx::vx];
-      U_tmp[Uidx::vy]  = U[Uidx::vy]  + particle_dt * k[Uidx::vy];
-      U_tmp[Uidx::vz]  = U[Uidx::vz]  + particle_dt * k[Uidx::vz];
-      U_tmp[Uidx::lnE] = U[Uidx::lnE] + particle_dt * k[Uidx::lnE];
-      U_tmp[Uidx::tau] = U[Uidx::tau] + particle_dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
+      U_tmp[Uidx::x]   = U[Uidx::x]   + dt * k[Uidx::x];
+      U_tmp[Uidx::y]   = U[Uidx::y]   + dt * k[Uidx::y];
+      U_tmp[Uidx::z]   = U[Uidx::z]   + dt * k[Uidx::z];
+      U_tmp[Uidx::vx]  = U[Uidx::vx]  + dt * k[Uidx::vx];
+      U_tmp[Uidx::vy]  = U[Uidx::vy]  + dt * k[Uidx::vy];
+      U_tmp[Uidx::vz]  = U[Uidx::vz]  + dt * k[Uidx::vz];
+      U_tmp[Uidx::lnE] = U[Uidx::lnE] + dt * k[Uidx::lnE];
+      U_tmp[Uidx::tau] = U[Uidx::tau] + dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
-        time[i] += particle_dt;
+        time[i] += dt;
         particles[i].id() = -1;
         return;
       }
 
       // f4 = rhs(u + dt * f3, t) for the runge kutta 4 step
-      k = self->compute_rhs(iteration, index[i], U_tmp, particle_dt, lapse_array, shift_array,
-                                 metric_array, curv_array, rho_array, particle_dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add optical depth.
+      k = self->compute_rhs(iteration, index[i], U_tmp, dt, lapse_array, shift_array,
+                                 metric_array, curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds); //RaytracingX: Add optical depth.
 
       // Update particles with the f3 and f4 from RK4
-      particles[i].pos(0) += (1. / 6.) * particle_dt * k[Uidx::x];
-      particles[i].pos(1) += (1. / 6.) * particle_dt * k[Uidx::y];
-      particles[i].pos(2) += (1. / 6.) * particle_dt * k[Uidx::z];
-      vels_x[i]           += (1. / 6.) * particle_dt * k[Uidx::vx];
-      vels_y[i]           += (1. / 6.) * particle_dt * k[Uidx::vy];
-      vels_z[i]           += (1. / 6.) * particle_dt * k[Uidx::vz];
-      ln_energy[i]        += (1. / 6.) * particle_dt * k[Uidx::lnE];
-      tau[i]              += (1. / 6.) * particle_dt * k[Uidx::tau];
-      time[i]             += particle_dt;
+      particles[i].pos(0) += (1. / 6.) * dt * k[Uidx::x];
+      particles[i].pos(1) += (1. / 6.) * dt * k[Uidx::y];
+      particles[i].pos(2) += (1. / 6.) * dt * k[Uidx::z];
+      vels_x[i]           += (1. / 6.) * dt * k[Uidx::vx];
+      vels_y[i]           += (1. / 6.) * dt * k[Uidx::vy];
+      vels_z[i]           += (1. / 6.) * dt * k[Uidx::vz];
+      ln_energy[i]        += (1. / 6.) * dt * k[Uidx::lnE];
+      tau[i]              += (1. / 6.) * dt * k[Uidx::tau];
+      time[i]             += dt;
       
       U_tmp[Uidx::x] = particles[i].pos(0);
       U_tmp[Uidx::y] = particles[i].pos(1);

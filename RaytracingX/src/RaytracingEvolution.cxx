@@ -40,8 +40,6 @@ using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
 long num_photons;
-CCTK_REAL valid_dt;
-CCTK_REAL particle_time;
 
 /**
  * \brief Initialize particles' data
@@ -174,8 +172,6 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 
-  CCTK_VINFO("Current particle time: %f", particle_time);
-
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
   const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
@@ -219,7 +215,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, particle_time, lev, max_energy, dtfac);
+      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, cctk_time, lev, max_energy, dtfac);
     }
   }
 }
@@ -282,7 +278,7 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, particle_time, lev, max_energy, dtfac);
+      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, cctk_time, lev, max_energy, dtfac);
     }
   }
 }
@@ -345,7 +341,7 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, particle_time, lev, max_energy, dtfac);
+      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, cctk_time, lev, max_energy, dtfac);
     }
   }
 }
@@ -408,11 +404,9 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, particle_time, lev, max_energy, dtfac);
+      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, cctk_time, lev, max_energy, dtfac);
     }
   }
-
-  particle_time += valid_dt;
 }
 
 extern "C" void R_SetMetric(CCTK_ARGUMENTS)
@@ -422,7 +416,7 @@ extern "C" void R_SetMetric(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, particle_time);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time);
 }
 
 extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
@@ -432,7 +426,7 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, particle_time + 0.5*valid_dt);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + 0.5*CCTK_DELTA_TIME);
 }
 
 extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
@@ -442,7 +436,7 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, particle_time + valid_dt);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, cctk_time + CCTK_DELTA_TIME);
 }
 
 extern "C" void R_SetPositions(CCTK_ARGUMENTS)
@@ -456,7 +450,7 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
     AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, 0.0);
   }
   else {
-    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, particle_time);
+    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, cctk_time);
   }
 }
 
@@ -635,36 +629,4 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
   num_photons = n_global;
 
   CCTK_VINFO("Found %ld particles remaining.", n_global);
-}
-
-extern "C" void FindMinimumTimestep(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-  
-  CCTK_REAL dt_local = std::numeric_limits<CCTK_REAL>::max();;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
-      auto &pc = r_photons.at(patch);
-      auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          dt_local = fmin(pc->get_dx(lev)*dtfac, dt_local);
-      }
-  }
-
-  CCTK_REAL dt_global = dt_local;
-  MPI_Allreduce(
-    &dt_local,
-    &dt_global,
-    1,
-    MPI_DOUBLE,
-    MPI_MIN,
-    MPI_COMM_WORLD);
-
-  valid_dt = -dt_global;
-
-  CCTK_VINFO("Found a valid timestep of %f.", valid_dt);
 }

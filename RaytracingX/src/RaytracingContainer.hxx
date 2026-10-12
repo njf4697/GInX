@@ -106,9 +106,6 @@ namespace RaytracingX
 
         ~RaytracingParticlesContainer() = default;
 
-        CCTK_REAL get_dx(
-            const int &lev);
-
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         static int get_interpolation_center(
             const CCTK_REAL point,
@@ -123,12 +120,6 @@ namespace RaytracingX
             const long k0,
             const amrex::GpuArray<int, 3> lower,
             const amrex::GpuArray<int, 3> upper);
-
-        AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static CCTK_REAL get_dt(
-            const CCTK_REAL &global_time,
-            const CCTK_REAL &dt,
-            const CCTK_REAL &particle_time);
 
         static void write_to_one_file(
             std::string filename,

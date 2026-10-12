@@ -26,14 +26,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-  SCHEDULE FindMinimumTimestep IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
-  {
-    LANG: C
-    OPTIONS: global
-  } "find valid timestep size"
-
-
-SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER FindMinimumTimestep
+SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
   {
       LANG: C
       OPTIONS: global

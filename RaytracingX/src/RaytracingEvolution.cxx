@@ -138,6 +138,8 @@ extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  CCTK_Barrier(cctkGH);
+
   if (output_final_data) {
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
@@ -148,6 +150,8 @@ extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
       pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
     }
   }}
+
+  CCTK_Barrier(cctkGH);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

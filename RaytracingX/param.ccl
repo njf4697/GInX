@@ -71,7 +71,7 @@ BOOLEAN calculate_kerr_conserved_quantities "Calculate conserved quantities for 
 
 BOOLEAN output_final_data "Print the data for a particle before it is deleted"  STEERABLE=ALWAYS
 {
-} false
+} true
 
 STRING final_data_file_name "Filename for the deleted particle data" STEERABLE=ALWAYS
 {

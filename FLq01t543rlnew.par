@@ -1,0 +1,132 @@
+ActiveThorns = "
+  ADMBaseX
+  HydroBaseX
+  CarpetX
+  ODESolvers
+  BoxInBox
+  IOUtil
+  AsterMasks
+  AnalyticalSpacetimeX
+  BaseParticlesContainer
+  ParticlesContainer
+  ParticlesSolverUtilities
+  RaytracingX
+"
+
+Cactus::presync_mode = "mixed-error"
+
+CarpetX::verbose = yes
+CarpetX::poison_undefined_values = no
+
+$ncells  = 64
+$llims = -60
+$ulims = 60
+$dtfrac = -0.125
+$nlevels = 5
+$offset = 0.15625
+
+CarpetX::xmin = $llims - $offset
+CarpetX::ymin = $llims - $offset
+CarpetX::zmin = $llims - $offset
+CarpetX::xmax = $ulims + $offset
+CarpetX::ymax = $ulims + $offset
+CarpetX::zmax = $ulims + $offset
+
+CarpetX::ncells_x = $ncells
+CarpetX::ncells_y = $ncells
+CarpetX::ncells_z = $ncells
+
+CarpetX::periodic_x = yes
+CarpetX::periodic_y = yes
+CarpetX::periodic_z = yes
+
+CarpetX::max_grid_size_x = 10000000
+CarpetX::max_grid_size_y = 10000000
+CarpetX::max_grid_size_z = 10000000
+
+CarpetX::max_tile_size_x = 10000000
+CarpetX::max_tile_size_y = 10000000
+CarpetX::max_tile_size_z = 10000000
+
+CarpetX::ghost_size = 5
+CarpetX::dtfac = $dtfrac
+CarpetX::max_num_levels = $nlevels
+
+Cactus::cctk_itlast = 5000
+
+IO::out_dir = $parfile
+IO::out_every = 1
+
+CarpetX::out_adios2_every = 0
+CarpetX::out_silo_every = 0
+CarpetX::out_openpmd_every = 0
+
+CarpetX::out_performance = no
+CarpetX::out_metadata = no
+CarpetX::out_tsv_vars = ""
+
+ADMBaseX::initial_data    = "analytical_spacetime"
+ADMBaseX::initial_lapse   = "analytical_spacetime"
+ADMBaseX::initial_shift   = "analytical_spacetime"
+
+BoxInBox::num_regions = 2
+BoxInBox::shape_1 = "cube"
+BoxInBox::num_levels_1 = $nlevels
+BoxInBox::position_x_1 = -15.0 + $offset
+BoxInBox::position_y_1 = 0.0 + $offset
+BoxInBox::position_z_1 = 0.0 + $offset
+BoxInBox::radius_1 = [-1., 10.0, 5.0, 3.0, 1.0, 0.5]
+
+BoxInBox::shape_2 = "cube"
+BoxInBox::num_levels_2 = $nlevels
+BoxInBox::position_x_2 = 15.0 - $offset
+BoxInBox::position_y_2 = 0.0 - $offset
+BoxInBox::position_z_2 = 0.0 - $offset
+BoxInBox::radius_2 = [-1., 10.0, 5.0, 3.0, 1.0, 0.5]
+
+AnalyticalSpacetimeX::analytical_metric_type = "SuperposedBBH" #"BoostedBH"
+AnalyticalSpacetimeX::traj_read_table = "yes"
+AnalyticalSpacetimeX::traj_table_name = "/home1/09751/njf4697/EinsteinToolkit/Cactus/initial_data/CircularOrbit_a0_q01_30m.h5"
+AnalyticalSpacetimeX::AST_adjust_mass1 = 1.0
+AnalyticalSpacetimeX::AST_adjust_mass2 = 1.0
+AnalyticalSpacetimeX::set_positions = "yes"
+AnalyticalSpacetimeX::AST_cutoff_floor = 1e-1
+AnalyticalSpacetimeX::AST_a1_buffer = 0.01
+AnalyticalSpacetimeX::AST_a2_buffer = 0.01
+AnalyticalSpacetimeX::move_every = 0 #1
+AnalyticalSpacetimeX::evolve_metric_every = 0 #1
+AnalyticalSpacetimeX::set_analytic_metric_always = "yes"
+
+AnalyticalSpacetimeX::AST_t0 = 543.21102355
+AnalyticalSpacetimeX::traj_print = "no"
+AnalyticalSpacetimeX::traj_print_every = 80
+
+# BaseParticlesContainer parameters definition
+#BaseParticlesContainer::metric = "Kerr-Schild"
+#BaseParticlesContainer::metric_params_d = [0.5, 0.5]
+BaseParticlesContainer::particle_tsv_every = 0
+#BaseParticlesContainer::banned_regions = 1
+#BaseParticlesContainer::region_1_position = [0.0, 0.0, 0.0]
+#BaseParticlesContainer::region_0_radius = 1.0
+
+# PhotonsContainer parameters definition
+ParticlesContainer::run_test = false
+ParticlesContainer::num_photons = 1
+
+# RaytracingX parameters definition
+RaytracingX::do_raytracing = true
+#RaytracingX::region_1_a = 0.5
+RaytracingX::num_pixels_width = 400
+RaytracingX::num_pixels_height = 300
+RaytracingX::camera_pos = [0, 50., 0.]
+RaytracingX::camera_vel = [0., 0., 0.]
+RaytracingX::camera_point = [0., -1., 0.]
+RaytracingX::camera_up = [0., 0., 1.]
+RaytracingX::verbose = true
+RaytracingX::vertical_fov = 30
+RaytracingX::horizontal_fov = 40
+RaytracingX::output_final_data = true
+RaytracingX::final_data_file_name = "deleted_particle_data.tsv"
+RaytracingX::max_energy = 5
+RaytracingX::fast_light = true
+RaytracingX::calculate_kerr_conserved_quantities = false

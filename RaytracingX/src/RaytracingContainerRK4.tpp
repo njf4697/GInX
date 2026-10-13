@@ -746,6 +746,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
+        particles[i].id() = -1;
         return;
       }
       });

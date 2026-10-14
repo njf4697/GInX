@@ -16,7 +16,8 @@
                         CCTK_REAL *AMREX_RESTRICT k4 = attribs[StructType::k4].data(); \
                         CCTK_REAL *AMREX_RESTRICT k5 = attribs[StructType::k5].data(); \
                         CCTK_REAL *AMREX_RESTRICT k6 = attribs[StructType::k6].data(); \
-                        CCTK_REAL *AMREX_RESTRICT k7 = attribs[StructType::k7].data();
+                        CCTK_REAL *AMREX_RESTRICT k7 = attribs[StructType::k7].data(); \
+                        CCTK_REAL *AMREX_RESTRICT k8 = attribs[StructType::deletion_reason].data();
 
 #define UNLOAD_RK4_VARS U[0] = U0[i]; \
                         U[1] = U1[i]; \
@@ -33,7 +34,8 @@
                         k[4] = k4[i]; \
                         k[5] = k5[i]; \
                         k[6] = k6[i]; \
-                        k[7] = k7[i];
+                        k[7] = k7[i]; \
+                        k[8] = k8[i];
 
 #define LOAD_RK4_VARS U0[i] = U[0]; \
                       U1[i] = U[1]; \
@@ -51,6 +53,7 @@
                       k5[i] = k[5]; \
                       k6[i] = k[6]; \
                       k7[i] = k[7]; \
+                      k8[i] = k[8]; 
 
 #define REDEFINE_RK4_ARRAYS amrex::GpuArray<CCTK_REAL, 9> U = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; \
                             amrex::GpuArray<CCTK_REAL, 9> k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

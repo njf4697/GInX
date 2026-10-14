@@ -451,7 +451,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
 
       if (i == 0) {fprintf(stderr, "%f, %f, %f", particle[i].pos(0), particle[i].pos(1), particle[i].pos(2)); }
 
-      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %d", U_tmp[Uidx::del_rsn]);
+      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %f", U_tmp[Uidx::del_rsn]);
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         time[i] += 0.5*dt;
         particles[i].id() = -1;
@@ -582,7 +582,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
-      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %d", U_tmp[Uidx::del_rsn]);
+      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %f", U_tmp[Uidx::del_rsn]);
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         time[i] += 0.5*dt;
         particles[i].id() = -1;
@@ -713,7 +713,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
-      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %d", U_tmp[Uidx::del_rsn]);
+      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %f", U_tmp[Uidx::del_rsn]);
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         time[i] += dt;
         particles[i].id() = -1;
@@ -746,7 +746,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy);
 
-      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %d", U_tmp[Uidx::del_rsn]);
+      if (U_tmp[Uidx::del_rsn] != 0.0) { fprintf(stderr, "del_rsn = %f", U_tmp[Uidx::del_rsn]);
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
         particles[i].id() = -1;
         return;

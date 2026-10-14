@@ -72,7 +72,7 @@ namespace RaytracingX
         static constexpr CCTK_REAL FAILED_INTERP = -996;
         static constexpr CCTK_REAL UNSTABLE = -997;
         static constexpr CCTK_REAL NONFINITE = -998;
-        static constexpr CCTK_REAL DEFAULT = -999;
+        //static constexpr CCTK_REAL DEFAULT = -999;
     };
 
     template <typename StructType>

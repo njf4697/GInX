@@ -72,7 +72,7 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
 {
 
     // RaytracingX: Add space for optical depth variable.
-    amrex::GpuArray<CCTK_REAL, 9> rhs = {0., 0., 0., 0., 0., 0., 0., 0., 0.};
+    amrex::GpuArray<CCTK_REAL, 9> rhs = {0., 0., 0., 0., 0., 0., 0., 0., u[Uidx::del_rsn]};
 
     const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
     const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);

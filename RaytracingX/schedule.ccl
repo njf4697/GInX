@@ -26,11 +26,11 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
-  {
-      LANG: C
-      OPTIONS: global
-  } "check particle bounds"
+#SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
+#  {
+#      LANG: C
+#      OPTIONS: global
+#  } "check particle bounds"
 
 #SCHEDULE R_ParticlesContainer_redistribute IN RAYTRACING_EVOL AFTER R_ParticlesContainer_output_final_data_initial
 #  {

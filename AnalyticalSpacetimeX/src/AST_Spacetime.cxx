@@ -130,6 +130,10 @@ extern "C" void AnalyticalSpacetimeX_SetMetric(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
 
   /* Check whether we evolve the metric at this iteration*/
+  if (evolve_metric_every == 0) {
+    return;
+  }
+
   if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every != 0)) {
     return;
   }

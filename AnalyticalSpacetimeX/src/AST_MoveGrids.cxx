@@ -8,7 +8,7 @@ extern "C" void AST_MoveGrids(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTSX_AST_MoveGrids;
   DECLARE_CCTK_PARAMETERS;
 
-  if (move_every != 0 && cctk_iteration != 0 && cctk_iteration % move_every==0) {
+  if ((move_every == 0 && cctk_iteration != 0) || (move_every > 0 && cctk_iteration % move_every==0)) {
     MoveGridsHelper(CCTK_PASS_CTOC);
   }
   else {

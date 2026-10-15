@@ -66,7 +66,7 @@ extern "C" void AST_ResizeGrids(CCTK_ARGUMENTS)
 
   }
 
-  if ((resize_every == 0 && cctk_iteration != 0) || (resize_every > 0 && cctk_iteration%resize_every==0)) {
+  if ((resize_every == 0 && cctk_iteration == 0) || (resize_every > 0 && cctk_iteration%resize_every==0)) {
   
       // Calculate the resizing factor
       CCTK_REAL resize_factor = *current_separation / *init_separation;

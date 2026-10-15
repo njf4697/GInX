@@ -8,7 +8,7 @@ extern "C" void AST_MoveGrids(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTSX_AST_MoveGrids;
   DECLARE_CCTK_PARAMETERS;
 
-  if (cctk_iteration%move_every==0) {
+  if (move_every != 0 && cctk_iteration != 0 && cctk_iteration % move_every==0) {
     MoveGridsHelper(CCTK_PASS_CTOC);
   }
   else {
@@ -31,7 +31,7 @@ void MoveGridsHelper(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
 
   using namespace MoveGrids;
-  
+
   // Region 1
   position_x[0] = *xbh1;
   position_y[0] = *ybh1;

@@ -39,8 +39,6 @@ if (set_positions){
      WRITES: BH_PN_Trajectories
    } "Copy BH positions"
 
-   if (move_every>0){
-
      SCHEDULE AST_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
      {
        LANG: C
@@ -49,8 +47,6 @@ if (set_positions){
        READS: BoxInBox::positions
        WRITES: BoxInBox::positions
      } "Change grid based on BH position"
-
-   }
 
    if (resize_every>0){
 

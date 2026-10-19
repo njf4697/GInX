@@ -129,7 +129,13 @@ extern "C" void AnalyticalSpacetimeX_SetMetric(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
 
+  fprintf(stderr, "%i\n", cctk_iteration);
+
   /* Check whether we evolve the metric at this iteration*/
+  if (evolve_metric_every == 0 && cctk_iteration != 0) {
+    return;
+  }
+
   if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every != 0)) {
     return;
   }
@@ -154,6 +160,8 @@ template <typename GetMetricFunc>
 void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const double tt) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
+
+  CCTK_VINFO("Setting metric to time %f", tt);
 
   double *bbh_traj_p1 =
       (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));

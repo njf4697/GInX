@@ -160,7 +160,7 @@ CCTK_HOST CCTK_ATTRIBUTE_ALWAYS_INLINE inline int find_traj_t(double tt, double 
     int idx = iv + NTABLES * idt;
     int idxp = iv + NTABLES * (idt + 1);
 
-    if (iv == 0) {
+    if (iv == 1) {
       fprintf(stderr, "%f, %f, %f, %f, %f", tt, t_tab[idt], t_tab[idt+1], alltables[idx], alltables[idxp]);
     }
 

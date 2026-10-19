@@ -159,11 +159,6 @@ CCTK_HOST CCTK_ATTRIBUTE_ALWAYS_INLINE inline int find_traj_t(double tt, double 
   for (int iv = 0; iv < NTABLES; iv++) {
     int idx = iv + NTABLES * idt;
     int idxp = iv + NTABLES * (idt + 1);
-
-    if (iv == 1) {
-      fprintf(stderr, "%f, %f, %f, %f, %f, %f\n", tt, t_tab[idt], t_tab[idt+1], alltables[idx], alltables[idxp], interpolateLin(idx, idxp, idt, tt, t_tab, alltables));
-    }
-
     traj_array[iv] = interpolateLin(idx, idxp, idt, tt, t_tab, alltables);
   }
 

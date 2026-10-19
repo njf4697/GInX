@@ -18,7 +18,7 @@ extern "C" void AST_SetPositions(CCTK_ARGUMENTS) {
 
   if ((move_every == 0 && cctk_iteration == 0) || (move_every > 0 && cctk_iteration % move_every == 0)) {
     fprintf(stderr, "update traj\n");
-    SetPositionsHelper(CCTK_PASS_CTOC, cctk_time + AST_t0);
+    SetPositionsHelper(CCTK_PASS_CTOC, cctk_time);
   }
 }
 

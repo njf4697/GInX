@@ -159,15 +159,14 @@ void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const 
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
 
-  CCTK_VINFO("Setting metric to time %f", tt);
-
+  
   double *bbh_traj_p1 =
-      (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
+  (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
   double *bbh_traj_0 =
-      (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
+  (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
   double *bbh_traj_m1 =
-      (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
-
+  (double *)amrex::The_Managed_Arena()->alloc(NTABLES * sizeof(double));
+  
   /* Whether we load traj from a table or we compute analytical trajectories */
   if (traj_read_table) {
     find_traj_t(tt + h, bbh_traj_p1);
@@ -178,6 +177,8 @@ void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const 
     calc_traj(CCTK_PASS_CTOC, tt, bbh_traj_0);
     calc_traj(CCTK_PASS_CTOC, tt - h, bbh_traj_m1);
   }
+  
+  CCTK_VINFO("Setting metric to time %f, positions (%f, %f, %f), (%f, %f, %f)", tt, bbh_traj_0[0], bbh_traj_0[1], bbh_traj_0[2], bbh_traj_0[3], bbh_traj_0[4], bbh_traj_0[5]);
 
   const auto numerical_4metric =
       [=] CCTK_DEVICE(const double h, const double *xx,

@@ -129,8 +129,6 @@ extern "C" void AnalyticalSpacetimeX_SetMetric(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTSX_AnalyticalSpacetimeX_SetMetric;
 
-  fprintf(stderr, "%i\n", cctk_iteration);
-
   /* Check whether we evolve the metric at this iteration*/
   if (evolve_metric_every == 0 && cctk_iteration != 0) {
     return;

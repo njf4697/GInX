@@ -47,7 +47,7 @@ void SetPositionsHelper(CCTK_ARGUMENTS, const double time) {
 
 //  fprintf(stderr, "test1");
 
-  const bool print_traj = cctk_iteration%traj_print_every == 0 && traj_print_every > 0;
+  const bool print_traj = traj_print_every > 0 && cctk_iteration%traj_print_every == 0;
 
 //  fprintf(stderr, "test2");
 

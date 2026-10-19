@@ -32,6 +32,8 @@ void MoveGridsHelper(CCTK_ARGUMENTS)
 
   using namespace MoveGrids;
 
+  CCTK_VINFO("Moving grids to (%f, %f, %f) and (%f, %f, %f)", *xbh1, *ybh1, *zbh1, *xbh2, *ybh2, *zbh2);
+
   // Region 1
   position_x[0] = *xbh1;
   position_y[0] = *ybh1;

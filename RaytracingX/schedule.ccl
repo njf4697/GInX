@@ -143,6 +143,8 @@ SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redis
     WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric to cctk_time+dt"
 
+if {reset_metric} {
+
 SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
   {
     LANG: C
@@ -153,7 +155,22 @@ SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+  } "set metric to cctk_time"
+}
+
+SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek4
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "reset metric to cctk_time"
+}
+
 }
 
 if (calculate_kerr_conserved_quantities) {

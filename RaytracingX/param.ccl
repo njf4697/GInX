@@ -11,6 +11,10 @@ BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true
 
+BOOLEAN reset_metric "Resets metric after changing"  STEERABLE=ALWAYS
+{
+} true
+
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any real number"

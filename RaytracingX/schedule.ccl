@@ -169,8 +169,7 @@ SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContai
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "reset metric to cctk_time"
-
-
+}
 }
 
 if (calculate_kerr_conserved_quantities) {

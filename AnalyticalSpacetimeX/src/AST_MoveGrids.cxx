@@ -16,9 +16,9 @@ extern "C" void AST_MoveGrids(CCTK_ARGUMENTS) {
 
     for (int i = 0; i < max_num_regions; i++) {
 
-        position_x[i] = position_x[i] + 0.25*CCTK_DELTA_SPACE[0];
-        position_y[i] = position_y[i] + 0.25*CCTK_DELTA_SPACE[1];
-        position_z[i] = position_z[i] + 0.25*CCTK_DELTA_SPACE[2];
+        position_x[i] = position_x[i] + 0.25*CCTK_DELTA_SPACE(0);
+        position_y[i] = position_y[i] + 0.25*CCTK_DELTA_SPACE(1);
+        position_z[i] = position_z[i] + 0.25*CCTK_DELTA_SPACE(2);
 
       }
   }

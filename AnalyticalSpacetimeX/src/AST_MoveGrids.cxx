@@ -35,14 +35,14 @@ void MoveGridsHelper(CCTK_ARGUMENTS)
   CCTK_VINFO("Moving grids to (%f, %f, %f) and (%f, %f, %f)", *xbh1, *ybh1, *zbh1, *xbh2, *ybh2, *zbh2);
 
   // Region 1
-  position_x[0] = *xbh1 + 0.25*CCTK_DELTA_TIME;
-  position_y[0] = *ybh1 + 0.25*CCTK_DELTA_TIME;
-  position_z[0] = *zbh1 + 0.25*CCTK_DELTA_TIME;
+  position_x[0] = *xbh1;
+  position_y[0] = *ybh1;
+  position_z[0] = *zbh1;
 
   // Region 2
-  position_x[1] = *xbh2 + 0.25*CCTK_DELTA_TIME;
-  position_y[1] = *ybh2 + 0.25*CCTK_DELTA_TIME;
-  position_z[1] = *zbh2 + 0.25*CCTK_DELTA_TIME;
+  position_x[1] = *xbh2;
+  position_y[1] = *ybh2;
+  position_z[1] = *zbh2;
 
   // Region 3 is not moved
   position_x[2] = position_x[2];

@@ -119,7 +119,7 @@ SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
   WRITES: BoxInBox::positions
 } "Change grid based on BH position"
 
-SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_k1 BEFORE R_ParticlesContainer_evolvek2
+SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1 BEFORE R_ParticlesContainer_evolvek2
   {
     LANG: C
     OPTIONS: LOCAL
@@ -131,7 +131,7 @@ SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_
     WRITES: AsterMasks::aster_mask_vc(everywhere)
   } "change metric to cctk_time+0.5*dt"
 
-SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_k3 BEFORE R_ParticlesContainer_evolvek4
+SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3 BEFORE R_ParticlesContainer_evolvek4
   {
     LANG: C
     OPTIONS: LOCAL

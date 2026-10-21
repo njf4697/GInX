@@ -32,7 +32,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
 #      OPTIONS: global
 #  } "check particle bounds"
 
-SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
   {
     LANG: C
     OPTIONS: global

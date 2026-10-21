@@ -161,6 +161,23 @@ extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
   }
 }
 
+extern "C" void R_ParticlesContainer_redistribute_initial(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  CCTK_Barrier(cctkGH);
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    pc->Redistribute();
+  }
+
+  CCTK_Barrier(cctkGH);
+}
+
 /**
  * \brief Evolve the geodesics
  *

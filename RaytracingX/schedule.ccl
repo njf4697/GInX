@@ -103,21 +103,21 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
 if (!fast_light)
 {
 
-SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
-{
-  LANG: C
-  OPTIONS: global
-  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
-} "Copy BH positions"
+#SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
+#{
+#  LANG: C
+#  OPTIONS: global
+#  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
+#} "Copy BH positions"
 
-SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
-{
-  LANG: C
-  OPTIONS: global
-  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: BoxInBox::positions
-  WRITES: BoxInBox::positions
-} "Change grid based on BH position"
+#SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+#{
+#  LANG: C
+#  OPTIONS: global
+#  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
+#  READS: BoxInBox::positions
+#  WRITES: BoxInBox::positions
+#} "Change grid based on BH position"
 
 SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1 BEFORE R_ParticlesContainer_evolvek2
   {

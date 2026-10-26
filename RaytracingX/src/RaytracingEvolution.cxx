@@ -82,8 +82,17 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   ghost_size = MAX(MAX(gh[0], gh[1]), gh[2]);
   
   int type = 0;
-  const auto plo0 = {CCTK_ParameterGet("xmin", "CarpetX", &type), CCTK_ParameterGet("ymin", "CarpetX", &type), CCTK_ParameterGet("zmin", "CarpetX", &type)};
-  const auto phi0 = {CCTK_ParameterGet("xmax", "CarpetX", &type), CCTK_ParameterGet("ymax", "CarpetX", &type), CCTK_ParameterGet("zmax", "CarpetX", &type)};
+
+  const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("xmin", "CarpetX", &type));
+  const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("ymin", "CarpetX", &type));
+  const CCTK_REAL zmin = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("zmin", "CarpetX", &type));
+
+  const CCTK_REAL xmax = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("xmax", "CarpetX", &type));
+  const CCTK_REAL ymax = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("ymax", "CarpetX", &type));
+  const CCTK_REAL zmax = *static_cast<const CCTK_REAL *>(CCTK_ParameterGet("zmax", "CarpetX", &type));
+  
+  const auto plo0 = {xmin, ymin, zmin};
+  const auto phi0 = {xmax, ymax, zmax};
 
   bool camera_oob = false;
   for (int d = 0; d < 3; d++) {

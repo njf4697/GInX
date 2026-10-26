@@ -97,7 +97,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
+  { 
+    const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
     if (r_photons.size() < CarpetX::ghext->num_patches())
     {
       r_photons.push_back(std::make_unique<PC>(patchdata.amrcore.get()));

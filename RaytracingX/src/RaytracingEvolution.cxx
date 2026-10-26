@@ -97,8 +97,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   const void *ptr5 = CCTK_ParameterGet("zmax", "CarpetX", &type);
   const CCTK_REAL zmax = *static_cast<const CCTK_REAL *>(ptr5);
   
-  const auto plo0 = {xmin, ymin, zmin};
-  const auto phi0 = {xmax, ymax, zmax};
+  const CCTK_REAL plo0[3] = {xmin, ymin, zmin};
+  const CCTK_REAL phi0[3] = {xmax, ymax, zmax};
 
   bool camera_oob = false;
   for (int d = 0; d < 3; d++) {

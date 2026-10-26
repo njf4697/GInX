@@ -102,12 +102,12 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 
     const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
     const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
+    const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
 
     bool camera_oob = false;
     for (int d = 0; d < 3; d++) {
-      fprintf(stderr, "%f %f %f\n", camera_pos[d], phi0[d], cctk_delta_space[d]);
-      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*cctk_delta_space[d];
-      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*cctk_delta_space[d];
+      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx[0][d];
+      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx[0][d];
     }
 
     if (camera_oob) {

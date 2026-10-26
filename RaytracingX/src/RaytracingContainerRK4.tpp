@@ -271,8 +271,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt,
-    const int ghost_size)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -387,8 +386,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt,
-    const int ghost_size)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -520,8 +518,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt,
-    const int ghost_size)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -653,8 +650,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt,
-    const int ghost_size)
+    const CCTK_REAL dt)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -798,25 +794,24 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
     const amrex::GpuArray<double, 3> &dx,
     amrex::Array4<CCTK_REAL const> const &lapse_array,
     CCTK_REAL max_energy,
-    const amrex::GpuArray<double, 3> &dx0,
-    const int ghost_size)
+    const amrex::GpuArray<double, 3> &dx0)
 {
-    if (u[Uidx::x] > phi[0] - (ghost_size + 3)*dx0[0]) {
+    if (u[Uidx::x] > phi[0] - 3*dx0[0]) {
         return DelReason::XHI;
     }
-    if (u[Uidx::x] < plo[0] + (ghost_size + 3)*dx0[0]) {
+    if (u[Uidx::x] < plo[0] + 3*dx0[0]) {
         return DelReason::XLO;
     }
-    if (u[Uidx::y] > phi[1] - (ghost_size + 3)*dx0[1]) {
+    if (u[Uidx::y] > phi[1] - 3*dx0[1]) {
         return DelReason::YHI;
     }
-    if (u[Uidx::y] < plo[1] + (ghost_size + 3)*dx0[1]) {
+    if (u[Uidx::y] < plo[1] + 3*dx0[1]) {
         return DelReason::YLO;
     }
-    if (u[Uidx::z] > phi[2] - (ghost_size + 3)*dx0[2]) {
+    if (u[Uidx::z] > phi[2] - 3*dx0[2]) {
         return DelReason::ZHI;
     }
-    if (u[Uidx::z] < plo[2] + (ghost_size + 3)*dx0[2]) {
+    if (u[Uidx::z] < plo[2] + 3*dx0[2]) {
         return DelReason::ZLO;
     }
     if (u[Uidx::tau] >= 1.0) {

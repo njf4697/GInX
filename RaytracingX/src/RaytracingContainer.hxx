@@ -158,7 +158,8 @@ namespace RaytracingX
             const CCTK_REAL &global_time,
             const int &lev,
             const CCTK_REAL max_energy,
-            const CCTK_REAL dt);
+            const CCTK_REAL dt
+            const int ghost_size);
 
         void evolve_k2(
             const int iteration,
@@ -170,7 +171,8 @@ namespace RaytracingX
             const CCTK_REAL &global_time,
             const int &lev,
             const CCTK_REAL max_energy,
-            const CCTK_REAL dt);
+            const CCTK_REAL dt,
+            const int ghost_size);
 
         void evolve_k3(
             const int iteration,
@@ -182,7 +184,8 @@ namespace RaytracingX
             const CCTK_REAL &global_time,
             const int &lev,
             const CCTK_REAL max_energy,
-            const CCTK_REAL dt);
+            const CCTK_REAL dt,
+            const int ghost_size);
 
         void evolve_k4(
             const int iteration,
@@ -194,7 +197,8 @@ namespace RaytracingX
             const CCTK_REAL &global_time,
             const int &lev,
             const CCTK_REAL max_energy,
-            const CCTK_REAL dt);
+            const CCTK_REAL dt,
+            const int ghost_size);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_bounds(
@@ -203,7 +207,9 @@ namespace RaytracingX
             const amrex::GpuArray<double, 3> &phi,
             const amrex::GpuArray<double, 3> &dx,
             amrex::Array4<CCTK_REAL const> const &lapse_array,
-            CCTK_REAL max_energy);
+            CCTK_REAL max_energy,
+            const amrex::GpuArray<double, 3> &dx0,
+            const int ghost_size);
         
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
         CCTK_REAL check_validity(

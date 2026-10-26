@@ -105,6 +105,9 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     camera_oob = camera_oob && camera_pos[d] > phi0[d] - 3*cctk_delta_space[d];
     camera_oob = camera_oob && camera_pos[d] < plo0[d] + 3*cctk_delta_space[d];
   }
+
+  CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
+
   if (camera_oob) {
     CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
   }

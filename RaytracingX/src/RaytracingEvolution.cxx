@@ -90,6 +90,11 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
         return;
     }
 
+  if (type != PARAMETER_REAL) {
+        CCTK_VWARN(0, "CarpetX::xmin is not a REAL parameter");
+        return;
+    }
+
   const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(ptr0);
   const void *ptr1 = CCTK_ParameterGet("ymin", "CarpetX", &type);
   const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(ptr1);

@@ -100,8 +100,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   {
     const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
 
-    const auto plo0 = = patchdata.amrcore->Geom(0).ProbLoArray();
-    const auto phi0 = = patchdata.amrcore->Geom(0).ProbHiArray();
+    const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
+    const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
 
     bool camera_oob = false;
     for (int d = 0; d < 3; d++) {

@@ -26,7 +26,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEFORE CheckRaytracingParticleNumber
+SCHEDULE R_CheckCamera IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
   {
       LANG: C
       OPTIONS: global

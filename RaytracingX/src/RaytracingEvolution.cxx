@@ -184,8 +184,6 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (cctk_iteration != 1) { return; }
-
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
@@ -202,7 +200,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     }
 
     if (camera_oob) {
-      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
+      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*dx0[0], plo0[1] + 3*dx0[1], plo0[2] + 3*dx0[2], phi0[0] - 3*dx0[0], phi0[1] - 3*dx0[1], phi0[2] - 3*dx0[2]);
     }
   }
 }

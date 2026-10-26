@@ -27,7 +27,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
   } "count particles"
 
 if (cctk_iteration == 1) {
-  SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEORE CheckRaytracingParticleNumber
+  SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEFORE CheckRaytracingParticleNumber
     {
         LANG: C
         OPTIONS: global

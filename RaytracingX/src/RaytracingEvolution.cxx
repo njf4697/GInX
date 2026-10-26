@@ -83,19 +83,19 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   
   int type = 0;
   
-  const void *ptr = CCTK_ParameterGet("xmin", "CarpetX", &type);
-  const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(ptr);
-  const void *ptr = CCTK_ParameterGet("ymin", "CarpetX", &type);
-  const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(ptr);
-  const void *ptr = CCTK_ParameterGet("zmin", "CarpetX", &type);
-  const CCTK_REAL zmin = *static_cast<const CCTK_REAL *>(ptr);
+  const void *ptr0 = CCTK_ParameterGet("xmin", "CarpetX", &type);
+  const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(ptr0);
+  const void *ptr1 = CCTK_ParameterGet("ymin", "CarpetX", &type);
+  const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(ptr1);
+  const void *ptr2 = CCTK_ParameterGet("zmin", "CarpetX", &type);
+  const CCTK_REAL zmin = *static_cast<const CCTK_REAL *>(ptr2);
 
-  const void *ptr = CCTK_ParameterGet("xmax", "CarpetX", &type);
-  const CCTK_REAL xmax = *static_cast<const CCTK_REAL *>(ptr);
-  const void *ptr = CCTK_ParameterGet("ymax", "CarpetX", &type);
-  const CCTK_REAL ymax = *static_cast<const CCTK_REAL *>(ptr);
-  const void *ptr = CCTK_ParameterGet("zmax", "CarpetX", &type);
-  const CCTK_REAL zmax = *static_cast<const CCTK_REAL *>(ptr);
+  const void *ptr3 = CCTK_ParameterGet("xmax", "CarpetX", &type);
+  const CCTK_REAL xmax = *static_cast<const CCTK_REAL *>(ptr3);
+  const void *ptr4 = CCTK_ParameterGet("ymax", "CarpetX", &type);
+  const CCTK_REAL ymax = *static_cast<const CCTK_REAL *>(ptr4);
+  const void *ptr5 = CCTK_ParameterGet("zmax", "CarpetX", &type);
+  const CCTK_REAL zmax = *static_cast<const CCTK_REAL *>(ptr5);
   
   const auto plo0 = {xmin, ymin, zmin};
   const auto phi0 = {xmax, ymax, zmax};

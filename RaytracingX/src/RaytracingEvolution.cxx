@@ -80,6 +80,18 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
   ghost_size = MAX(MAX(gh[0], gh[1]), gh[2]);
+
+  const auto plo0 = = patchdata.amrcore->Geom(0).ProbLoArray();
+  const auto phi0 = = patchdata.amrcore->Geom(0).ProbHiArray();
+
+  bool camera_oob = false;
+  for (int d = 0; d < 3; d++) {
+    camera_oob = camera_oob && camera_pos[d] > phi[d] - 3*cctk_delta_space[d];
+    camera_oob = camera_oob && camera_pos[d] < plo[d] + 3*cctk_delta_space[d];
+  }
+  if (camera_oob) {
+    CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo[d0] + 3*cctk_delta_space[0], plo[1] + 3*cctk_delta_space[1], plo[2] + 3*cctk_delta_space[2], phi[0] - 3*cctk_delta_space[0], phi[1] - 3*cctk_delta_space[1], phi[2] - 3*cctk_delta_space[2]);
+  }
   
   //Metric m;
   //interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 0.062791, 0.000061, -13.703892);

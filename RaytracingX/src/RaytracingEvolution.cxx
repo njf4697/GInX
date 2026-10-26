@@ -84,6 +84,12 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   int type = 0;
   
   const void *ptr0 = CCTK_ParameterGet("xmin", "CarpetX", &type);
+
+  if (ptr0 == nullptr) {
+        CCTK_VWARN(0, "Could not find parameter CarpetX::xmin");
+        return;
+    }
+
   const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(ptr0);
   const void *ptr1 = CCTK_ParameterGet("ymin", "CarpetX", &type);
   const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(ptr1);

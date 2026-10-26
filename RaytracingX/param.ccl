@@ -3,6 +3,10 @@
 
 private:
 
+BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
+{
+} true
+
 BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true

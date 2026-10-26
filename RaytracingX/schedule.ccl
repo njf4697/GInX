@@ -26,13 +26,11 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-if (cctk_iteration == 1) {
-  SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEFORE CheckRaytracingParticleNumber
-    {
-        LANG: C
-        OPTIONS: global
-    } "print the particles"
-}
+SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEFORE CheckRaytracingParticleNumber
+  {
+      LANG: C
+      OPTIONS: global
+  } "print the particles"
 
 #SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
 #  {

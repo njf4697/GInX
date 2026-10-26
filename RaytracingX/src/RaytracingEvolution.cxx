@@ -182,7 +182,9 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
 { 
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
-  
+
+  if (cctk_iteration != 1) { return; }
+
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     const auto &patchdata = CarpetX::ghext->patchdata.at(patch);

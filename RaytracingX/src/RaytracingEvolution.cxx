@@ -79,49 +79,6 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     gh,
     "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
-  ghost_size = MAX(MAX(gh[0], gh[1]), gh[2]);
-  
-  int type = 0;
-  
-  const void *ptr0 = CCTK_ParameterGet("xmin", "CarpetX", &type);
-
-  if (ptr0 == nullptr) {
-        CCTK_VWARN(0, "Could not find parameter CarpetX::xmin");
-        return;
-    }
-
-  if (type != PARAMETER_REAL) {
-        CCTK_VWARN(0, "CarpetX::xmin is not a REAL parameter");
-        return;
-    }
-
-  const CCTK_REAL xmin = *static_cast<const CCTK_REAL *>(ptr0);
-  const void *ptr1 = CCTK_ParameterGet("ymin", "CarpetX", &type);
-  const CCTK_REAL ymin = *static_cast<const CCTK_REAL *>(ptr1);
-  const void *ptr2 = CCTK_ParameterGet("zmin", "CarpetX", &type);
-  const CCTK_REAL zmin = *static_cast<const CCTK_REAL *>(ptr2);
-
-  const void *ptr3 = CCTK_ParameterGet("xmax", "CarpetX", &type);
-  const CCTK_REAL xmax = *static_cast<const CCTK_REAL *>(ptr3);
-  const void *ptr4 = CCTK_ParameterGet("ymax", "CarpetX", &type);
-  const CCTK_REAL ymax = *static_cast<const CCTK_REAL *>(ptr4);
-  const void *ptr5 = CCTK_ParameterGet("zmax", "CarpetX", &type);
-  const CCTK_REAL zmax = *static_cast<const CCTK_REAL *>(ptr5);
-  
-  const CCTK_REAL plo0[3] = {xmin, ymin, zmin};
-  const CCTK_REAL phi0[3] = {xmax, ymax, zmax};
-
-  bool camera_oob = false;
-  for (int d = 0; d < 3; d++) {
-    camera_oob = camera_oob && camera_pos[d] > phi0[d] - 3*cctk_delta_space[d];
-    camera_oob = camera_oob && camera_pos[d] < plo0[d] + 3*cctk_delta_space[d];
-  }
-
-  CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
-
-  if (camera_oob) {
-    CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
-  }
   
   //Metric m;
   //interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 0.062791, 0.000061, -13.703892);
@@ -142,6 +99,20 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
+
+    const auto plo0 = = patchdata.amrcore->Geom(0).ProbLoArray();
+    const auto phi0 = = patchdata.amrcore->Geom(0).ProbHiArray();
+
+    bool camera_oob = false;
+    for (int d = 0; d < 3; d++) {
+      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*cctk_delta_space[d];
+      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*cctk_delta_space[d];
+    }
+
+    if (camera_oob) {
+      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
+    }
+
     if (r_photons.size() < CarpetX::ghext->num_patches())
     {
       r_photons.push_back(std::make_unique<PC>(patchdata.amrcore.get()));

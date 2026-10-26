@@ -802,7 +802,7 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
     const int ghost_size)
 {
     if (u[Uidx::x] > phi[0] - (ghost_size + 3)*dx0[0]) {
-        fprintf(stderr, "%f, %f, %f", u[Uidx::x], phi[0], ghost_size, dx0[0]);
+        fprintf(stderr, "%f, %f, %f, %f\n", u[Uidx::x], phi[0], ghost_size, dx0[0]);
         return DelReason::XHI;
     }
     if (u[Uidx::x] < plo[0] + (ghost_size + 3)*dx0[0]) {

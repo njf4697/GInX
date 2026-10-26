@@ -106,8 +106,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 
     bool camera_oob = false;
     for (int d = 0; d < 3; d++) {
-      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx[0][d];
-      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx[0][d];
+      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx0[d];
+      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx0[d];
     }
 
     if (camera_oob) {

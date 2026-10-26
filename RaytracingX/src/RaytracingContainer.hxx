@@ -158,7 +158,7 @@ namespace RaytracingX
             const CCTK_REAL &global_time,
             const int &lev,
             const CCTK_REAL max_energy,
-            const CCTK_REAL dt
+            const CCTK_REAL dt,
             const int ghost_size);
 
         void evolve_k2(

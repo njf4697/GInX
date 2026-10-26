@@ -98,22 +98,6 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
-    const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
-
-    const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
-    const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
-    const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
-
-    bool camera_oob = false;
-    for (int d = 0; d < 3; d++) {
-      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx0[d];
-      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx0[d];
-    }
-
-    if (camera_oob) {
-      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
-    }
-
     if (r_photons.size() < CarpetX::ghext->num_patches())
     {
       r_photons.push_back(std::make_unique<PC>(patchdata.amrcore.get()));
@@ -192,6 +176,31 @@ extern "C" void R_ParticlesContainer_redistribute_initial(CCTK_ARGUMENTS)
   }
 
   CCTK_Barrier(cctkGH);
+}
+
+extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
+{ 
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+  
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
+
+    const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
+    const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
+    const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
+
+    bool camera_oob = false;
+    for (int d = 0; d < 3; d++) {
+      camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx0[d];
+      camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx0[d];
+    }
+
+    if (camera_oob) {
+      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", plo0[0] + 3*cctk_delta_space[0], plo0[1] + 3*cctk_delta_space[1], plo0[2] + 3*cctk_delta_space[2], phi0[0] - 3*cctk_delta_space[0], phi0[1] - 3*cctk_delta_space[1], phi0[2] - 3*cctk_delta_space[2]);
+    }
+  }
 }
 
 /**

@@ -3,7 +3,7 @@
 
 if (do_raytracing) {
 
-SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTPOSTINITIAL {
+SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTINITIAL {
     LANG: C
     OPTIONS: global
 } "setup"
@@ -25,6 +25,14 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     LANG: C
     OPTIONS: global
   } "count particles"
+
+if (cctk_iteration == 1) {
+  SCHEDULE R_CheckCamera IN RAYTRACING_EVOL BEORE CheckRaytracingParticleNumber
+    {
+        LANG: C
+        OPTIONS: global
+    } "print the particles"
+}
 
 #SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
 #  {

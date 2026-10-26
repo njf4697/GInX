@@ -81,8 +81,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
   ghost_size = MAX(MAX(gh[0], gh[1]), gh[2]);
 
-  const auto plo0 = = patchdata.amrcore->Geom(0).ProbLoArray();
-  const auto phi0 = = patchdata.amrcore->Geom(0).ProbHiArray();
+  const auto plo0 = amrcore->Geom(0).ProbLoArray();
+  const auto phi0 = amrcore->Geom(0).ProbHiArray();
 
   bool camera_oob = false;
   for (int d = 0; d < 3; d++) {

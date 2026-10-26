@@ -81,8 +81,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
   ghost_size = MAX(MAX(gh[0], gh[1]), gh[2]);
 
-  const auto plo0 = {xmin, ymin, zmin};
-  const auto phi0 = {xmax, ymax, zmax};
+  const auto plo0 = {CCTK_ParameterGet("xmin", "CarpetX", CCTK_REAL), CCTK_ParameterGet("ymin", "CarpetX", CCTK_REAL), CCTK_ParameterGet("zmin", "CarpetX", CCTK_REAL)};
+  const auto phi0 = {CCTK_ParameterGet("xmax", "CarpetX", CCTK_REAL), CCTK_ParameterGet("ymax", "CarpetX", CCTK_REAL), CCTK_ParameterGet("zmax", "CarpetX", CCTK_REAL)};
 
   bool camera_oob = false;
   for (int d = 0; d < 3; d++) {

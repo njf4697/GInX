@@ -3,40 +3,6 @@
 
 private:
 
-BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
-{
-} true
-
-CCTK_REAL photon_lower_bound_x "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
-CCTK_REAL photon_lower_bound_y "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
-CCTK_REAL photon_lower_bound_z "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
-CCTK_REAL photon_upper_bound_x "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
-CCTK_REAL photon_upper_bound_y "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
-CCTK_REAL photon_upper_bound_z "Boundary to terminate photons at" STEERABLE=ALWAYS
-{
-    *:* :: "Any real number"
-}
-
 BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true

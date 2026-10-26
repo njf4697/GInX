@@ -194,7 +194,6 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
 
     bool camera_oob = false;
     for (int d = 0; d < 3; d++) {
-      fprintf(stderr, "%f, %f, %f\n", camera_pos[d], phi0[d], 3*dx0[d]);
       camera_oob = camera_oob || camera_pos[d] > phi0[d] - 3*dx0[d];
       camera_oob = camera_oob || camera_pos[d] < plo0[d] + 3*dx0[d];
     }

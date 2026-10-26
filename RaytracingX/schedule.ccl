@@ -3,7 +3,7 @@
 
 if (do_raytracing) {
 
-SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTINITIAL {
+SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTPOSTINITIAL {
     LANG: C
     OPTIONS: global
 } "setup"

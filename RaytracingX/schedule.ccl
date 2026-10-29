@@ -32,11 +32,17 @@ SCHEDULE R_CheckCamera IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
       OPTIONS: global
   } "print the particles"
 
-#SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
-#  {
-#      LANG: C
-#      OPTIONS: global
-#  } "check particle bounds"
+SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN CCTK_POSTINITIAL AFTER R_CheckCamera
+  {
+      LANG: C
+      OPTIONS: global
+  } "check particle bounds"
+
+  SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_initial
+  {
+      LANG: C
+      OPTIONS: global
+  } "check particle bounds"
 
 SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
   {
@@ -44,7 +50,7 @@ SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER Chec
     OPTIONS: global
   } "redistribute particles"
 
-SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_initial
+SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
   {
     LANG: C
     OPTIONS: global

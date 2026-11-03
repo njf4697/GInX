@@ -54,8 +54,8 @@
 #ifndef RAYTRACING_INITIALIZERS
 #define RAYTRACING_INITIALIZERS
 
-template <typename StructType>
-void fill_photon_data_standard_camera(amrex::ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
+template <typename StructType, typename ParticleTile>
+void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -131,8 +131,8 @@ void fill_photon_data_standard_camera(amrex::ParticleTile& particle_tile, const 
   }
 }
 
-template <typename StructType>
-void fill_photon_data_camera_out_of_grid(amrex::ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
+template <typename StructType, typename ParticleTile>
+void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -291,10 +291,10 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     { 
       const CCTK_INT next_id = ParticleContainerClass::ParticleType::NextID();
       if (camera_out_of_grid) {
-        fill_photon_data_camera_out_of_grid(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
+        fill_photon_data_camera_out_of_grid<StructType>(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
       else {
-        fill_photon_data_standard_camera(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
+        fill_photon_data_standard_camera<StructType>(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
     }
     current_tile++;

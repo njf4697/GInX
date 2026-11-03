@@ -290,10 +290,10 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     for (int local_particle_id = 0; local_particle_id < particles_per_tile; ++local_particle_id)
     { 
       if (camera_out_of_grid) {
-        fill_photon_data_camera_out_of_grid(ptd, local_particle_id, int_params, real_params, local_offset);
+        fill_photon_data_camera_out_of_grid(particle_tile, local_particle_id, int_params, real_params, local_offset);
       }
       else {
-        fill_photon_data_standard_camera(ptd, local_particle_id, int_params, real_params, local_offset);
+        fill_photon_data_standard_camera(particle_tile, local_particle_id, int_params, real_params, local_offset);
       }
     }
     current_tile++;

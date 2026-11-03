@@ -241,6 +241,7 @@ namespace RaytracingX
             const int level);
 
         int num_particles_out_of_bounds(
+            const int &lev,
             const PhotonBounds &bounds);
         
         void redistribute_particles()

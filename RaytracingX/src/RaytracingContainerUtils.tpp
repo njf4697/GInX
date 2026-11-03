@@ -134,7 +134,8 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
     write_to_one_file(final_data_file_name, output_str);
 }
 
-long num_particles_out_of_bounds(const int &lev, PhotonBounds& bounds) {
+template <typename StructType>
+long RaytracingParticlesContainer<StructType>::num_particles_out_of_bounds(const int &lev, PhotonBounds& bounds) {
 
     int np_oob = 0.0;
 

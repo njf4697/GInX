@@ -99,9 +99,10 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   //RaytracingX: Passes camera information into arrays that can be used by the initialization funciton.
   CCTK_INT int_params[4];
   CCTK_REAL real_params[39];
-  *RX_t0 = camera_out_of_grid ? get_starting_time(CCTK_PASS_CTOC) : 0.0;
-  setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds, *RX_t0);
+  setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
+  *RX_t0 = camera_out_of_grid ? get_starting_time(CCTK_PASS_CTOC, int_params, real_params, camera_out_of_grid, grid_bounds) : 0.0;
+  real_params[38] = *RX_t0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   { 
@@ -199,19 +200,19 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
     const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
 
-    grid_bounds.xmin = plo0[0] + 3*dx0[0];
-    grid_bounds.ymin = plo0[1] + 3*dx0[1];
-    grid_bounds.zmin = plo0[2] + 3*dx0[2];
-    grid_bounds.xmax = phi0[0] - 3*dx0[0];
-    grid_bounds.ymax = phi0[1] - 3*dx0[1];
-    grid_bounds.zmax = phi0[2] - 3*dx0[2];
+    grid_bounds.xmin() = plo0[0] + 3*dx0[0];
+    grid_bounds.ymin() = plo0[1] + 3*dx0[1];
+    grid_bounds.zmin() = plo0[2] + 3*dx0[2];
+    grid_bounds.xmax() = phi0[0] - 3*dx0[0];
+    grid_bounds.ymax() = phi0[1] - 3*dx0[1];
+    grid_bounds.zmax() = phi0[2] - 3*dx0[2];
 
-    bounds.xmin = CCTK_ParameterSet("photon_xmin", "RaytracingX") ? MAX(grid_bounds.xmin, photon_xmin) : grid_bounds.xmin;
-    bounds.ymin = CCTK_ParameterSet("photon_ymin", "RaytracingX") ? MAX(grid_bounds.ymin, photon_ymin) : grid_bounds.ymin;
-    bounds.zmin = CCTK_ParameterSet("photon_zmin", "RaytracingX") ? MAX(grid_bounds.zmin, photon_zmin) : grid_bounds.zmin;
-    bounds.xmax = CCTK_ParameterSet("photon_xmax", "RaytracingX") ? MIN(grid_bounds.xmax, photon_xmax) : grid_bounds.xmax;
-    bounds.ymax = CCTK_ParameterSet("photon_ymax", "RaytracingX") ? MIN(grid_bounds.ymax, photon_ymax) : grid_bounds.ymax;
-    bounds.zmax = CCTK_ParameterSet("photon_zmax", "RaytracingX") ? MIN(grid_bounds.zmax, photon_zmax) : grid_bounds.zmax;
+    bounds.xmin = CCTK_ParameterSet("photon_xmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.xmin, photon_xmin) : grid_bounds.xmin;
+    bounds.ymin = CCTK_ParameterSet("photon_ymin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.ymin, photon_ymin) : grid_bounds.ymin;
+    bounds.zmin = CCTK_ParameterSet("photon_zmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.zmin, photon_zmin) : grid_bounds.zmin;
+    bounds.xmax = CCTK_ParameterSet("photon_xmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.xmax, photon_xmax) : grid_bounds.xmax;
+    bounds.ymax = CCTK_ParameterSet("photon_ymax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.ymax, photon_ymax) : grid_bounds.ymax;
+    bounds.zmax = CCTK_ParameterSet("photon_zmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.zmax, photon_zmax) : grid_bounds.zmax;
 
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 
@@ -219,7 +220,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
       CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
     }
     if (camera_out_of_grid && !camera_out_of_bounds) {
-      CCTK_VWARNING("Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
+      CCTK_VWARN("Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
   }
 }

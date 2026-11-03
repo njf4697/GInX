@@ -275,7 +275,7 @@ bool isOutOfBounds(const CCTK_REAL* pos, const CCTK_REAL* bounds_arr) {
 
 bool rayBoxIntersection(
     const CCTK_REAL* ray_origin,
-    const CCTK_REAL* ray_direction
+    const CCTK_REAL* ray_direction,
     const CCTK_REAL* bounds,
     CCTK_REAL& tmin,
     CCTK_REAL& tmax)

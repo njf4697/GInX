@@ -129,3 +129,33 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
 
     metric_at_point->fillInverseMetric(); //get g^{\mu\nu}
 } 
+
+void fillMetricFlat(CCTK_ARGUMENTS, Metric* metric_at_point) {
+    DECLARE_CCTK_ARGUMENTS
+    DECLARE_CCTK_PARAMETERS
+
+    if(verbose) {
+      CCTK_INFO("fillMetricFlat");
+    }
+
+    metric_at_point->alpha = 1.0;
+    metric_at_point->beta_xup = 0.0;
+    metric_at_point->beta_yup = 0.0;
+    metric_at_point->beta_zup = 0.0;
+    metric_at_point->g_xx = 1.0;
+    metric_at_point->g_xy = 0.0;
+    metric_at_point->g_xz = 0.0;
+    metric_at_point->g_yy = 1.0;
+    metric_at_point->g_yz = 0.0;
+    metric_at_point->g_zz = 1.0;
+
+    //\beta_i = \gamma_ij*\beta^j
+    metric_at_point->beta_x = 0.0;
+    metric_at_point->beta_y = 0.0;
+    metric_at_point->beta_z = 0.0;
+
+    //g_{tt}=\alpha^2-\beta_i\beta^i
+    metric_at_point->g_tt = -1.0; //g_{00}
+
+    metric_at_point->fillInverseMetric(); //get g^{\mu\nu}
+}

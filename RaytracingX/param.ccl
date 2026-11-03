@@ -15,6 +15,40 @@ BOOLEAN reset_metric "Resets metric after changing"  STEERABLE=ALWAYS
 {
 } true
 
+BOOLEAN extended_camera "Allows for camera initialization to be out of grid"  STEERABLE=ALWAYS
+{
+} false
+
+CCTK_REAL photon_xmin "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
+CCTK_REAL photon_xmax "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
+CCTK_REAL photon_ymin "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
+CCTK_REAL photon_ymax "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
+CCTK_REAL photon_zmin "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
+CCTK_REAL photon_zmax "Bounds for photon calculation" STEERABLE = ALWAYS
+{
+    *:* :: "Any real number"
+} 0.0
+
 CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = ALWAYS
 {
     (0.:* :: "Any positive real number"

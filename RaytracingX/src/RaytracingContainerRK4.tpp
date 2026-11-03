@@ -271,7 +271,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k1(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt)
+    const CCTK_REAL dt,
+    const PhotonBounds &bounds)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -386,7 +387,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt)
+    const CCTK_REAL dt,
+    const PhotonBounds &bounds)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -449,7 +451,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k2(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, dx0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, bounds);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -518,7 +520,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt)
+    const CCTK_REAL dt,
+    const PhotonBounds &bounds)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -581,7 +584,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k3(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + 0.5 * dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + 0.5 * dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, dx0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, bounds);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -650,7 +653,8 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
     const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
-    const CCTK_REAL dt)
+    const CCTK_REAL dt,
+    const PhotonBounds &bounds)
 {
 
     const auto plo0 = this->Geom(0).ProbLoArray();
@@ -713,7 +717,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::lnE] = U[Uidx::lnE] + dt * k[Uidx::lnE];
       U_tmp[Uidx::tau] = U[Uidx::tau] + dt * k[Uidx::tau]; //RaytracingX: Add optical depth.
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, dx0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, bounds);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -746,7 +750,7 @@ void RaytracingParticlesContainer<StructType>::evolve_k4(
       U_tmp[Uidx::lnE] = ln_energy[i];
       U_tmp[Uidx::tau] = tau[i];
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
-      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, dx0);
+      U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, bounds);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
@@ -794,24 +798,24 @@ CCTK_REAL RaytracingParticlesContainer<StructType>::check_bounds(
     const amrex::GpuArray<double, 3> &dx,
     amrex::Array4<CCTK_REAL const> const &lapse_array,
     CCTK_REAL max_energy,
-    const amrex::GpuArray<double, 3> &dx0)
+    const PhotonBounds &bounds)
 {
-    if (u[Uidx::x] > phi[0] - 3*dx0[0]) {
+    if (u[Uidx::x] > bounds.xmax()) {
         return DelReason::XHI;
     }
-    if (u[Uidx::x] < plo[0] + 3*dx0[0]) {
+    if (u[Uidx::x] < bounds.xmin()) {
         return DelReason::XLO;
     }
-    if (u[Uidx::y] > phi[1] - 3*dx0[1]) {
+    if (u[Uidx::y] > bounds.ymax()) {
         return DelReason::YHI;
     }
-    if (u[Uidx::y] < plo[1] + 3*dx0[1]) {
+    if (u[Uidx::y] < bounds.xmin()) {
         return DelReason::YLO;
     }
-    if (u[Uidx::z] > phi[2] - 3*dx0[2]) {
+    if (u[Uidx::z] > bounds.zmax()) {
         return DelReason::ZHI;
     }
-    if (u[Uidx::z] < plo[2] + 3*dx0[2]) {
+    if (u[Uidx::z] < bounds.xmin()) {
         return DelReason::ZLO;
     }
     if (u[Uidx::tau] >= 1.0) {

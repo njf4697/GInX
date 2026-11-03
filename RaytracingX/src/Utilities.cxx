@@ -267,3 +267,56 @@ void oneformToVectorSpatial(CCTK_REAL* V3_vector, const CCTK_REAL* V3_oneform, c
     V3_vector[2] = V3_oneform[0] * gamma_inv[G3_xz] + V3_oneform[1] * gamma_inv[G3_yz] + V3_oneform[2] * gamma_inv[G3_zz];
 }
 
+bool isOutOfBounds(const CCTK_REAL* pos, const CCTK_REAL* bounds_arr) {
+    return bounds_arr[0] > pos[0] || bounds_arr[1] < pos[0] ||
+           bounds_arr[2] > pos[1] || bounds_arr[3] < pos[1] ||
+           bounds_arr[4] > pos[2] || bounds_arr[5] < pos[2];
+}
+
+bool rayBoxIntersection(
+    const CCTK_REAL* ray_origin,
+    const CCTK_REAL* ray_direction
+    const CCTK_REAL* bounds,
+    CCTK_REAL& tmin,
+    CCTK_REAL& tmax)
+{
+    tmin = -INFINITY;
+    tmax = INFINITY;
+
+    for (int i = 0; i < 3; ++i) {
+
+        CCTK_REAL origin = ray_origin[i];
+        CCTK_REAL dir    = ray_direction[i];
+
+        CCTK_REAL bmin = bounds[2*i];
+        CCTK_REAL bmax = bounds[2*i + 1];
+
+        // Handle rays parallel to the slab.
+        if (dir == 0.0) {
+            if (origin < bmin || origin > bmax)
+                return false;
+
+            continue;
+        }
+
+        CCTK_REAL invDir = 1.0 / dir;
+
+        CCTK_REAL t1 = (bmin - origin) * invDir;
+        CCTK_REAL t2 = (bmax - origin) * invDir;
+
+        if (t1 > t2) {
+            CCTK_REAL temp = t1;
+            t1 = t2;
+            t2 = temp;
+        }
+
+        tmin = fmax(tmin, t1);
+        tmax = fmin(tmax, t2);
+
+        if (tmin > tmax)
+            return false;
+    }
+
+    // Intersection must be in front of the ray.
+    return tmax >= 0.0;
+}

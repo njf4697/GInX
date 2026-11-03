@@ -133,3 +133,25 @@ void RaytracingParticlesContainer<StructType>::write_deleted_particle_data(
 
     write_to_one_file(final_data_file_name, output_str);
 }
+
+long num_particles_out_of_bounds(const int &lev, PhotonBounds& bounds) {
+
+    int np_oob = 0.0;
+
+    for (GInX::ParticleIterator<StructType> pti(*this, lev); pti.isValid();
+         ++pti)
+    {   
+        const int np = pti.numParticles();
+
+        auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
+
+        for (int i = 0; i < np; i++) {
+            CCTK_REAL pos[3] = {particles[i].pos(0), particles[i].pos(1), particles[i].pos(2)};
+            if (isOutOfBounds(pos, bounds.arr)) {
+                np_oob++;
+            }
+        }
+    }
+
+    return np_oob;
+}

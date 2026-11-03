@@ -23,8 +23,8 @@
 #define UNPACKM(X) X[0], X[1], X[2], \
                    X[1], X[3], X[4], \
                    X[2], X[4], X[5]
-#define UNPACKML(X) X[0], X[1], X[2], X[3], X[4], X[5]
-#define UNPACK4ML(X) X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9]
+#define UNPACK6V(X) X[0], X[1], X[2], X[3], X[4], X[5]
+#define UNPACK10V(X) X[0], X[1], X[2], X[3], X[4], X[5], X[6], X[7], X[8], X[9]
 #define UNPACK4M(X) X[0], X[1], X[2], X[3], \
                     X[1], X[4], X[5], X[6], \
                     X[2], X[5], X[7], X[8], \
@@ -51,6 +51,22 @@
 #define G3_yy 3
 #define G3_yz 4
 #define G3_zz 5
+
+struct PhotonBounds {
+    CCTK_REAL arr[6];
+    CCTK_REAL& xmin() { return arr[0]; }
+    CCTK_REAL& xmax() { return arr[1]; }
+    CCTK_REAL& ymin() { return arr[2]; }
+    CCTK_REAL& ymax() { return arr[3]; }
+    CCTK_REAL& zmin() { return arr[4]; }
+    CCTK_REAL& zmax() { return arr[5]; }
+    const CCTK_REAL& xmin() const { return arr[0]; }
+    const CCTK_REAL& xmax() const { return arr[1]; }
+    const CCTK_REAL& ymin() const { return arr[2]; }
+    const CCTK_REAL& ymax() const { return arr[3]; }
+    const CCTK_REAL& zmin() const { return arr[4]; }
+    const CCTK_REAL& zmax() const { return arr[5]; }
+    };
 
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;
@@ -112,6 +128,8 @@ CCTK_REAL getTimeComponentOf4Velocity(const CCTK_REAL vx, const CCTK_REAL vy, co
 void invertSpatialMetricArr(CCTK_REAL* gamma_inv, const CCTK_REAL* metric_arr); //Utilities.cc
 CCTK_REAL spatialInnerProductArr(const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr); //Utilities.cc
 void oneformToVectorSpatial(CCTK_REAL* V3_vector, const CCTK_REAL* V3_oneform, const CCTK_REAL* metric_arr); //Utilities.cc
+bool isOutOfBounds(const CCTK_REAL* pos, const CCTK_REAL* bounds_arr); //Utilities.cc
+bool rayBoxIntersection(const CCTK_REAL* ray_origin, const CCTK_REAL* ray_direciton, const CCTK_REAL* bounds, CCTK_REAL& t_min, CCTK_REAL& t_max); //Utilities.cc
 
 //constants for unit conversion to code units
 static const CCTK_REAL M_cgs = 1.9884e33;      //g               -> M

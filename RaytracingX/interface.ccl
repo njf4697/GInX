@@ -4,6 +4,12 @@
 IMPLEMENTS: RaytracingX
 INHERITS:   ADMBaseX AMReX AnalyticalSpacetimeX HydroBaseX BaseParticlesContainer ParticlesContainer Loop
 
+CCTK_REAL RaytracingX_scalars type=SCALAR
+{
+    RX_t0,
+    RX_time
+} "RaytracingX-related scalar quantities"
+
 USES INCLUDE HEADER: Photons.hxx
 USES INCLUDE HEADER: BaseParticlesContainer.hxx
 USES INCLUDE HEADER: ParticlesContainer.hxx

@@ -527,7 +527,6 @@ void setup_camera_initializer_reals(CCTK_ARGUMENTS, CCTK_REAL* real_params, cons
     real_params[35] = bounds.ymax();
     real_params[36] = bounds.zmin();
     real_params[37] = bounds.zmax();
-    real_params[38] = starting_time;
   }
 
 /**

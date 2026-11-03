@@ -220,7 +220,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
       CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
     }
     if (camera_out_of_grid && !camera_out_of_bounds) {
-      CCTK_VWARN("Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
+      CCTK_WARN("Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
   }
 }
@@ -741,5 +741,146 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
     *RX_time += dt;
   }
 
-  CCTK_VINFO("Current particle time is now %f.", *RX_time);
+  CCTK_VINFO("Current particle time is now %f.", *RX_time);template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
+void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset, CCTK_REAL starting_time) {
+  DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
+
+  auto arrdata = particle_tile.GetStructOfArrays().realarray();
+  auto ptd = particle_tile.getParticleTileData();
+
+  //Create 4-vector \chi parallel to geodesic and fill geodesic initial conditions for each pixel (see https://arxiv.org/pdf/1410.777).
+      
+  //Get the index for the current pixel, defined by the offset for this processer plus the number of particles created on this tile already plus the number of particles created on previous tiles.
+  int pidx = local_offset + local_particle_id;
+
+  /**
+   * Convert pixel index into 2D index with:
+   * i=0,                  j=0                   -> upper-left corner
+   * i=num_pixels_width-1, j=0                   -> upper-right corner
+   * i=0,                  j=num_pixels_height-1 -> lower-left corner
+   * i=num_pixels_width-1, j=num_pixels_height-1 -> lower-right corner
+   * 
+   * ex: for a 4x3 pixel image:
+   * 0 1 2  3       [0, 0] [1, 0], [2, 0], [3, 0]
+   * 4 5 6  7   <-> [0, 1] [1, 1], [2, 1], [3, 1]
+   * 8 9 10 11      [0, 2] [1, 2], [2, 2], [3, 2]
+   */
+  int i = pidx % num_pixels_width;
+  int j = pidx / num_pixels_width;
+
+  //Calculate offset per pixel. The offset can be thought of as $/Delta\theta$ and $\Delta\phi$ with respect to camera facing direction,
+  //but is calculated by finding a vector in the equivalent direction. This also gives the direction corresponding to the center of the pixels.
+  CCTK_REAL a_adj = ((2.0 * (i + 0.5)) / num_pixels_width - 1.0) * tan(alpha_h / 2.0);  // a_{adj} = (2a-1)tan(\alpha_h/2)
+  CCTK_REAL b_adj = ((2.0 * (j + 0.5)) / num_pixels_height - 1.0) * tan(alpha_v / 2.0); // b_{adj} = (2b-1)tan(\alpha_v/2)
+
+  CCTK_REAL C = sqrt(1 + pow(b_adj, 2) + pow(a_adj, 2));
+
+  CCTK_REAL chi[4];
+  chi[0] = C * e0[0] - e1[0] + b_adj * e2[0] - a_adj * e3[0];
+  chi[1] = C * e0[1] - e1[1] + b_adj * e2[1] - a_adj * e3[1];
+  chi[2] = C * e0[2] - e1[2] + b_adj * e2[2] - a_adj * e3[2];
+  chi[3] = C * e0[3] - e1[3] + b_adj * e2[3] - a_adj * e3[3];
+
+  CCTK_REAL chi_lower[4];
+  vectorToOneFormArr(chi_lower, chi, real_params);
+
+  ptd.id(local_particle_id) = ParticleContainerClass::ParticleType::NextID();
+  ptd.cpu(local_particle_id) = amrex::ParallelDescriptor::MyProc();
+
+  ptd.pos(0, local_particle_id) = camera_pos[0];
+  ptd.pos(1, local_particle_id) = camera_pos[1];
+  ptd.pos(2, local_particle_id) = camera_pos[2];
+  CCTK_REAL A = 1 / (lapse * chi[0]);
+
+  arrdata[StructType::vx][local_particle_id] = chi_lower[1] * A; 
+  arrdata[StructType::vy][local_particle_id] = chi_lower[2] * A;
+  arrdata[StructType::vz][local_particle_id] = chi_lower[3] * A;
+  arrdata[StructType::ln_E][local_particle_id] = 0;
+  arrdata[StructType::tau][local_particle_id] = 0;
+  arrdata[StructType::time][local_particle_id] = starting_time;
+
+  //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
+  arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
+  arrdata[StructType::deletion_reason][local_particle_id] = 0.0;
+
+  for (int i = StructType::U0; i < StructType::n_attributes; i++) {
+    arrdata[i][local_particle_id] = 0.0;
+  }
+
+  if (calculate_kerr_conserved_quantities) {
+    CCTK_REAL shift_raised[3];
+    oneformToVectorSpatial(shift_raised, shift_lower, real_params);
+    const CCTK_REAL V_down[3] = {arrdata[StructType::vx][local_particle_id], arrdata[StructType::vy][local_particle_id], arrdata[StructType::vz][local_particle_id]};
+
+    arrdata[StructType::U0][local_particle_id] = (lapse - (shift_raised[0]*V_down[0] + shift_raised[1]*V_down[1] + shift_raised[2]*V_down[2]));
+    arrdata[StructType::U1][local_particle_id] = (camera_pos[0]*V_down[1] - camera_pos[1]*V_down[0]);
+    arrdata[StructType::U2][local_particle_id] = spatialInnerProductArr(V_down, real_params);
+  }
+}
+
+template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
+void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset, CCTK_REAL starting_time) {
+  DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
+
+  auto arrdata = particle_tile.GetStructOfArrays().realarray();
+  auto ptd = particle_tile.getParticleTileData();
+
+  //Create 4-vector \chi parallel to geodesic and fill geodesic initial conditions for each pixel (see https://arxiv.org/pdf/1410.777).
+      
+  //Get the index for the current pixel, defined by the offset for this processer plus the number of particles created on this tile already plus the number of particles created on previous tiles.
+  int pidx = local_offset + local_particle_id;
+
+  /**
+   * Convert pixel index into 2D index with:
+   * i=0,                  j=0                   -> upper-left corner
+   * i=num_pixels_width-1, j=0                   -> upper-right corner
+   * i=0,                  j=num_pixels_height-1 -> lower-left corner
+   * i=num_pixels_width-1, j=num_pixels_height-1 -> lower-right corner
+   * 
+   * ex: for a 4x3 pixel image:
+   * 0 1 2  3       [0, 0] [1, 0], [2, 0], [3, 0]
+   * 4 5 6  7   <-> [0, 1] [1, 1], [2, 1], [3, 1]
+   * 8 9 10 11      [0, 2] [1, 2], [2, 2], [3, 2]
+   */
+  int i = pidx % num_pixels_width;
+  int j = pidx / num_pixels_width;
+
+  //Calculate offset per pixel. The offset can be thought of as $/Delta\theta$ and $\Delta\phi$ with respect to camera facing direction,
+  //but is calculated by finding a vector in the equivalent direction. This also gives the direction corresponding to the center of the pixels.
+  CCTK_REAL a_adj = ((2.0 * (i + 0.5)) / num_pixels_width - 1.0) * tan(alpha_h / 2.0);  // a_{adj} = (2a-1)tan(\alpha_h/2)
+  CCTK_REAL b_adj = ((2.0 * (j + 0.5)) / num_pixels_height - 1.0) * tan(alpha_v / 2.0); // b_{adj} = (2b-1)tan(\alpha_v/2)
+
+  CCTK_REAL ray_dir[3];
+  for (int d = 0; d < 3; d++) {
+    ray_dir[d] =  e1[d+1] - b_adj*e2[d+1] + a_adj*e3[d+1];
+  }
+  CCTK_REAL ray_inv_mag = 1.0 / sqrt(ray_dir[0]*ray_dir[0] + ray_dir[1]*ray_dir[1] + ray_dir[2]*ray_dir[2]);
+  for (int d = 0; d < 3; d++) {
+    ray_dir[d] *= ray_inv_mag;
+  }
+
+  const CCTK_REAL pos[3] = {camera_pos[0] + starting_time*ray_dir[0], camera_pos[1] + starting_time*ray_dir[1], camera_pos[2] + starting_time*ray_dir[2]};
+
+  ptd.id(local_particle_id) = ParticleContainerClass::ParticleType::NextID();
+  ptd.cpu(local_particle_id) = amrex::ParallelDescriptor::MyProc();
+
+  ptd.pos(0, local_particle_id) = pos[0];
+  ptd.pos(1, local_particle_id) = pos[1];
+  ptd.pos(2, local_particle_id) = pos[2];
+
+  arrdata[StructType::vx][local_particle_id] = -ray_dir[0]; 
+  arrdata[StructType::vy][local_particle_id] = -ray_dir[1];
+  arrdata[StructType::vz][local_particle_id] = -ray_dir[2];
+  arrdata[StructType::ln_E][local_particle_id] = 0;
+  arrdata[StructType::tau][local_particle_id] = 0;
+  arrdata[StructType::time][local_particle_id] = starting_time;
+
+  //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
+  arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
+  arrdata[StructType::deletion_reason][local_particle_id] = 0.0;
+
+  for (int i = StructType::U0; i < StructType::n_attributes; i++) {
+    arrdata[i][local_particle_id] = 0.0;
+  }
+}
 }

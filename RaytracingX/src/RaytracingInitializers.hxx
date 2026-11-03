@@ -55,7 +55,7 @@
 #define RAYTRACING_INITIALIZERS
 
 template <typename StructType>
-void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
+void fill_photon_data_standard_camera(amrex::ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -132,7 +132,7 @@ void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_IN
 }
 
 template <typename StructType>
-void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
+void fill_photon_data_camera_out_of_grid(amrex::ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();

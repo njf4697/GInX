@@ -54,8 +54,8 @@
 #ifndef RAYTRACING_INITIALIZERS
 #define RAYTRACING_INITIALIZERS
 
-template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
-void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset) {
+template <typename StructType>
+void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -97,7 +97,7 @@ void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT loca
   CCTK_REAL chi_lower[4];
   vectorToOneFormArr(chi_lower, chi, real_params);
 
-  ptd.id(local_particle_id) = ParticleContainerClass::ParticleType::NextID();
+  ptd.id(local_particle_id) = next_id;
   ptd.cpu(local_particle_id) = amrex::ParallelDescriptor::MyProc();
 
   ptd.pos(0, local_particle_id) = camera_pos[0];
@@ -131,8 +131,8 @@ void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT loca
   }
 }
 
-template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
-void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset) {
+template <typename StructType>
+void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -174,7 +174,7 @@ void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, CCTK_INT l
 
   const CCTK_REAL pos[3] = {camera_pos[0] + starting_time*ray_dir[0], camera_pos[1] + starting_time*ray_dir[1], camera_pos[2] + starting_time*ray_dir[2]};
 
-  ptd.id(local_particle_id) = ParticleContainerClass::ParticleType::NextID();
+  ptd.id(local_particle_id) = next_id;
   ptd.cpu(local_particle_id) = amrex::ParallelDescriptor::MyProc();
 
   ptd.pos(0, local_particle_id) = pos[0];
@@ -289,11 +289,12 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
 #pragma omp parallel for
     for (int local_particle_id = 0; local_particle_id < particles_per_tile; ++local_particle_id)
     { 
+      const CCTK_INT next_id = ParticleContainerClass::ParticleType::NextID();
       if (camera_out_of_grid) {
-        fill_photon_data_camera_out_of_grid(particle_tile, local_particle_id, int_params, real_params, local_offset);
+        fill_photon_data_camera_out_of_grid(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
       else {
-        fill_photon_data_standard_camera(particle_tile, local_particle_id, int_params, real_params, local_offset);
+        fill_photon_data_standard_camera(&particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
     }
     current_tile++;

@@ -101,7 +101,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   CCTK_REAL real_params[39];
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
-  *RX_t0 = camera_out_of_grid ? get_starting_time(CCTK_PASS_CTOC, int_params, real_params, camera_out_of_grid, grid_bounds) : 0.0;
+  *RX_t0 = camera_out_of_grid ? get_starting_time(int_params, real_params, grid_bounds) : 0.0;
   real_params[38] = *RX_t0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
@@ -207,12 +207,12 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     grid_bounds.ymax() = phi0[1] - 3*dx0[1];
     grid_bounds.zmax() = phi0[2] - 3*dx0[2];
 
-    bounds.xmin = CCTK_ParameterSet("photon_xmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.xmin, photon_xmin) : grid_bounds.xmin;
-    bounds.ymin = CCTK_ParameterSet("photon_ymin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.ymin, photon_ymin) : grid_bounds.ymin;
-    bounds.zmin = CCTK_ParameterSet("photon_zmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.zmin, photon_zmin) : grid_bounds.zmin;
-    bounds.xmax = CCTK_ParameterSet("photon_xmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.xmax, photon_xmax) : grid_bounds.xmax;
-    bounds.ymax = CCTK_ParameterSet("photon_ymax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.ymax, photon_ymax) : grid_bounds.ymax;
-    bounds.zmax = CCTK_ParameterSet("photon_zmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.zmax, photon_zmax) : grid_bounds.zmax;
+    bounds.xmin() = CCTK_ParameterSet("photon_xmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
+    bounds.ymin() = CCTK_ParameterSet("photon_ymin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
+    bounds.zmin() = CCTK_ParameterSet("photon_zmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
+    bounds.xmax() = CCTK_ParameterSet("photon_xmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.xmax(), photon_xmax) : grid_bounds.xmax();
+    bounds.ymax() = CCTK_ParameterSet("photon_ymax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
+    bounds.zmax() = CCTK_ParameterSet("photon_zmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 
@@ -741,5 +741,5 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
     *RX_time += dt;
   }
 
-  CCTK_VINFO("Current particle time is now %f.", *RX_time)
+  CCTK_VINFO("Current particle time is now %f.", *RX_time);
 }

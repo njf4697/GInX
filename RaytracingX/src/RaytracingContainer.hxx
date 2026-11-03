@@ -240,7 +240,7 @@ namespace RaytracingX
             const amrex::MultiFab &metric,
             const int level);
 
-        int num_particles_out_of_bounds(
+        long num_particles_out_of_bounds(
             const int &lev,
             const PhotonBounds &bounds);
         

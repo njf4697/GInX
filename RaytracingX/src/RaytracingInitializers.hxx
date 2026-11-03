@@ -55,7 +55,7 @@
 #define RAYTRACING_INITIALIZERS
 
 template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
-void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset, CCTK_REAL starting_time) {
+void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -132,7 +132,7 @@ void fill_photon_data_standard_camera(ParticleTile& particle_tile, CCTK_INT loca
 }
 
 template <typename StructType, typename ParticleTile, typename ParticleContainerClass>
-void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset, CCTK_REAL starting_time) {
+void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, CCTK_INT local_particle_id, CCTK_INT* int_params, CCTK_REAL* real_params, int local_offset) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   auto arrdata = particle_tile.GetStructOfArrays().realarray();
@@ -545,10 +545,7 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params, const b
     int_params[3] = camera_out_of_grid ? (camera_out_of_bounds ? 2 : 1) : 0; 
 }
 
-CCTK_REAL get_starting_time(CCTK_ARGUMENTS, CCTK_INT* int_params, CCTK_REAL* real_params, bool camera_out_of_grid, PhotonBounds bounds) {
-  DECLARE_CCTK_ARGUMENTS
-  DECLARE_CCTK_PARAMETERS
-
+CCTK_REAL get_starting_time(CCTK_INT* int_params, CCTK_REAL* real_params, PhotonBounds grid_bounds) {
   DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
 
   CCTK_REAL max_t = 0;
@@ -567,7 +564,7 @@ CCTK_REAL get_starting_time(CCTK_ARGUMENTS, CCTK_INT* int_params, CCTK_REAL* rea
           ray_dir[d] *= ray_inv_mag;
         }
 
-        if (!rayBoxIntersection(camera_pos, ray_dir, bounds.arr, t_enter, t_exit)) {
+        if (!rayBoxIntersection(camera_pos, ray_dir, grid_bounds.arr, t_enter, t_exit)) {
           CCTK_ERROR("Out-of-bound camera's view frustrum doesn't completely intersect with the grid. Check camera settings.");
         }
 

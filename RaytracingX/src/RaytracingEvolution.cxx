@@ -521,8 +521,8 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
 
 extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 {
+  DECLARE_CCTK_ARGUMENTSX;
   DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
 
   if (num_photons == 0) { return; }
   
@@ -533,8 +533,8 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 
 extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 {
+  DECLARE_CCTK_ARGUMENTSX_R_SetPositions;
   DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
 
   if (num_photons == 0) { return; }
 
@@ -548,8 +548,8 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 
 extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
 {
+  DECLARE_CCTK_ARGUMENTSX_R_MoveGrids;
   DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
 
   if (num_photons == 0) { return; }
 

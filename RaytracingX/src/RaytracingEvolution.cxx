@@ -521,7 +521,7 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
 
 extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 {
-  DECLARE_CCTK_ARGUMENTSX;
+  DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
   if (num_photons == 0) { return; }

@@ -30,6 +30,7 @@ SCHEDULE R_CheckCamera IN CCTK_POSTINITIAL BEFORE ANALYTIC_METRIC_INIT
   {
       LANG: C
       OPTIONS: global
+      WRITES: RaytracingX_scalars
   } "print the particles"
 
 SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup

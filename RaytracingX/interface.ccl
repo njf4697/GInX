@@ -8,7 +8,6 @@ public:
 
 CCTK_REAL RaytracingX_scalars type=SCALAR
 {
-    RX_t0,
     RX_time
 } "RaytracingX-related scalar quantities"
 

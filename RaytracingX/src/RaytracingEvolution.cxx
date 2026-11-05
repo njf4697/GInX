@@ -65,13 +65,13 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
-  if (!fast_light && move_every != 1) {
+  if (!fast_light && move_every != 0) {
     CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1");
   }
   if (!fast_light && resize_every != 0) {
     CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::resize_every to be zero as it does not support it");
   }
-  if (!fast_light && evolve_metric_every != 1) {
+  if (!fast_light && evolve_metric_every != 0) {
     CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::evolve_metric_every to be zero. If fast_light is false, RaytracingX uses its own evolve_metric_every=1");
   }
 

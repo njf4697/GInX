@@ -224,7 +224,7 @@ void SetMetric(CCTK_ARGUMENTS, GetMetricFunc &get_metric, const double h, const 
         kzz(p.I) = met3.kzz;
 
         alp(p.I) = met3.alpha;
-        if (p.I == 0) fprintf(stderr, "alpha=%f\n", met3.alpha);
+        if (p.I[0] == 32 && p.I[1] == 32 && p.I[2] == 32) fprintf(stderr, "alpha=%f\n", met3.alpha);
 
         betax(p.I) = met3.betax;
         betay(p.I) = met3.betay;

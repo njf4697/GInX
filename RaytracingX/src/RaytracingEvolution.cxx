@@ -517,6 +517,10 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
   CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + dt);
+
+  Metric m;
+  interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 1.0, 1.0, 1.0);
+  CCTK_INFO(m.to_string().c_str());
 }
 
 extern "C" void R_SetPositions(CCTK_ARGUMENTS)

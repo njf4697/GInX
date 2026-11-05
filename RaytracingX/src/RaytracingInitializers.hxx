@@ -545,6 +545,8 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params, const b
 }
 
 CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
 
   Metric metric;
   fillMetricFlat(CCTK_PASS_CTOC, &metric);

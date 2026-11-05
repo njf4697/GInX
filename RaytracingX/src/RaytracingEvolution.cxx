@@ -740,10 +740,10 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (CCTK_MyProc(cctkGH) == 0) { 
+  //if (CCTK_MyProc(cctkGH) == 0) { 
     CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
     *RX_time += dt;
-  }
+  //}
 
   Metric m;
   interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 1.0, 1.0, 1.0);

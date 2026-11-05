@@ -52,7 +52,13 @@ if (use_custom_bounds) {
   } "count outside specified bounds but inside grid"
 }
 
-  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
+  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_after
+  {
+    LANG: C
+    OPTIONS: global
+  } "update time variable associated with raytracing evolution by dt"
+
+  SCHEDULE UpdateCustomTime AS UpdateCustomTime_initial IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
   {
     LANG: C
     OPTIONS: global

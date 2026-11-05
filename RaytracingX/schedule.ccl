@@ -64,7 +64,7 @@ if (use_custom_bounds) {
     OPTIONS: global
   } "update time variable associated with raytracing evolution by dt"
 
-SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER UpdateCustomTime
+SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
   {
     LANG: C
     OPTIONS: global

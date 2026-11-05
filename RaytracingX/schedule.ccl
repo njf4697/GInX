@@ -44,7 +44,19 @@ SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bound
       OPTIONS: global
   } "check particle bounds"
 
-SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
+  SCHEDULE CheckNumberOfOutOfBoundsParticles IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
+  {
+    LANG: C
+    OPTIONS: global
+  } "count outside specified bounds but inside grid"
+
+  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
+  {
+    LANG: C
+    OPTIONS: global
+  } "update time variable associated with raytracing evolution by dt"
+
+SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER UpdateCustomTime
   {
     LANG: C
     OPTIONS: global
@@ -115,21 +127,21 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
 if (!fast_light)
 {
 
-#SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
-#{
-#  LANG: C
-#  OPTIONS: global
-#  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
-#} "Copy BH positions"
+SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
+{
+  LANG: C
+  OPTIONS: global
+  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
+} "Copy BH positions"
 
-#SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
-#{
-#  LANG: C
-#  OPTIONS: global
-#  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
-#  READS: BoxInBox::positions
-#  WRITES: BoxInBox::positions
-#} "Change grid based on BH position"
+SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+{
+  LANG: C
+  OPTIONS: global
+  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: BoxInBox::positions
+  WRITES: BoxInBox::positions
+} "Change grid based on BH position"
 
 SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1 BEFORE R_ParticlesContainer_evolvek2
   {

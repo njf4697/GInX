@@ -59,6 +59,8 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
+
+  fprintf(stderr, "test\n");
   
   //RaytracingX: Add debug print statement.
   if (verbose)
@@ -193,8 +195,6 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
 { 
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
-
-  fprintf(stderr, "test\n");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

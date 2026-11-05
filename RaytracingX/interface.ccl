@@ -4,6 +4,8 @@
 IMPLEMENTS: RaytracingX
 INHERITS:   ADMBaseX AMReX AnalyticalSpacetimeX HydroBaseX BaseParticlesContainer ParticlesContainer Loop BoxInBox
 
+public:
+
 CCTK_REAL RaytracingX_scalars type=SCALAR
 {
     RX_t0,

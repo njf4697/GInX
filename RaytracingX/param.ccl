@@ -19,7 +19,7 @@ BOOLEAN extended_camera "Allows for camera initialization to be out of grid"  ST
 {
 } false
 
-BOOLEAN use custom bounds "whether to restrict photons to subsection of grid specified by photon_xmax, etc."  STEERABLE=ALWAYS
+BOOLEAN use_custom_bounds "whether to restrict photons to subsection of grid specified by photon_xmax, etc."  STEERABLE=ALWAYS
 {
 } false
 

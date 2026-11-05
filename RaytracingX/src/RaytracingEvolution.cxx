@@ -233,11 +233,9 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     }
   }
 
+  *RX_time = 0.0;
   if (camera_out_of_grid) {
     *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
-  }
-  else {
-    *RX_time = 0.0;
   }
 }
 
@@ -537,7 +535,7 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 
 extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 {
-  DECLARE_CCTK_ARGUMENTSX_R_SetPositions;
+  DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
   if (num_photons == 0) { return; }

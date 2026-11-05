@@ -44,7 +44,7 @@ PhotonBounds bounds;
 PhotonBounds grid_bounds;
 bool camera_out_of_bounds;
 bool camera_out_of_grid;
-long num_photons_out_of_bounds;
+long num_photons_out_of_bounds = 0;
 
 /**
  * \brief Initialize particles' data

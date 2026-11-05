@@ -44,11 +44,13 @@ SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bound
       OPTIONS: global
   } "check particle bounds"
 
+if (use_custom_bounds) {
   SCHEDULE CheckNumberOfOutOfBoundsParticles IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
   {
     LANG: C
     OPTIONS: global
   } "count outside specified bounds but inside grid"
+}
 
   SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
   {

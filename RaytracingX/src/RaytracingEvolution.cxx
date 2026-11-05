@@ -201,7 +201,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
     const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
 
-    coarse_dt = coarse_dtfac * MIN(dx[0], MIN(dx[1], dx[2]));
+    coarse_dt = coarse_dtfac * MIN(dx0[0], MIN(dx0[1], dx0[2]));
 
     grid_bounds.xmin() = plo0[0] + 3*dx0[0];
     grid_bounds.ymin() = plo0[1] + 3*dx0[1];

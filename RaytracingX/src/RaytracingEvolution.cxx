@@ -107,6 +107,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
   *RX_time = camera_out_of_grid ? get_starting_time(int_params, real_params, grid_bounds) : 0.0;
   real_params[38] = *RX_time;
+  *RX_time = -*RX_time;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   { 

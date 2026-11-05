@@ -189,8 +189,12 @@ extern "C" void R_ParticlesContainer_redistribute_initial(CCTK_ARGUMENTS)
 
 extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
 { 
+  fprintf(stderr,"test1\n");
+
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
+
+  fprintf(stderr,"test2\n");
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {

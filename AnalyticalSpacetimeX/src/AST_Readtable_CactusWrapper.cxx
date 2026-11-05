@@ -20,7 +20,6 @@ extern "C" void AST_SetPositions(CCTK_ARGUMENTS) {
     fprintf(stderr, "update traj\n");
     SetPositionsHelper(CCTK_PASS_CTOC, cctk_time);
   }
-  fprintf(stderr,"test");
 }
 
 void SetPositionsHelper(CCTK_ARGUMENTS, const double time) {

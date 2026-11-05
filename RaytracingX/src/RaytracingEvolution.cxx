@@ -483,10 +483,6 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
       pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, *RX_time, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
     }
   }
-
-  Metric m;
-  interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 1.0, 1.0, 1.0);
-  CCTK_INFO(m.to_string().c_str());
 }
 
 extern "C" void R_SetMetric(CCTK_ARGUMENTS)
@@ -740,14 +736,8 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  //if (CCTK_MyProc(cctkGH) == 0) { 
-    CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
-    *RX_time += dt;
-  //}
-
-  Metric m;
-  interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 1.0, 1.0, 1.0);
-  CCTK_INFO(m.to_string().c_str());
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  *RX_time += dt;
 
   CCTK_VINFO("Current particle time is now %f.", *RX_time);
 }

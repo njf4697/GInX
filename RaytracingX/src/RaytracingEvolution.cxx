@@ -544,6 +544,8 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
   else {
     AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
   }
+
+  fprintf(stderr, "tes2");
 }
 
 extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
@@ -555,7 +557,7 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
 
   MoveGridsHelper(CCTK_PASS_CTOC);
 
-  fprintf(stderr, "test");
+  fprintf(stderr, "tes2");
 }
 
 /**

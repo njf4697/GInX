@@ -58,12 +58,16 @@ if (!fast_light) {
   {
     LANG: C
     OPTIONS: global
+    READS: RaytracingX_scalars
+    WRITES: RaytracingX_scalars
   } "update time variable associated with raytracing evolution by dt"
 
   SCHEDULE UpdateCustomTime AS UpdateCustomTime_initial IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
   {
     LANG: C
     OPTIONS: global
+    READS: RaytracingX_scalars
+    WRITES: RaytracingX_scalars
   } "update time variable associated with raytracing evolution by dt"
 }
 
@@ -88,6 +92,7 @@ SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: ADMBaseX::lapse(everywhere)
     READS: ADMBaseX::shift(everywhere)
     READS: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "evolve particles"
 
 #SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
@@ -105,6 +110,7 @@ SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: ADMBaseX::lapse(everywhere)
     READS: ADMBaseX::shift(everywhere)
     READS: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "evolve particles"
 
 #SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
@@ -122,6 +128,7 @@ SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: ADMBaseX::lapse(everywhere)
     READS: ADMBaseX::shift(everywhere)
     READS: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "evolve particles"
 
 #SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
@@ -139,6 +146,7 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: ADMBaseX::lapse(everywhere)
     READS: ADMBaseX::shift(everywhere)
     READS: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "evolve particles"
 
   SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
@@ -151,6 +159,7 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "set metric to cctk_time"
 
 if (!fast_light)
@@ -166,6 +175,7 @@ SCHEDULE R_SetMetric IN ANALYTIC_METRIC
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "set metric to cctk_time"
 
 SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
@@ -173,6 +183,7 @@ SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
   LANG: C
   OPTIONS: global
   WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
 } "Copy BH positions"
 
 SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
@@ -180,6 +191,7 @@ SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
   LANG: C
   OPTIONS: global
   READS: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
   READS: BoxInBox::positions
   WRITES: BoxInBox::positions
 } "Change grid based on BH position"
@@ -194,6 +206,7 @@ SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "change metric to cctk_time+0.5*dt"
 
 SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3 BEFORE R_ParticlesContainer_evolvek4
@@ -206,6 +219,7 @@ SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolv
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "change metric to cctk_time+dt"
 
 if (reset_metric) {
@@ -220,6 +234,7 @@ SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "set metric to cctk_time"
 
 
@@ -233,6 +248,7 @@ SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContai
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
   } "reset metric to cctk_time"
 }
 }

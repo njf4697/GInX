@@ -234,9 +234,6 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
   }
 
   if (camera_out_of_grid) {
-    CCTK_REAL test1 = alpha_v;
-    CCTK_REAL test2 = alpha_h;
-    CCTK_REAL test3 = *RX_time;
     *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
   }
   else {

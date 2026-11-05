@@ -214,6 +214,12 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     bounds.ymax() = use_custom_bounds ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
     bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
+    if (custom_bounds) {
+      assert(photon_xmin < photon_xmax);
+      assert(photon_ymin < photon_ymax);
+      assert(photon_zmin < photon_zmax);
+    }
+
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 
     if (camera_out_of_bounds && !extended_camera) {
@@ -241,6 +247,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
   CCTK_Barrier(cctkGH);
 
   CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  if (num_photons_out_of_bounds > 0) {fprintf(stderr, "using larger dt\n"); }
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");

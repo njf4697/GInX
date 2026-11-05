@@ -545,6 +545,15 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params, const b
 }
 
 CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {
+
+  Metric metric;
+  fillMetricFlat(CCTK_PASS_CTOC, &metric);
+  CCTK_REAL e0[4];
+  CCTK_REAL e1[4];
+  CCTK_REAL e2[4];
+  CCTK_REAL e3[4];
+  gramSchmidtProcess(CCTK_PASS_CTOC, e0, e1, e2, e3, &metric); //create orthonormal basis for camera POV
+
   CCTK_REAL max_t = 0;
   for (int i = -1; i <2; i += 2) {
     for (int j = -1; j < 2; j += 1) {

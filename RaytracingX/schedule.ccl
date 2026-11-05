@@ -26,13 +26,13 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-SCHEDULE R_CheckCamera IN wragh
+SCHEDULE R_CheckCamera IN CCTK_POSTINITIAL BEFORE ANALYTIC_METRIC_INIT
   {
       LANG: C
       OPTIONS: global
   } "print the particles"
 
-SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN CCTK_POSTINITIAL AFTER R_CheckCamera
+SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
   {
       LANG: C
       OPTIONS: global

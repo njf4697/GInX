@@ -554,6 +554,8 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
 
   MoveGridsHelper(CCTK_PASS_CTOC);
+
+  fprintf(stderr, "test");
 }
 
 /**

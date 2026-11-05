@@ -211,12 +211,12 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     grid_bounds.ymax() = phi0[1] - 3*dx0[1];
     grid_bounds.zmax() = phi0[2] - 3*dx0[2];
 
-    bounds.xmin() = CCTK_ParameterSet("photon_xmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
-    bounds.ymin() = CCTK_ParameterSet("photon_ymin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
-    bounds.zmin() = CCTK_ParameterSet("photon_zmin", "RaytracingX", "PRIVATE") ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
-    bounds.xmax() = CCTK_ParameterSet("photon_xmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.xmax(), photon_xmax) : grid_bounds.xmax();
-    bounds.ymax() = CCTK_ParameterSet("photon_ymax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
-    bounds.zmax() = CCTK_ParameterSet("photon_zmax", "RaytracingX", "PRIVATE") ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
+    bounds.xmin() = use_custom_bounds ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
+    bounds.ymin() = use_custom_bounds ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
+    bounds.zmin() = use_custom_bounds ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
+    bounds.xmax() = use_custom_bounds ? MIN(grid_bounds.xmax(), photon_xmax) : grid_bounds.xmax();
+    bounds.ymax() = use_custom_bounds ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
+    bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 

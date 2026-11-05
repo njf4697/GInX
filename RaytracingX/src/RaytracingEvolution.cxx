@@ -222,6 +222,8 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     if (camera_out_of_grid && !camera_out_of_bounds) {
       CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
+
+    fprintf(stderr, "test\n");
   }
 }
 

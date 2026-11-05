@@ -52,7 +52,7 @@ if (use_custom_bounds) {
   } "count outside specified bounds but inside grid"
 }
 
-  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_after
+  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER R_ParticlesContainer_print
   {
     LANG: C
     OPTIONS: global

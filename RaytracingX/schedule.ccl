@@ -9,7 +9,7 @@ SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTINITIAL {
 } "setup"
 
 if ((particle_plot_every>0)||(particle_tsv_every>0) ){
-    SCHEDULE R_ParticlesContainer_print AT CCTK_POSTINITIAL AFTER setup
+    SCHEDULE R_ParticlesContainer_print AT CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
     {
         LANG: C
         OPTIONS: global

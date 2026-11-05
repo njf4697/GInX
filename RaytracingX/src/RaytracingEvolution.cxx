@@ -214,7 +214,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     bounds.ymax() = use_custom_bounds ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
     bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
-    if (custom_bounds) {
+    if (use_custom_bounds) {
       assert(photon_xmin < photon_xmax);
       assert(photon_ymin < photon_ymax);
       assert(photon_zmin < photon_zmax);

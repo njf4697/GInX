@@ -134,11 +134,9 @@ extern "C" void AnalyticalSpacetimeX_SetMetric(CCTK_ARGUMENTS) {
   //  return;
   //}
 
-  if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every != 0)) {
-    return;
+  if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every == 0)) {
+    SetMetricHelper(CCTK_PASS_CTOC, cctk_time); 
   }
-
-  SetMetricHelper(CCTK_PASS_CTOC, cctk_time); 
 }
 
 void GetTraj(CCTK_ARGUMENTS, const double tt, double* bbh_traj_0) {

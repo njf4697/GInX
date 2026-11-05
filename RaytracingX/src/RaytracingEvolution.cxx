@@ -540,7 +540,7 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
+  AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, -1000.0);
 }
 
 extern "C" void R_MoveGrids(CCTK_ARGUMENTS)

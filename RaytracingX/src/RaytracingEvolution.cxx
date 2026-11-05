@@ -504,7 +504,7 @@ extern "C" void R_SetMetric(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  //if (num_photons == 0) { return; }
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time);
 }
@@ -538,7 +538,7 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if (num_photons == 0) { return; }
+  //if (num_photons == 0) { return; }
 
   AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
 }
@@ -548,7 +548,7 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTSX_R_MoveGrids;
   DECLARE_CCTK_PARAMETERS;
 
-  if (num_photons == 0) { return; }
+  //if (num_photons == 0) { return; }
 
   MoveGridsHelper(CCTK_PASS_CTOC);
 }

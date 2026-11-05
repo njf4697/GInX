@@ -548,6 +548,8 @@ CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
+  fprintf(stderr, "test");
+
   Metric metric;
   fillMetricFlat(CCTK_PASS_CTOC, &metric);
   CCTK_REAL e0[4];

@@ -101,9 +101,9 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   CCTK_INT int_params[4];
   CCTK_REAL real_params[39];
   fprintf(stderr, "test1\n");
+  fprintf(stderr, "%i\n", camera_out_of_grid ? 1 : 0);
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   fprintf(stderr, "test2\n");
-  fprintf(stderr, "%i\n", camera_out_of_grid ? 1 : 0);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
   *RX_t0 = camera_out_of_grid ? get_starting_time(int_params, real_params, grid_bounds) : 0.0;
   real_params[38] = *RX_t0;

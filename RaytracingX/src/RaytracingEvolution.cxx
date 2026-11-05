@@ -45,6 +45,7 @@ PhotonBounds grid_bounds;
 bool camera_out_of_bounds;
 bool camera_out_of_grid;
 long num_photons_out_of_bounds = 0;
+CCTK_REAL coarse_dt;
 
 /**
  * \brief Initialize particles' data
@@ -200,6 +201,8 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
     const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
 
+    coarse_dt = coarse_dtfac * MIN(dx[0], MIN(dx[1], dx[2]));
+
     grid_bounds.xmin() = plo0[0] + 3*dx0[0];
     grid_bounds.ymin() = plo0[1] + 3*dx0[1];
     grid_bounds.zmin() = plo0[2] + 3*dx0[2];
@@ -246,8 +249,7 @@ extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
-  if (num_photons_out_of_bounds > 0) {fprintf(stderr, "using larger dt\n"); }
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -312,7 +314,7 @@ extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -377,7 +379,7 @@ extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -442,7 +444,7 @@ extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
 
   CCTK_Barrier(cctkGH);
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -509,7 +511,7 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + 0.5*dt);
 }
@@ -521,7 +523,7 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
   
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + dt);
 }
@@ -743,7 +745,7 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? cctk_delta_time : CCTK_DELTA_TIME;
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
   *RX_time += dt;
 
   CCTK_VINFO("Current particle time is now %f.", *RX_time);

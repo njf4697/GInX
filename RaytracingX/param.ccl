@@ -3,6 +3,11 @@
 
 private:
 
+CCTK_REAL coarse_dtfac "same as Carpetx::dtfac, but for the coarsest dx, used when outside specified bounds" STEERABLE = ALWAYS
+{
+    *:0) :: "Any negative real number"
+} -1.0
+
 BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true

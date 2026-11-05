@@ -542,7 +542,7 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
     AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, 0.0);
   }
   else {
-    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, cctk_time);
+    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, cctk_time - 1.0);
   }
 }
 

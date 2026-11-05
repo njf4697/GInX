@@ -741,5 +741,9 @@ extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
     *RX_time += dt;
   }
 
+  Metric m;
+  interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 1.0, 1.0, 1.0);
+  CCTK_INFO(m.to_string().c_str());
+
   CCTK_VINFO("Current particle time is now %f.", *RX_time);
 }

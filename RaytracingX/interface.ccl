@@ -2,7 +2,7 @@
 # ====================================================
 
 IMPLEMENTS: RaytracingX
-INHERITS:   ADMBaseX AMReX AnalyticalSpacetimeX HydroBaseX BaseParticlesContainer ParticlesContainer Loop
+INHERITS:   ADMBaseX AMReX AnalyticalSpacetimeX HydroBaseX BaseParticlesContainer ParticlesContainer Loop BoxInBox
 
 CCTK_REAL RaytracingX_scalars type=SCALAR
 {

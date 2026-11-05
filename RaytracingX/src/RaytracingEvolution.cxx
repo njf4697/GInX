@@ -538,16 +538,12 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  fprintf(stderr, "test0");
-
   if (fast_light) {
     AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, 0.0);
   }
   else {
     AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
   }
-
-  fprintf(stderr, "test1");
 }
 
 extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
@@ -558,8 +554,6 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
 
   MoveGridsHelper(CCTK_PASS_CTOC);
-
-  fprintf(stderr, "test2");
 }
 
 /**

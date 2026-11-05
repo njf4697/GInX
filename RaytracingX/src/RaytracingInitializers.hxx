@@ -544,31 +544,27 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params, const b
     int_params[3] = camera_out_of_grid ? (camera_out_of_bounds ? 2 : 1) : 0; 
 }
 
-CCTK_REAL get_starting_time(CCTK_INT* int_params, CCTK_REAL* real_params, PhotonBounds grid_bounds) {
-  DEFINE_VARIABLES_FROM_INT_PARAMS_AND_REAL_PARAMS
-
+CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {
   CCTK_REAL max_t = 0;
-  if (camera_out_of_grid) {
-    for (int i = -1; i <2; i += 2) {
-      for (int j = -1; j < 2; j += 1) {
-        CCTK_REAL t_enter;
-        CCTK_REAL t_exit;
-        CCTK_REAL ray_dir[3];
+  for (int i = -1; i <2; i += 2) {
+    for (int j = -1; j < 2; j += 1) {
+      CCTK_REAL t_enter;
+      CCTK_REAL t_exit;
+      CCTK_REAL ray_dir[3];
 
-        for (int d = 0; d < 3; d++) {
-          ray_dir[d] =  e1[d+1] - j*tan(alpha_v / 2.0)*e2[d+1] + i*tan(alpha_h / 2.0)*e3[d+1];
-        }
-        CCTK_REAL ray_inv_mag = 1.0 / sqrt(ray_dir[0]*ray_dir[0] + ray_dir[1]*ray_dir[1] + ray_dir[2]*ray_dir[2]);
-        for (int d = 0; d < 3; d++) {
-          ray_dir[d] *= ray_inv_mag;
-        }
-
-        if (!rayBoxIntersection(camera_pos, ray_dir, grid_bounds.arr, t_enter, t_exit)) {
-          CCTK_ERROR("Out-of-bound camera's view frustrum doesn't completely intersect with the grid. Check camera settings.");
-        }
-
-        max_t = MAX(max_t, t_enter);
+      for (int d = 0; d < 3; d++) {
+        ray_dir[d] =  e1[d+1] - j*tan(alpha_v / 2.0)*e2[d+1] + i*tan(alpha_h / 2.0)*e3[d+1];
       }
+      CCTK_REAL ray_inv_mag = 1.0 / sqrt(ray_dir[0]*ray_dir[0] + ray_dir[1]*ray_dir[1] + ray_dir[2]*ray_dir[2]);
+      for (int d = 0; d < 3; d++) {
+        ray_dir[d] *= ray_inv_mag;
+      }
+
+      if (!rayBoxIntersection(camera_pos, ray_dir, grid_bounds.arr, t_enter, t_exit)) {
+        CCTK_ERROR("Out-of-bound camera's view frustrum doesn't completely intersect with the grid. Check camera settings.");
+      }
+
+      max_t = MAX(max_t, t_enter);
     }
   }
   return max_t;

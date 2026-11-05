@@ -55,6 +55,7 @@ CCTK_REAL coarse_dt;
  * RaytracingPhotonsInitializers.hxx. This initialization uses the camera
  * parameters given by RaytracingX.
  */
+
 extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
@@ -84,8 +85,6 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     gh,
     "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
-
-  *RX_time = 0.0;
   
   //Metric m;
   //interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 0.062791, 0.000061, -13.703892);
@@ -102,9 +101,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   CCTK_REAL real_params[39];
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
-  *RX_time = camera_out_of_grid ? get_starting_time(int_params, real_params, grid_bounds) : 0.0;
-  real_params[38] = *RX_time;
-  *RX_time = -*RX_time;
+  real_params[38] = -*RX_time;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   { 
@@ -234,6 +231,13 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     if (camera_out_of_grid && !camera_out_of_bounds) {
       CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
+  }
+
+  if (camera_out_of_grid) {
+    *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
+  }
+  else {
+    *RX_time = 0.0;
   }
 }
 
@@ -538,12 +542,7 @@ extern "C" void R_SetPositions(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  if (fast_light) {
-    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, 0.0);
-  }
-  else {
-    AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, cctk_time);
-  }
+  AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
 }
 
 extern "C" void R_MoveGrids(CCTK_ARGUMENTS)

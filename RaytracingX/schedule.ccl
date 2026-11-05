@@ -26,7 +26,7 @@ SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
     OPTIONS: global
   } "count particles"
 
-SCHEDULE R_CheckCamera IN CCTK_POSTINITIAL BEFORE R_ParticlesContainer_setup
+SCHEDULE R_CheckCamera IN wragh
   {
       LANG: C
       OPTIONS: global
@@ -52,6 +52,7 @@ if (use_custom_bounds) {
   } "count outside specified bounds but inside grid"
 }
 
+if (!fast_light) {
   SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER R_ParticlesContainer_print
   {
     LANG: C
@@ -63,6 +64,7 @@ if (use_custom_bounds) {
     LANG: C
     OPTIONS: global
   } "update time variable associated with raytracing evolution by dt"
+}
 
 SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
   {
@@ -138,8 +140,32 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: AsterMasks::aster_mask_vc(everywhere)
   } "evolve particles"
 
+  SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+  } "set metric to cctk_time"
+
 if (!fast_light)
 {
+
+SCHEDULE R_SetMetric IN ANALYTIC_METRIC
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+  } "set metric to cctk_time"
 
 SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
 {

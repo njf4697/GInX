@@ -220,11 +220,11 @@ if ((particle_plot_every||particle_tsv_every) ) {
     } "print the particles"
 }
 
-#SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve
-#  {
-#    LANG: C
-#    OPTIONS: global
-#  } "redistribute particles"
+SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER UpdateCustomTime
+  {
+    LANG: C
+    OPTIONS: global
+  } "redistribute particles"
 
 SCHEDULE R_ParticlesContainer_final_cleanup at CCTK_SHUTDOWN{
     LANG: C

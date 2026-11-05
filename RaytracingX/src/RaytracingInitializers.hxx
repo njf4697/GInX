@@ -181,6 +181,8 @@ void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK
   ptd.pos(1, local_particle_id) = pos[1];
   ptd.pos(2, local_particle_id) = pos[2];
 
+  fprintf(stderr, "%f %f %f\n", pos[0], pos[1], pos[2]);
+
   arrdata[StructType::vx][local_particle_id] = -ray_dir[0]; 
   arrdata[StructType::vy][local_particle_id] = -ray_dir[1];
   arrdata[StructType::vz][local_particle_id] = -ray_dir[2];

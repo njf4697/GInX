@@ -509,6 +509,8 @@ extern "C" void R_SetMetric(CCTK_ARGUMENTS)
 
   //if (num_photons == 0) { return; }
 
+  if (cctk_iteration > 0 && fast_light) { return; }
+
   AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time);
 }
 
@@ -518,6 +520,7 @@ extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
   DECLARE_CCTK_ARGUMENTS;
 
   if (num_photons == 0) { return; }
+  if (cctk_iteration > 0 && fast_light) { return; }
 
   CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
@@ -530,6 +533,7 @@ extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
 
   if (num_photons == 0) { return; }
+  if (cctk_iteration > 0 && fast_light) { return; }
   
   CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 

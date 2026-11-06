@@ -228,7 +228,7 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
     if (camera_out_of_bounds && !extended_camera) {
       CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
     }
-    if (camera_out_of_grid && !camera_out_of_bounds) {
+    if (camera_out_of_bounds && !camera_out_of_grid) {
       CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
   }
@@ -236,6 +236,9 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
   *RX_time = 0.0;
   if (camera_out_of_grid) {
     *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
+  }
+  else if (camera_out_of_bounds) {
+    get_starting_time(CCTK_PASS_CTOC, bounds); //errors if not pointing in correct direction
   }
 }
 

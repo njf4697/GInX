@@ -224,18 +224,18 @@ SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolv
 
 if (reset_metric) {
 
-SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "set metric to cctk_time"
+#SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
+#  {
+#    LANG: C
+#    OPTIONS: LOCAL
+#    READS: AsterMasks::aster_mask_vc(everywhere)
+#    WRITES: ADMBaseX::metric(everywhere)
+#    WRITES: ADMBaseX::curv(everywhere)
+#    WRITES: ADMBaseX::lapse(everywhere)
+#    WRITES: ADMBaseX::shift(everywhere)
+#    WRITES: AsterMasks::aster_mask_vc(everywhere)
+#    READS: RaytracingX_scalars
+#  } "set metric to cctk_time"
 
 
 SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek4

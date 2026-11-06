@@ -574,7 +574,7 @@ CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {
       }
 
       if (!rayBoxIntersection(camera_pos, ray_dir, grid_bounds.arr, t_enter, t_exit)) {
-        CCTK_ERROR("Out-of-bound camera's view frustrum doesn't completely intersect with the grid. Check camera settings.");
+        CCTK_ERROR("Out-of-bound camera's view frustrum doesn't completely intersect with the bounds. Check camera settings.");
       }
 
       max_t = MAX(max_t, t_enter);

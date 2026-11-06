@@ -20,7 +20,7 @@ SCHEDULE GROUP RAYTRACING_EVOL AT evol
 {
 } "evolve raytracing particles"
 
-SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL
+SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_initial
   {
     LANG: C
     OPTIONS: global
@@ -39,7 +39,7 @@ SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bound
       OPTIONS: global
   } "check particle bounds"
 
-  SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_initial
+  SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
   {
       LANG: C
       OPTIONS: global
@@ -71,7 +71,7 @@ if (!fast_light) {
   } "update time variable associated with raytracing evolution by dt"
 }
 
-SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
+SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL
   {
     LANG: C
     OPTIONS: global

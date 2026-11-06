@@ -729,8 +729,6 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
 
 extern "C" void CheckNumberOfOutOfBoundsParticles(CCTK_ARGUMENTS)
 {
-  fprintf(stderr, "test1");
-
   long n_local = 0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
@@ -742,16 +740,12 @@ extern "C" void CheckNumberOfOutOfBoundsParticles(CCTK_ARGUMENTS)
       }
   }
 
-  fprintf(stderr, "test2");
-
   long n_global = n_local;
   amrex::ParallelDescriptor::ReduceLongSum(n_global);
 
   num_photons_out_of_bounds = n_global;
 
   CCTK_VINFO("Found %ld particles remaining out of specified bounds.", num_photons_out_of_bounds);
-
-  fprintf(stderr, "test3");
 }
 
 extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {

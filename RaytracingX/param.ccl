@@ -254,3 +254,4 @@ SHARES: AnalyticalSpacetimeX
 USES INT evolve_metric_every
 USES INT move_every
 USES INT resize_every
+USES CCTK_REAL AST_t0

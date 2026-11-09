@@ -109,7 +109,7 @@ private:
 
 BOOLEAN set_metric_init "Set metric during initialization"
 {
-} "yes
+} "yes"
 
 BOOLEAN move_grid_init "Move grid during initialization"
 {

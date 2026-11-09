@@ -561,7 +561,6 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
 
   //if (num_photons == 0) { return; }
-  fprintf(stderr, "Grid locations (%f, %f, %f), (%f, %f, %f)\n", position_x[0], position_y[0], position_z[0], position_x[1], position_y[1], position_z[1]);
   if (cctk_iteration > 0 && fast_light) { return; }
 
   MoveGridsHelper(CCTK_PASS_CTOC);

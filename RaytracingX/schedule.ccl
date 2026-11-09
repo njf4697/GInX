@@ -162,6 +162,21 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: RaytracingX_scalars
   } "set metric to cctk_time"
 
+if (AST_init && fast_light) {
+SCHEDULE R_SetMetric IN ANALYTIC_METRIC
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
+  } "set metric to cctk_time"
+}
+
 if (!fast_light)
 {
 
@@ -177,6 +192,7 @@ SCHEDULE R_SetMetric IN ANALYTIC_METRIC
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX_scalars
   } "set metric to cctk_time"
+}
 
 SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
 {

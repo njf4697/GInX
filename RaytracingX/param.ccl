@@ -12,6 +12,10 @@ BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
+BOOLEAN AST_init "whether or not to set initial metric to AST"  STEERABLE=ALWAYS
+{
+} true
+
 BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true

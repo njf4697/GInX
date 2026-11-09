@@ -67,6 +67,9 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     CCTK_INFO("R_ParticlesContainer_setup");
   }
 
+  if (!fast_light && !AST_init) {
+    CCTK_ERROR("If not using Fast Light Approximation, then AST_init must be set to True.");
+  }
   if (!fast_light && move_every != 0) {
     CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1");
   }

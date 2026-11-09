@@ -97,7 +97,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   assert(gi_metric >= 0 && "Failed to get the metric group index");
 
   //RaytracingX: Passes camera information into arrays that can be used by the initialization funciton.
-  CCTK_INT int_params[4];
+  CCTK_INT int_params[5];
   CCTK_REAL real_params[39];
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
@@ -133,6 +133,10 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       pc->normalize_velocity(metric, lev);
     }
   }
+
+  if (fast_light) { *RX_time = 0.0; }
+
+  CCTK_INFO("Photon starting time is %f.", *RX_time + AST_t0);
 }
 
 /**

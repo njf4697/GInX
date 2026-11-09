@@ -49,7 +49,8 @@
                                                          const bool camera_out_of_grid = int_params[3] > 0;                                                                                  \
                                                          const CCTK_INT num_pixels = num_pixels_width * num_pixels_height;                                                                   \
                                                          const bool calculate_kerr_conserved_quantities = (int_params[2] == 1);                                                              \
-                                                         const CCTK_REAL starting_time = real_params[38];                                                      
+                                                         const CCTK_REAL starting_time = real_params[38];    
+                                                         const bool fast_light = (int_params[4] == 1):                                                  
 
 #ifndef RAYTRACING_INITIALIZERS
 #define RAYTRACING_INITIALIZERS
@@ -110,7 +111,7 @@ void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_IN
   arrdata[StructType::vz][local_particle_id] = chi_lower[3] * A;
   arrdata[StructType::ln_E][local_particle_id] = 0;
   arrdata[StructType::tau][local_particle_id] = 0;
-  arrdata[StructType::time][local_particle_id] = starting_time;
+  arrdata[StructType::time][local_particle_id] = (!fast_light) ? starting_time : 0.0;
 
   //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
   arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
@@ -185,7 +186,7 @@ void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK
   arrdata[StructType::vz][local_particle_id] = -ray_dir[2];
   arrdata[StructType::ln_E][local_particle_id] = 0;
   arrdata[StructType::tau][local_particle_id] = 0;
-  arrdata[StructType::time][local_particle_id] = starting_time;
+  arrdata[StructType::time][local_particle_id] = (!fast_light) ? starting_time : 0.0;
 
   //The pixel indices *should* be ints, but the data structure GInX::PhotonsData does not easily extend with integer parameters, so it is stored as a real instead. While this is hacky, it is done for clarity and ease of output. It is possible to add an integer variable at runtime, but this wouldn't be written to disk in the standard amrex particle output routine.
   arrdata[StructType::pixel_number][local_particle_id] = (CCTK_REAL) pidx;
@@ -542,6 +543,7 @@ void setup_camera_initializer_ints(CCTK_ARGUMENTS, CCTK_INT* int_params, const b
     int_params[1] = num_pixels_height;
     int_params[2] = calculate_kerr_conserved_quantities ? 1 : 0;
     int_params[3] = camera_out_of_grid ? (camera_out_of_bounds ? 2 : 1) : 0; 
+    int_params[4] = fast_light ? 1 : 0;
 }
 
 CCTK_REAL get_starting_time(CCTK_ARGUMENTS, PhotonBounds grid_bounds) {

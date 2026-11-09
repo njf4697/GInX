@@ -8,7 +8,7 @@ extern "C" void AST_MoveGrids(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTSX_AST_MoveGrids;
   DECLARE_CCTK_PARAMETERS;
 
-  if (/*(move_every == 0 && cctk_iteration == 0) || */(move_every > 0 && cctk_iteration % move_every==0)) {
+  if ((move_grid_init && cctk_iteration == 0) || (move_every > 0 && cctk_iteration % move_every==0)) {
     MoveGridsHelper(CCTK_PASS_CTOC);
   }
   else {
@@ -70,7 +70,7 @@ extern "C" void AST_ResizeGrids(CCTK_ARGUMENTS)
 
   }
 
-  if ((resize_every == 0 && cctk_iteration == 0) || (resize_every > 0 && cctk_iteration%resize_every==0)) {
+  if ((resize_every > 0 && cctk_iteration%resize_every==0)) {
   
       // Calculate the resizing factor
       CCTK_REAL resize_factor = *current_separation / *init_separation;

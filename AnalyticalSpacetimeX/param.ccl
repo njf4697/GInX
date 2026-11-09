@@ -107,7 +107,11 @@ STRING traj_table_name "traj table name (hdf5)" STEERABLE=RECOVER
 
 private:
 
-BOOLEAN set_positions "Save position of BHs to a surface"
+BOOLEAN set_metric_init "Set metric during initialization"
+{
+} "yes
+
+BOOLEAN move_grid_init "Move grid during initialization"
 {
 } "no"
 

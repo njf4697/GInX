@@ -134,7 +134,7 @@ extern "C" void AnalyticalSpacetimeX_SetMetric(CCTK_ARGUMENTS) {
   //  return;
   //}
 
-  if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every == 0)) {
+  if ((evolve_metric_every > 0 && cctk_iteration % evolve_metric_every == 0) || (set_metric_init && cctk_iteration == 0)) {
     SetMetricHelper(CCTK_PASS_CTOC, cctk_time); 
   }
 }

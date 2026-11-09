@@ -77,7 +77,7 @@ SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL
     OPTIONS: global
   } "redistribute particles"
 
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL AFTER UpdateCustomTime
+SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL BEFORE UpdateCustomTime AFTER R_ParticlesContainer_evolvek4
   {
     LANG: C
     OPTIONS: global

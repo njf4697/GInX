@@ -104,7 +104,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
   CCTK_REAL real_params[39];
   setup_camera_initializer_reals(CCTK_PASS_CTOC, real_params, camera_out_of_grid, grid_bounds);
   setup_camera_initializer_ints(CCTK_PASS_CTOC, int_params, camera_out_of_bounds, camera_out_of_grid);
-  real_params[38] = -*RX_time;
+  real_params[38] = get_starting_time(CCTK_PASS_CTOC, grid_bounds);
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   { 
@@ -136,9 +136,6 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       pc->normalize_velocity(metric, lev);
     }
   }
-
-  if (fast_light) { *RX_time = 0.0; }
-
   CCTK_VINFO("Photon starting time is %f.", *RX_time + AST_t0);
 }
 
@@ -241,10 +238,10 @@ extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
   }
 
   *RX_time = 0.0;
-  if (camera_out_of_grid) {
+  if (camera_out_of_grid && !fast_light) {
     *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
   }
-  else if (camera_out_of_bounds) {
+  if (camera_out_of_bounds) {
     get_starting_time(CCTK_PASS_CTOC, bounds); //errors if not pointing in correct direction
   }
 }

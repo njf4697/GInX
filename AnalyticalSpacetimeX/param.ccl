@@ -115,6 +115,10 @@ BOOLEAN move_grid_init "Move grid during initialization"
 {
 } "no"
 
+BOOLEAN set_positions "Save position of BHs to a surface"
+{
+} "no"
+
 BOOLEAN set_analytic_metric_always "Be sure to compute the Analytical metric even without analytical_spacetime"
 {
 } "no"

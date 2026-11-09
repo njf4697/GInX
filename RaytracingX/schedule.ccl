@@ -221,7 +221,6 @@ SCHEDULE R_SetMetric IN ANALYTIC_METRIC
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX_scalars
   } "set metric to cctk_time"
-}
 
 SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
 {

@@ -149,6 +149,7 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     READS: RaytracingX_scalars
   } "evolve particles"
 
+if (AST_init && fast_light) {
   SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
   {
     LANG: C
@@ -161,8 +162,6 @@ SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesConta
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX_scalars
   } "set metric to cctk_time"
-
-if (AST_init && fast_light) {
 SCHEDULE R_SetMetric IN ANALYTIC_METRIC
   {
     LANG: C
@@ -175,10 +174,40 @@ SCHEDULE R_SetMetric IN ANALYTIC_METRIC
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX_scalars
   } "set metric to cctk_time"
+
+  SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
+{
+  LANG: C
+  OPTIONS: global
+  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
+} "Copy BH positions"
+
+SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+{
+  LANG: C
+  OPTIONS: global
+  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
+  READS: BoxInBox::positions
+  WRITES: BoxInBox::positions
+} "Change grid based on BH position"
 }
 
 if (!fast_light)
 {
+  SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
+  } "set metric to cctk_time"
 
 SCHEDULE R_SetMetric IN ANALYTIC_METRIC
   {

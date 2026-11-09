@@ -49,7 +49,7 @@
                                                          const bool camera_out_of_grid = int_params[3] > 0;                                                                                  \
                                                          const CCTK_INT num_pixels = num_pixels_width * num_pixels_height;                                                                   \
                                                          const bool calculate_kerr_conserved_quantities = (int_params[2] == 1);                                                              \
-                                                         const CCTK_REAL starting_time = real_params[38];    
+                                                         const CCTK_REAL starting_time = real_params[38];                                                                                    \
                                                          const bool fast_light = (int_params[4] == 1):                                                  
 
 #ifndef RAYTRACING_INITIALIZERS

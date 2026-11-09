@@ -139,7 +139,7 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
 
   if (fast_light) { *RX_time = 0.0; }
 
-  CCTK_INFO("Photon starting time is %f.", *RX_time + AST_t0);
+  CCTK_VINFO("Photon starting time is %f.", *RX_time + AST_t0);
 }
 
 /**

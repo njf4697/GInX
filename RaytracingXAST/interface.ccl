@@ -2,7 +2,7 @@
 # ====================================================
 
 IMPLEMENTS: RaytracingXAST
-INHERETS: RaytracingX AnalyticalSpacetimeX
+INHERITS: RaytracingX AnalyticalSpacetimeX
 
 USES INCLUDE HEADER: Photons.hxx
 USES INCLUDE HEADER: BaseParticlesContainer.hxx

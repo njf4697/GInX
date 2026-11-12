@@ -294,7 +294,7 @@ extern "C" void ParticlesRedistribute(CCTK_ARGUMENTS)
   CCTK_Barrier(cctkGH);
 }
 
-void EvolveKNHelper(CCTK_ARGUMENTS, const int k) {
+void ParticlesEvolveKNHelper(CCTK_ARGUMENTS, const int k) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 

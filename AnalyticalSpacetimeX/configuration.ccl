@@ -5,3 +5,5 @@ REQUIRES Loop
 OPTIONAL HDF5
 {
 }
+
+Provides AnalyticalSpacetimeX {}

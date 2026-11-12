@@ -2,3 +2,5 @@
 # =====================================================
 
 REQUIRES AMREX ParticlesContainer ParticlesSolverUtilities Loop
+
+Provides RaytracingX {}

@@ -2,3 +2,5 @@
 # =====================================================
 
 REQUIRES RaytracingX AnalyticalSpacetimeX
+
+Provides RaytracingXAST {}

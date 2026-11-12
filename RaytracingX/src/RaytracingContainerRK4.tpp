@@ -275,8 +275,8 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
     const CCTK_REAL dt,
     const PhotonBounds &bounds)
 {
-    const CCTK_REAL rk_fac1 = {0.0, 0.5, 0.5, 1.0};
-    const CCTK_REAL rk_fac2 = {1./6., 1./3., 1./3., 1./6.}
+    const CCTK_REAL rk_fac1[4] = {0.0, 0.5, 0.5, 1.0};
+    const CCTK_REAL rk_fac2[4] = {1./6., 1./3., 1./3., 1./6.}
 
     const auto plo0 = this->Geom(0).ProbLoArray();
     const auto phi0 = this->Geom(0).ProbHiArray();

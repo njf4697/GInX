@@ -227,6 +227,9 @@ extern "C" void CheckHorizonAndBannedRegions(CCTK_ARGUMENTS)
 
 extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
 {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+  
   long n_local = 0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
@@ -248,6 +251,9 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
 
 extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
 {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
   long n_local = 0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
@@ -272,7 +278,7 @@ extern "C" void SetDeltaTime(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  *RX_dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
+  *RX_dt = (*num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 }
 
 extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {

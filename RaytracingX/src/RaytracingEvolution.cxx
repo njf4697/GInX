@@ -365,7 +365,7 @@ extern "C" void ParticlesEvolveK1(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 0);
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 1);
 }
 
 extern "C" void ParticlesEvolveK2(CCTK_ARGUMENTS)
@@ -375,7 +375,7 @@ extern "C" void ParticlesEvolveK2(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 1);
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 2);
 }
 
 extern "C" void ParticlesEvolveK3(CCTK_ARGUMENTS)
@@ -385,7 +385,7 @@ extern "C" void ParticlesEvolveK3(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 2);
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 3);
 }
 
 extern "C" void ParticlesEvolveK4(CCTK_ARGUMENTS)
@@ -395,7 +395,7 @@ extern "C" void ParticlesEvolveK4(CCTK_ARGUMENTS)
 
   if (num_photons == 0) { return; }
 
-  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 3);
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 4);
 }
 
 extern "C" void CalculateKerrConserved(CCTK_ARGUMENTS)

@@ -275,8 +275,8 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
     const CCTK_REAL dt,
     const PhotonBounds &bounds)
 {
-    const CCTK_REAL rk_fac1[4] = {0.0, 0.5, 0.5, 1.0};
-    const CCTK_REAL rk_fac2[4] = {1./6., 1./3., 1./3., 1./6.}
+    const CCTK_REAL rk_fac1[5] = {0.0, 0.0, 0.5, 0.5, 1.0};
+    const CCTK_REAL rk_fac2[5] = {0.0, 1./6., 1./3., 1./3., 1./6.};
 
     const auto plo0 = this->Geom(0).ProbLoArray();
     const auto phi0 = this->Geom(0).ProbHiArray();
@@ -339,7 +339,7 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
                            {
       SKIP_DELETED_PARTICLES
 
-      if (k == 1)
+      if (k_n == 1)
       {
         const amrex::GpuArray<CCTK_REAL, 9> U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
@@ -354,37 +354,37 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-      U_tmp[Uidx::x] = U[Uidx::x]     + rk_fac1[k] * dt * k[Uidx::x];
-      U_tmp[Uidx::y] = U[Uidx::y]     + rk_fac1[k] * dt * k[Uidx::y];
-      U_tmp[Uidx::z] = U[Uidx::z]     + rk_fac1[k] * dt * k[Uidx::z];
-      U_tmp[Uidx::vx] = U[Uidx::vx]   + rk_fac1[k] * dt * k[Uidx::vx];
-      U_tmp[Uidx::vy] = U[Uidx::vy]   + rk_fac1[k] * dt * k[Uidx::vy];
-      U_tmp[Uidx::vz] = U[Uidx::vz]   + rk_fac1[k] * dt * k[Uidx::vz];
-      U_tmp[Uidx::lnE] = U[Uidx::lnE] + rk_fac1[k] * dt * k[Uidx::lnE];
-      U_tmp[Uidx::tau] = U[Uidx::tau] + rk_fac1[k] * dt * k[Uidx::tau];
+      U_tmp[Uidx::x] = U[Uidx::x]     + rk_fac1[k_n] * dt * k[Uidx::x];
+      U_tmp[Uidx::y] = U[Uidx::y]     + rk_fac1[k_n] * dt * k[Uidx::y];
+      U_tmp[Uidx::z] = U[Uidx::z]     + rk_fac1[k_n] * dt * k[Uidx::z];
+      U_tmp[Uidx::vx] = U[Uidx::vx]   + rk_fac1[k_n] * dt * k[Uidx::vx];
+      U_tmp[Uidx::vy] = U[Uidx::vy]   + rk_fac1[k_n] * dt * k[Uidx::vy];
+      U_tmp[Uidx::vz] = U[Uidx::vz]   + rk_fac1[k_n] * dt * k[Uidx::vz];
+      U_tmp[Uidx::lnE] = U[Uidx::lnE] + rk_fac1[k_n] * dt * k[Uidx::lnE];
+      U_tmp[Uidx::tau] = U[Uidx::tau] + rk_fac1[k_n] * dt * k[Uidx::tau];
       U_tmp[Uidx::del_rsn] = k[Uidx::del_rsn];
       U_tmp[Uidx::del_rsn] = check_bounds(U_tmp, plo0, phi0, dx, lapse_array, max_energy, bounds);
 
       if (U_tmp[Uidx::del_rsn] != 0.0) {
         deletion_reasons[i] = U_tmp[Uidx::del_rsn];
-        time[i] += rk_fac1[MIN(k-1, 0)] * dt;
+        time[i] += rk_fac1[k_n-1] * dt;
         particles[i].id() = -1;
         return;
       }
       
-      k = self->compute_rhs(iteration, index[i], U_tmp, rk_fac1[k]*dt, lapse_array, shift_array, metric_array,
+      k = self->compute_rhs(iteration, index[i], U_tmp, rk_fac1[k_n]*dt, lapse_array, shift_array, metric_array,
                             curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds);
       
-      particles[i].pos(0) += rk_fac2[k] * dt * k[Uidx::x];
-      particles[i].pos(1) += rk_fac2[k] * dt * k[Uidx::y];
-      particles[i].pos(2) += rk_fac2[k] * dt * k[Uidx::z];
-      vels_x[i]           += rk_fac2[k] * dt * k[Uidx::vx];
-      vels_y[i]           += rk_fac2[k] * dt * k[Uidx::vy];
-      vels_z[i]           += rk_fac2[k] * dt * k[Uidx::vz];
-      ln_energy[i]        += rk_fac2[k] * dt * k[Uidx::lnE];
-      tau[i]              += rk_fac2[k] * dt * k[Uidx::tau];
+      particles[i].pos(0) += rk_fac2[k_n] * dt * k[Uidx::x];
+      particles[i].pos(1) += rk_fac2[k_n] * dt * k[Uidx::y];
+      particles[i].pos(2) += rk_fac2[k_n] * dt * k[Uidx::z];
+      vels_x[i]           += rk_fac2[k_n] * dt * k[Uidx::vx];
+      vels_y[i]           += rk_fac2[k_n] * dt * k[Uidx::vy];
+      vels_z[i]           += rk_fac2[k_n] * dt * k[Uidx::vz];
+      ln_energy[i]        += rk_fac2[k_n] * dt * k[Uidx::lnE];
+      tau[i]              += rk_fac2[k_n] * dt * k[Uidx::tau];
 
-      if (k == 1) {
+      if (k_n == 1) {
         U0[i] = U[0];
         U1[i] = U[1];
         U2[i] = U[2];
@@ -404,7 +404,7 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
       k6[i] = k[6];
       k7[i] = k[7];
 
-      if (k != 4) {
+      if (k_n != 4) {
         continue;
       }
 

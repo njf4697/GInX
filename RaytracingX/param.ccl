@@ -1,8 +1,6 @@
 # Parameter definitions for thorn RaytracingX
 # =====================================================
 
-RESTRICTED:
-
 private:
 
 CCTK_REAL coarse_dtfac "same as Carpetx::dtfac, but for the coarsest dx, used when outside specified bounds" STEERABLE = ALWAYS
@@ -10,11 +8,11 @@ CCTK_REAL coarse_dtfac "same as Carpetx::dtfac, but for the coarsest dx, used wh
     *:0) :: "Any negative real number"
 } -1.0
 
-BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
+RESTRICTED: BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
-BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
+RESTRICTED: BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
 {
 } true
 

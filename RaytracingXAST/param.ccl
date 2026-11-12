@@ -1,6 +1,10 @@
 # Parameter definitions for thorn RaytracingXAST
 # =====================================================
 
+BOOLEAN do_raytracing_analytical "whether to have RaytracingXAST enabled" STEERABLE = ALWAYS
+{
+} "yes"
+
 BOOLEAN reset_metric "whether to reset metric after RaytracingXAST changes it" STEERABLE = ALWAYS
 {
 } "yes"

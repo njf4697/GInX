@@ -70,11 +70,11 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
     bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
     if (use_custom_bounds) {
+      fprintf(stderr, "test1");
       assert(photon_xmin < photon_xmax);
       assert(photon_ymin < photon_ymax);
       assert(photon_zmin < photon_zmax);
     }
-
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 
     if (camera_out_of_bounds && !extended_camera) {
@@ -199,7 +199,6 @@ extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
 
       for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
           n_local += pc->num_particles_out_of_bounds(lev, bounds);
-          fprintf(stderr, "%i\n", n_local);
       }
   }
 

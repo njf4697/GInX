@@ -144,10 +144,6 @@ long RaytracingParticlesContainer<StructType>::num_particles_out_of_bounds(const
     {   
         const int np = pti.numParticles();
 
-        if (np == 0) {
-            continue;
-        }
-
         auto *AMREX_RESTRICT particles = &(pti.GetArrayOfStructs()[0]);
 
         for (int i = 0; i < np; i++) {

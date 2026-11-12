@@ -168,6 +168,7 @@ void fill_photon_data_camera_out_of_grid(ParticleTile& particle_tile, const CCTK
   }
 
   const CCTK_REAL pos[3] = {camera_pos[0] + starting_time*ray_dir[0], camera_pos[1] + starting_time*ray_dir[1], camera_pos[2] + starting_time*ray_dir[2]};
+  fprintf(stderr, "%f, %f, %f"%(pos[0], pos[1], pos[2]));
 
   ptd.id(local_particle_id) = next_id;
   ptd.cpu(local_particle_id) = amrex::ParallelDescriptor::MyProc();

@@ -9,10 +9,10 @@
 #define RAYTRACINGX
 
 #ifndef MAX
-#define MAX(X, Y) ((X > Y) ? X : Y)
+#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
 #endif
 #ifndef MIN
-#define MIN(X, Y) ((X < Y) ? X : Y)
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #endif
 #define DEBUG(X) fprintf(stderr, "%s\n", ("proc " + std::to_string(amrex::ParallelDescriptor::MyProc()) + ": " + X).c_str());             
 #define ASSERT_FINITE(X) if (!std::isfinite(X)) { DEBUG(std::to_string(X) + " is not finite."); assert(std::isfinite(X)); }

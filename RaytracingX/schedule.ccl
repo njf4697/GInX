@@ -61,8 +61,16 @@ if (use_custom_bounds && extended_camera)
   } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
 
+SCHEDULE SetDeltaTime IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEFORE UpdateCustomTime
+  {
+    LANG: C
+    OPTIONS: global
+    READS: RaytracingX_scalars
+    WRITES: RaytracingX_scalars
+  } "Update dt variable associated with raytracing evolution by dt"
+
 if (!fast_light) {
-  SCHEDULE UpdateCustomTime IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions
+  SCHEDULE UpdateCustomTime IN RaytracingX_Init AFTER SetDeltaTime
   {
     LANG: C
     OPTIONS: global
@@ -95,14 +103,22 @@ SCHEDULE CheckParticleNumber IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegi
 
 if (use_custom_bounds && extended_camera)
 {
-  SCHEDULE CheckOutOfBoundsParticlesNumber IN RaytracingX_Evol AFTER CheckParticleNumber BEFORE ParticlesEvolveK1
+  SCHEDULE CheckOutOfBoundsParticlesNumber IN RaytracingX_Evol AFTER CheckParticleNumber BEFORE SetDeltaTime
   {
     LANG: C
     OPTIONS: global
   } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
 
-SCHEDULE ParticlesEvolveK1 IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegions
+SCHEDULE SetDeltaTime IN RaytracingX_Evol AFTER CheckOutOfBoundsParticlesNumber BEFORE ParticlesEvolveK1
+  {
+    LANG: C
+    OPTIONS: global
+    READS: RaytracingX_scalars
+    WRITES: RaytracingX_scalars
+  } "Update dt variable associated with raytracing evolution by dt"
+
+SCHEDULE ParticlesEvolveK1 IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegions BEFORE ParticlesEvolveK2
 {
   LANG: C
   OPTIONS: global
@@ -114,7 +130,7 @@ SCHEDULE ParticlesEvolveK1 IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegion
   READS: RaytracingX_scalars
 } "Do the first substep of RK4 method for particle evolution"
 
-SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1
+SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1 BEFORE ParticlesEvolveK3
 {
   LANG: C
   OPTIONS: global
@@ -126,7 +142,7 @@ SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1
   READS: RaytracingX_scalars
 } "Do the second substep of RK4 method for particle evolution"
 
-SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2
+SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2 BEFORE ParticlesEvolveK4
 {
   LANG: C
   OPTIONS: global
@@ -138,7 +154,7 @@ SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2
   READS: RaytracingX_scalars
 } "Do the third substep of RK4 method for particle evolution"
 
-SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK4
+SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3
 {
   LANG: C
   OPTIONS: global

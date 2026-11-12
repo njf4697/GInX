@@ -8,8 +8,15 @@ public:
 
 CCTK_REAL RaytracingX_scalars type=SCALAR
 {
+  RX_dt
   RX_t0
   RX_time
+} "RaytracingX-related scalar quantities"
+
+CCTK_INT RaytracingX_int_scalars type=SCALAR
+{
+  num_photons
+  num_photons_out_of_bounds
 } "RaytracingX-related scalar quantities"
 
 USES INCLUDE HEADER: Photons.hxx

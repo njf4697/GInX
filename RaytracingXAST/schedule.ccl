@@ -76,6 +76,7 @@ if (!fast_light)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX::RaytracingX_scalars
+    READS: RaytracingX::RaytracingX_int_scalars
   } "Set metric to raytracing particle time + 0.5*dt"
 
   SCHEDULE SetMetricPlusDeltaTime IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE ParticlesEvolveK4
@@ -89,6 +90,7 @@ if (!fast_light)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
     READS: RaytracingX::RaytracingX_scalars
+    READS: RaytracingX::RaytracingX_int_scalars
   } "Set metric to raytracing particle time + dt"
 
   if (reset_metric)

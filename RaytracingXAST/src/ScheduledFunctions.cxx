@@ -17,7 +17,7 @@ extern "C" void CheckParamatersRXAST(CCTK_ARGUMENTS)
   }
 }
 
-extern "C" void CheckParamatersRXAST(CCTK_ARGUMENTS)
+extern "C" void SetRaytracingInitialTime(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
@@ -43,9 +43,7 @@ extern "C" void SetMetricPlusHalfDeltaTime(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
   if (cctk_iteration > 0 && fast_light) { return; }
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + 0.5*dt);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + 0.5* *RX_dt);
 }
 
 extern "C" void SetMetricPlusDeltaTime(CCTK_ARGUMENTS)
@@ -56,9 +54,7 @@ extern "C" void SetMetricPlusDeltaTime(CCTK_ARGUMENTS)
   if (num_photons == 0) { return; }
   if (cctk_iteration > 0 && fast_light) { return; }
   
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + dt);
+  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + *RX_dt);
 }
 
 extern "C" void SetPositions(CCTK_ARGUMENTS)
@@ -73,7 +69,7 @@ extern "C" void SetPositions(CCTK_ARGUMENTS)
 
 extern "C" void RoveGrids(CCTK_ARGUMENTS)
 {
-  DECLARE_CCTK_ARGUMENTSX_R_MoveGrids;
+  DECLARE_CCTK_ARGUMENTSX;
   DECLARE_CCTK_PARAMETERS;
 
   if (cctk_iteration > 0 && fast_light) { return; }

@@ -17,12 +17,10 @@
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
-long num_photons;
 PhotonBounds bounds;
 PhotonBounds grid_bounds;
 bool camera_out_of_bounds;
 bool camera_out_of_grid;
-long num_photons_out_of_bounds = 0;
 CCTK_REAL coarse_dt;
 
 extern "C" void CheckParamaters(CCTK_ARGUMENTS)
@@ -64,7 +62,7 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
 
     camera_out_of_grid = isOutOfBounds(camera_pos, grid_bounds.arr);
     if (camera_out_of_grid) {
-      num_photons_out_of_bounds = 1;
+      *num_photons_out_of_bounds = 1;
     }
 
     bounds.xmin() = use_custom_bounds ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
@@ -92,6 +90,7 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
 
   *RX_time = 0.0;
   *RX_t0 = 0.0;
+  *RX_dt = 0.0;
   if (camera_out_of_grid && !fast_light) {
     *RX_t0 = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
   }
@@ -177,7 +176,7 @@ extern "C" void CheckHorizonAndBannedRegions(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -242,7 +241,7 @@ extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
   long n_global = n_local;
   amrex::ParallelDescriptor::ReduceLongSum(n_global);
 
-  num_photons = n_global;
+  *num_photons = n_global;
 
   CCTK_VINFO("Found %ld particles remaining.", n_global);
 }
@@ -263,17 +262,24 @@ extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
   long n_global = n_local;
   amrex::ParallelDescriptor::ReduceLongSum(n_global);
 
-  num_photons_out_of_bounds = n_global;
+  *num_photons_out_of_bounds = n_global;
 
-  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", num_photons_out_of_bounds);
+  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", *num_photons_out_of_bounds);
+}
+
+extern "C" void SetDeltaTime(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  *RX_dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 }
 
 extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-  *RX_time += dt;
+  *RX_time += *RX_dt;
 
   CCTK_VINFO("Current particle time is now %f.", *RX_time + *RX_t0);
 }
@@ -297,11 +303,9 @@ void ParticlesEvolveKNHelper(CCTK_ARGUMENTS, const int k) {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   CCTK_Barrier(cctkGH);
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
@@ -346,7 +350,7 @@ void ParticlesEvolveKNHelper(CCTK_ARGUMENTS, const int k) {
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_kn(k, cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + *RX_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
+      pc->evolve_kn(k, cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + *RX_t0, lev, max_energy, *RX_dt, (*num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
     }
   }
 }
@@ -362,7 +366,7 @@ extern "C" void ParticlesEvolveK1(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 1);
 }
@@ -372,7 +376,7 @@ extern "C" void ParticlesEvolveK2(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 2);
 }
@@ -382,7 +386,7 @@ extern "C" void ParticlesEvolveK3(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 3);
 }
@@ -392,7 +396,7 @@ extern "C" void ParticlesEvolveK4(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 4);
 }
@@ -402,7 +406,7 @@ extern "C" void CalculateKerrConserved(CCTK_ARGUMENTS)
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  if (num_photons == 0) { return; }
+  if (*num_photons == 0) { return; }
 
   const int tl = 0;
   const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");

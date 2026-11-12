@@ -41,13 +41,6 @@ if (particle_tsv_every>0)
   } "Output particle data at current iteration"
 }
 
-SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Init AFTER ParticlesInit
-{
-  LANG: C
-  OPTIONS: global
-  READS: RaytracingX_int_scalars
-} "check particle bounds"
-
 SCHEDULE CheckParticleNumber IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEFORE CheckOutOfBoundsParticlesNumber
 {
   LANG: C
@@ -64,6 +57,13 @@ if (use_custom_bounds && extended_camera)
     WRITES: RaytracingX_int_scalars
   } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
+
+SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Init AFTER ParticlesInit
+{
+  LANG: C
+  OPTIONS: global
+  READS: RaytracingX_int_scalars
+} "check particle bounds"
 
 SCHEDULE SetDeltaTime IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEFORE UpdateCustomTime
   {

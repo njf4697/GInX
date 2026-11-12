@@ -162,6 +162,54 @@ extern "C" void ParticlesPrint(CCTK_ARGUMENTS)
   }
 }
 
+extern "C" void CheckParticleNumber(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  long n_local = 0;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
+          n_local += pc->NumberOfParticlesAtLevel(lev, true, true);
+      }
+  }
+
+  long n_global = n_local;
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+
+  *num_photons = n_global;
+
+  CCTK_VINFO("Found %ld particles remaining.", n_global);
+}
+
+extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  long n_local = 0;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
+          n_local += pc->num_particles_out_of_bounds(lev, bounds);
+      }
+  }
+
+  long n_global = n_local;
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+
+  *num_photons_out_of_bounds = n_global;
+
+  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", *num_photons_out_of_bounds);
+}
+
 /**
  * \brief Evolve the geodesics
  *
@@ -220,54 +268,6 @@ extern "C" void CheckHorizonAndBannedRegions(CCTK_ARGUMENTS)
       pc->check_horizon(lapse, lev, max_energy);
     }
   }
-}
-
-extern "C" void CheckParticleNumber(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  long n_local = 0;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
-      auto &pc = r_photons.at(patch);
-      auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          n_local += pc->NumberOfParticlesAtLevel(lev, true, true);
-      }
-  }
-
-  long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global);
-
-  *num_photons = n_global;
-
-  CCTK_VINFO("Found %ld particles remaining.", n_global);
-}
-
-extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  long n_local = 0;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
-      auto &pc = r_photons.at(patch);
-      auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          n_local += pc->num_particles_out_of_bounds(lev, bounds);
-      }
-  }
-
-  long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global);
-
-  *num_photons_out_of_bounds = n_global;
-
-  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", *num_photons_out_of_bounds);
 }
 
 extern "C" void SetDeltaTime(CCTK_ARGUMENTS)

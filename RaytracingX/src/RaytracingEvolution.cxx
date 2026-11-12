@@ -79,7 +79,7 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
       CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
     }
     if (camera_out_of_bounds && !camera_out_of_grid) {
-      CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
+      CCTK_VWARN(1,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
     }
   }
 

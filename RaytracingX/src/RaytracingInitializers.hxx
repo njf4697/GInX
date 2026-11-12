@@ -285,11 +285,9 @@ void camera_initializer(ParticleContainerClass &pc, const CCTK_REAL *real_params
     { 
       const CCTK_INT next_id = ParticleContainerClass::ParticleType::NextID();
       if (camera_out_of_grid) {
-        fprintf(stderr, "test1");
         fill_photon_data_camera_out_of_grid<StructType>(particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
       else {
-        fprintf(stderr, "test2");
         fill_photon_data_standard_camera<StructType>(particle_tile, local_particle_id, next_id, int_params, real_params, local_offset);
       }
     }
@@ -468,12 +466,14 @@ void setup_camera_initializer_reals(CCTK_ARGUMENTS, CCTK_REAL* real_params, cons
 
     Metric metric;
     if (camera_out_of_bounds) {
+      fprintf(stderr, "test1\n");
       if (!extended_camera) {
         CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(bounds.arr));
       }
       fillMetricFlat(CCTK_PASS_CTOC, &metric);
     }
     else {
+      fprintf(stderr, "test2\n");
       interpolateMetricAtPoint(CCTK_PASS_CTOC, &metric, camera_pos[0], camera_pos[1], camera_pos[2]); //interpolate metric values and store in Metric struct
     }
 

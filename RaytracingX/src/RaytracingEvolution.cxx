@@ -60,11 +60,6 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
     grid_bounds.ymax() = phi0[1] - 3*dx0[1];
     grid_bounds.zmax() = phi0[2] - 3*dx0[2];
 
-    camera_out_of_grid = isOutOfBounds(camera_pos, grid_bounds.arr);
-    if (camera_out_of_grid) {
-      *num_photons_out_of_bounds = 1;
-    }
-
     bounds.xmin() = use_custom_bounds ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
     bounds.ymin() = use_custom_bounds ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
     bounds.zmin() = use_custom_bounds ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
@@ -92,7 +87,7 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
   *RX_t0 = 0.0;
   *RX_dt = 0.0;
   if (camera_out_of_grid && !fast_light) {
-    *RX_t0 = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
+    *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
   }
   if (camera_out_of_bounds) {
     get_starting_time(CCTK_PASS_CTOC, bounds); //errors if not pointing in correct direction

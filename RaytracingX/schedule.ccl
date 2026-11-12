@@ -37,6 +37,7 @@ if (particle_tsv_every>0)
   {
     LANG: C
     OPTIONS: global
+    READS: RaytracingX_scalars
   } "Output particle data at current iteration"
 }
 
@@ -44,12 +45,14 @@ SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Init AFTER ParticlesInit
 {
   LANG: C
   OPTIONS: global
+  READS: RaytracingX_int_scalars
 } "check particle bounds"
 
 SCHEDULE CheckParticleNumber IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEFORE CheckOutOfBoundsParticlesNumber
 {
   LANG: C
   OPTIONS: global
+  WRITES: RaytracingX_int_scalars
 } "Count raytracing particles currently present in simulation"
 
 if (use_custom_bounds && extended_camera)
@@ -58,6 +61,7 @@ if (use_custom_bounds && extended_camera)
   {
     LANG: C
     OPTIONS: global
+    WRITES: RaytracingX_int_scalars
   } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
 
@@ -67,6 +71,7 @@ SCHEDULE SetDeltaTime IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEF
     OPTIONS: global
     READS: RaytracingX_scalars
     WRITES: RaytracingX_scalars
+    READS: RaytracingX_int_scalars
   } "Update dt variable associated with raytracing evolution by dt"
 
 if (!fast_light) {
@@ -93,12 +98,14 @@ SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Evol AFTER ParticlesRedistr
 {
   LANG: C
   OPTIONS: global
+  READS: RaytracingX_int_scalars
 } "check particle bounds"
 
 SCHEDULE CheckParticleNumber IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegions BEFORE CheckOutOfBoundsParticlesNumber
 {
   LANG: C
   OPTIONS: global
+  WRITES: RaytracingX_int_scalars
 } "Count raytracing particles currently present in simulation"
 
 if (use_custom_bounds && extended_camera)
@@ -107,6 +114,7 @@ if (use_custom_bounds && extended_camera)
   {
     LANG: C
     OPTIONS: global
+    WRITES: RaytracingX_int_scalars
   } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
 
@@ -115,6 +123,7 @@ SCHEDULE SetDeltaTime IN RaytracingX_Evol AFTER CheckOutOfBoundsParticlesNumber 
     LANG: C
     OPTIONS: global
     READS: RaytracingX_scalars
+    READS: RaytracingX_int_scalars
     WRITES: RaytracingX_scalars
   } "Update dt variable associated with raytracing evolution by dt"
 
@@ -128,6 +137,7 @@ SCHEDULE ParticlesEvolveK1 IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegion
   READS: ADMBaseX::shift(everywhere)
   READS: AsterMasks::aster_mask_vc(everywhere)
   READS: RaytracingX_scalars
+  READS: RaytracingX_int_scalars
 } "Do the first substep of RK4 method for particle evolution"
 
 SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1 BEFORE ParticlesEvolveK3
@@ -140,6 +150,7 @@ SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1 BEFORE Pa
   READS: ADMBaseX::shift(everywhere)
   READS: AsterMasks::aster_mask_vc(everywhere)
   READS: RaytracingX_scalars
+  READS: RaytracingX_int_scalars
 } "Do the second substep of RK4 method for particle evolution"
 
 SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2 BEFORE ParticlesEvolveK4
@@ -152,6 +163,7 @@ SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2 BEFORE Pa
   READS: ADMBaseX::shift(everywhere)
   READS: AsterMasks::aster_mask_vc(everywhere)
   READS: RaytracingX_scalars
+  READS: RaytracingX_int_scalars
 } "Do the third substep of RK4 method for particle evolution"
 
 SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3
@@ -164,6 +176,7 @@ SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3
   READS: ADMBaseX::shift(everywhere)
   READS: AsterMasks::aster_mask_vc(everywhere)
   READS: RaytracingX_scalars
+  READS: RaytracingX_int_scalars
 } "Do the fourth substep of RK4 method for particle evolution"
 
 if (calculate_kerr_conserved_quantities)
@@ -181,6 +194,7 @@ if (particle_tsv_every>0)
   {
     LANG: C
     OPTIONS: global
+    READS: RaytracingX_scalars
   } "Output particle data at current iteration"
 }
 
@@ -190,6 +204,7 @@ if (output_final_data)
   {
     LANG: C
     OPTIONS: global
+    READS: RaytracingX_scalars
   } "Output particle data if particle was terminated"
 }
 
@@ -207,6 +222,7 @@ if (!fast_light)
     OPTIONS: global
     READS: RaytracingX_scalars
     WRITES: RaytracingX_scalars
+    READS: RaytracingX_int_scalars
   } "update time variable associated with raytracing evolution by dt"
 }
 

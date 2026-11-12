@@ -1,4 +1,4 @@
-#include "RaytracingInitializers.hxx"
+#include "RaytracingContainer.hxx"
 #include "AST_Spacetime_SetMetric.hxx"
 
 extern "C" void CheckParamatersRXAST(CCTK_ARGUMENTS)

@@ -33,3 +33,6 @@ CCTK_INT FUNCTION DriverInterpolate(
   CCTK_INT ARRAY IN output_array_types,
   CCTK_POINTER ARRAY IN output_arrays)
 REQUIRES FUNCTION DriverInterpolate
+
+INCLUDE HEADER: RaytracingX.h IN RaytracingX.h
+INCLUDE HEADER: RaytracingContainer.hxx IN RaytracingContainer.hxx

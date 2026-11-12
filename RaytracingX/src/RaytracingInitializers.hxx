@@ -8,7 +8,6 @@
  * This file contains initial conditions for photons, imposing the initial conditions on the velocity
  * based on camera parameters.
  */
-#include "RaytracingX.h"
 #include "RaytracingContainer.hxx"
 
 #include "AMReX_GpuDevice.H"

@@ -4,6 +4,8 @@
 IMPLEMENTS: RaytracingXAST
 INHERITS: RaytracingX AnalyticalSpacetimeX
 
+USES INCLUDE HEADER: RaytracingContainer.hxx
+
 USES INCLUDE HEADER: Photons.hxx
 USES INCLUDE HEADER: BaseParticlesContainer.hxx
 USES INCLUDE HEADER: ParticlesContainer.hxx

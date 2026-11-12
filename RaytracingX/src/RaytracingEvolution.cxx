@@ -70,10 +70,10 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
     bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
 
     if (use_custom_bounds) {
-      fprintf(stderr, "test1");
       assert(photon_xmin < photon_xmax);
       assert(photon_ymin < photon_ymax);
       assert(photon_zmin < photon_zmax);
+      fprintf(stderr, "%f %f", bounds.xmin(), bounds.xmin());
     }
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 

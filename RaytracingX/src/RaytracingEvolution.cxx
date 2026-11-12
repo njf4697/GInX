@@ -199,6 +199,7 @@ extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
 
       for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
           n_local += pc->num_particles_out_of_bounds(lev, bounds);
+          fprintf(stderr, "%i\n", n_local);
       }
   }
 

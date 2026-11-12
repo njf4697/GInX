@@ -69,7 +69,7 @@ extern "C" void SetPositions(CCTK_ARGUMENTS)
 
 extern "C" void RoveGrids(CCTK_ARGUMENTS)
 {
-  DECLARE_CCTK_ARGUMENTSX;
+  DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
   if (cctk_iteration > 0 && fast_light) { return; }

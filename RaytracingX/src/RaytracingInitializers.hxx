@@ -466,14 +466,12 @@ void setup_camera_initializer_reals(CCTK_ARGUMENTS, CCTK_REAL* real_params, cons
 
     Metric metric;
     if (camera_out_of_bounds) {
-      fprintf(stderr, "test1\n");
       if (!extended_camera) {
         CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(bounds.arr));
       }
       fillMetricFlat(CCTK_PASS_CTOC, &metric);
     }
     else {
-      fprintf(stderr, "test2\n");
       interpolateMetricAtPoint(CCTK_PASS_CTOC, &metric, camera_pos[0], camera_pos[1], camera_pos[2]); //interpolate metric values and store in Metric struct
     }
 

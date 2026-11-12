@@ -67,7 +67,7 @@ extern "C" void SetPositions(CCTK_ARGUMENTS)
   AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
 }
 
-extern "C" void RoveGrids(CCTK_ARGUMENTS)
+extern "C" void MoveGrids(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;

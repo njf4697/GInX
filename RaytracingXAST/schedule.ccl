@@ -4,7 +4,7 @@
 if (do_raytracing && do_raytracing_analytical)
 {
 
-SCHEDULE CheckParamatersXAST IN RaytracingX_Setup AFTER CheckParamaters BEFORE CheckCamera  # ---------------------------------------------------- GROUP RaytracingX_Setup
+SCHEDULE CheckParamatersRXAST IN RaytracingX_Setup AFTER CheckParamaters BEFORE CheckCamera  # ---------------------------------------------------- GROUP RaytracingX_Setup
 {
   LANG: C
   OPTIONS: global

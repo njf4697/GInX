@@ -225,11 +225,11 @@ extern "C" void CheckHorizonAndBannedRegions(CCTK_ARGUMENTS)
   }
 }
 
-extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
+extern "C" void CheckParticleNumber(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
-  
+
   long n_local = 0;
 
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {

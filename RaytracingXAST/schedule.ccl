@@ -26,7 +26,7 @@ SCHEDULE SetMetric IN ANALYTIC_METRIC_INIT # -----------------------------------
   WRITES: ADMBaseX::lapse(everywhere)
   WRITES: ADMBaseX::shift(everywhere)
   WRITES: AsterMasks::aster_mask_vc(everywhere)
-  READS: RaytracingX_scalars
+  READS: RaytracingX::RaytracingX_scalars
 } "Set metric to raytracing particle time"
 
 # SetMetric is needed here even if !fast_light in case regridding occurs on initialization # ---------------------------------------------------- GROUP ANALYTIC_METRIC
@@ -40,7 +40,7 @@ SCHEDULE SetMetric IN ANALYTIC_METRIC
   WRITES: ADMBaseX::lapse(everywhere)
   WRITES: ADMBaseX::shift(everywhere)
   WRITES: AsterMasks::aster_mask_vc(everywhere)
-  READS: RaytracingX_scalars
+  READS: RaytracingX::RaytracingX_scalars
 } "Set metric to raytracing particle time"
 
 # SetPositions is needed here even if !fast_light in case regridding occurs on initialization
@@ -49,7 +49,7 @@ SCHEDULE SetPositions IN ANALYTIC_METRIC_REGRID
   LANG: C
   OPTIONS: global
   WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
+  READS: RaytracingX::RaytracingX_scalars
 } "Set AST BH positions based on trajectory"
 
 # MoveGrids is needed here even if !fast_light in case regridding occurs on initialization
@@ -58,7 +58,7 @@ SCHEDULE MoveGrids IN ANALYTIC_METRIC_REGRID AFTER SetPositions
   LANG: C
   OPTIONS: global
   READS: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
+  READS: RaytracingX::RaytracingX_scalars
   READS: BoxInBox::positions
   WRITES: BoxInBox::positions
 } "Change first and second BoxInBox refinement positions to BH positions from trajectory"
@@ -75,7 +75,7 @@ if (!fast_light)
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
+    READS: RaytracingX::RaytracingX_scalars
   } "Set metric to raytracing particle time + 0.5*dt"
 
   SCHEDULE SetMetricPlusDeltaTime IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE ParticlesEvolveK4
@@ -88,7 +88,7 @@ if (!fast_light)
     WRITES: ADMBaseX::lapse(everywhere)
     WRITES: ADMBaseX::shift(everywhere)
     WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
+    READS: RaytracingX::RaytracingX_scalars
   } "Set metric to raytracing particle time + dt"
 
   if (reset_metric)
@@ -103,7 +103,7 @@ if (!fast_light)
       WRITES: ADMBaseX::lapse(everywhere)
       WRITES: ADMBaseX::shift(everywhere)
       WRITES: AsterMasks::aster_mask_vc(everywhere)
-      READS: RaytracingX_scalars
+      READS: RaytracingX::RaytracingX_scalars
     } "Reset metric to raytracing particle time"
   }
 }

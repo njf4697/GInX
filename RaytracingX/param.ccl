@@ -169,7 +169,7 @@ RESTRICTED: REAL region_10_a "Spin of region 10" STEERABLE=always
 SHARES: BaseParticlesContainer
 
 # Base Output Variables
-USES INT particle_plot_every
+USES INT particle_tsv_every
 
 # Base Banned regions parameters
 USES INT banned_regions

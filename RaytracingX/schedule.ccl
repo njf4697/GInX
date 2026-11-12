@@ -31,7 +31,7 @@ SCHEDULE ParticlesInit IN RaytracingX_Init
   OPTIONS: global
 } "Initialize raytracing particles"
 
-if (particle_plot_every>0)
+if (particle_tsv_every>0)
 {
   SCHEDULE ParticlesPrint IN RaytracingX_Init AFTER ParticlesInit BEFORE CheckHorizonAndBannedRegions
   {
@@ -159,7 +159,7 @@ if (calculate_kerr_conserved_quantities)
   } "Calculate conserved quantities for particles in Kerr spacetime and output in U0, U1, and U2"
 }
 
-if (particle_plot_every>0)
+if (particle_tsv_every>0)
 {
   SCHEDULE ParticlesPrint IN RaytracingX_Evol AFTER CalculateKerrConserved BEFORE ParticlesPrintFinalData
   {

@@ -162,7 +162,6 @@ extern "C" void ParticlesPrint(CCTK_ARGUMENTS)
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
-    pc->outputParticlesPlot(it, particle_plot_every, std::string(out_dir));
     pc->outputParticlesAscii(it, particle_tsv_every, std::string(out_dir));
   }
 }

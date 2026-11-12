@@ -73,7 +73,7 @@ extern "C" void CheckCamera(CCTK_ARGUMENTS)
       assert(photon_xmin < photon_xmax);
       assert(photon_ymin < photon_ymax);
       assert(photon_zmin < photon_zmax);
-      fprintf(stderr, "%f %f", bounds.xmin(), bounds.xmin());
+      fprintf(stderr, "%f %f\n", bounds.xmin(), bounds.xmin());
     }
     camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
 

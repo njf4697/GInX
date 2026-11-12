@@ -1,28 +1,27 @@
 #ifndef RAYTRACINGCONTAINER
 #define RAYTRACINGCONTAINER
 
-#include <cctk.h>
-
-#include "Photons.hxx"
+//RaytracingX thorn
+#include "RaytracingX.h"  
+#include "RaytracingContainerMacros.hxx"
+//BaseParticlesContainer thorn
 #include "BaseParticlesContainer.hxx"
+//ParticlesContainer thorn
+#include "Photons.hxx"
 #include "ParticlesContainer.hxx"
-#include "RaytracingX.h"
-#include <AMReX_ParallelDescriptor.H>
-#include <CParameters.h>
-#include <fstream>
+//ParticlesSolverUtilities thorn
 #include "Interpolator.hxx"
+
+#include <AMReX_ParallelDescriptor.H>
+#include <fstream>
 #include <AMReX_Particles.H>
 #include <AMReX_AmrParticles.H>
 #include <AMReX_MultiFab.H>
 #include <AMReX_MultiFabUtil.H>
 #include <AMReX_MFIter.H>
 
-#include "RK4Macros.hxx"     
-#include "RaytracingContainerMacros.hxx"        
-
 namespace RaytracingX
 {
-
     struct RaytracingPhotonsData : public GInX::PhotonsData
     {
         enum
@@ -148,46 +147,8 @@ namespace RaytracingX
             const amrex::GpuArray<int, 3> &lower_valid_index,
             const amrex::GpuArray<int, 3> &upper_valid_index);
 
-        void evolve_k1(
-            const int iteration,
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
-            const amrex::MultiFab &curv,
-            const amrex::MultiFab &rho,
-            const CCTK_REAL &global_time,
-            const int &lev,
-            const CCTK_REAL max_energy,
-            const CCTK_REAL dt,
-            const PhotonBounds &bounds);
-
-        void evolve_k2(
-            const int iteration,
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
-            const amrex::MultiFab &curv,
-            const amrex::MultiFab &rho,
-            const CCTK_REAL &global_time,
-            const int &lev,
-            const CCTK_REAL max_energy,
-            const CCTK_REAL dt,
-            const PhotonBounds &bounds);
-
-        void evolve_k3(
-            const int iteration,
-            const amrex::MultiFab &lapse,
-            const amrex::MultiFab &shift,
-            const amrex::MultiFab &metric,
-            const amrex::MultiFab &curv,
-            const amrex::MultiFab &rho,
-            const CCTK_REAL &global_time,
-            const int &lev,
-            const CCTK_REAL max_energy,
-            const CCTK_REAL dt,
-            const PhotonBounds &bounds);
-
-        void evolve_k4(
+        void evolve_kn(
+            const int k,
             const int iteration,
             const amrex::MultiFab &lapse,
             const amrex::MultiFab &shift,

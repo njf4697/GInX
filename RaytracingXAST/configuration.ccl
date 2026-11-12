@@ -1,0 +1,4 @@
+# Configuration options for thorn RaytracingXAST
+# =====================================================
+
+REQUIRES RaytracingX AnalyticalSpacetimeX

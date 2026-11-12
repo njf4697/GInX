@@ -12,15 +12,7 @@ BOOLEAN do_raytracing "Override to skip raytracing if desired"  STEERABLE=ALWAYS
 {
 } true
 
-BOOLEAN AST_init "whether or not to set initial metric to AST"  STEERABLE=ALWAYS
-{
-} true
-
 BOOLEAN fast_light "Uses fast light approximation"  STEERABLE=ALWAYS
-{
-} true
-
-BOOLEAN reset_metric "Resets metric after changing"  STEERABLE=ALWAYS
 {
 } true
 
@@ -66,11 +58,6 @@ CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = 
 {
     (0.:* :: "Any positive real number"
 } 5.0
-
-CCTK_REAL dtfac "Size of dt relative to dx for photon integration" STEERABLE = ALWAYS
-{
-    (0.:1.] :: "Any real number between 0 and 1"
-} 1.0
 
 CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
 {
@@ -179,16 +166,10 @@ RESTRICTED: REAL region_10_a "Spin of region 10" STEERABLE=always
     -1:1 :: "Any positive value between -1 and 1"
 } 0.0
 
-INT RK4_interpolation_order "Interpolation order for grid values inside RK4" STEERABLE = ALWAYS
-{
-    (0:* :: "Any positive integer"
-} 5
-
 SHARES: BaseParticlesContainer
 
 # Base Output Variables
 USES INT particle_plot_every
-USES INT particle_tsv_every
 
 # Base Banned regions parameters
 USES INT banned_regions
@@ -252,10 +233,3 @@ USES CCTK_REAL out_yline_x
 USES CCTK_REAL out_yline_z
 USES CCTK_REAL out_zline_x
 USES CCTK_REAL out_zline_y
-
-SHARES: AnalyticalSpacetimeX
-
-USES INT evolve_metric_every
-USES INT move_every
-USES INT resize_every
-USES CCTK_REAL AST_t0

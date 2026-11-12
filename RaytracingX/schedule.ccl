@@ -1,327 +1,206 @@
 # Schedule definition for thorn RaytracingX
 # ===================================================
 
-if (do_raytracing) {
+if (do_raytracing)
+{
 
-SCHEDULE R_ParticlesContainer_setup AT CCTK_POSTINITIAL {
+SCHEDULE GROUP RaytracingX_Setup IN CCTK_INITIAL BEFORE ODESolvers_Initial # ---------------------------------------------------- GROUP RaytracingX_Setup
+{
+} "Set up raytracing particle initial time, check parameters, and check camera location"
+
+SCHEDULE CheckParamaters IN RaytracingX_Setup
+{
+  LANG: C
+  OPTIONS: global
+} "Checks input parameters"
+
+SCHEDULE CheckCamera IN RaytracingX_Setup AFTER CheckParamaters
+{
+  LANG: C
+  OPTIONS: global
+  WRITES: RaytracingX_scalars
+} "Set up relevent camera data and particle initial time"
+
+SCHEDULE GROUP RaytracingX_Init AT CCTK_POSTINITIAL # ---------------------------------------------------- GROUP RaytracingX_Init
+{
+} "Initialize raytracing particles"
+
+SCHEDULE ParticlesInit IN RaytracingX_Init
+{
+  LANG: C
+  OPTIONS: global
+} "Initialize raytracing particles"
+
+if (particle_plot_every>0)
+{
+  SCHEDULE ParticlesPrint IN RaytracingX_Init AFTER ParticlesInit BEFORE CheckHorizonAndBannedRegions
+  {
     LANG: C
     OPTIONS: global
-} "setup"
-
-if ((particle_plot_every>0)||(particle_tsv_every>0) ){
-    SCHEDULE R_ParticlesContainer_print AT CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
-    {
-        LANG: C
-        OPTIONS: global
-    } "print the particles"
+  } "Output particle data at current iteration"
 }
 
-SCHEDULE GROUP RAYTRACING_EVOL AT evol
+SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Init AFTER ParticlesInit
 {
-} "evolve raytracing particles"
+  LANG: C
+  OPTIONS: global
+} "check particle bounds"
 
-SCHEDULE CheckRaytracingParticleNumber IN RAYTRACING_EVOL AFTER R_ParticlesContainer_redistribute_initial
+SCHEDULE CheckParticleNumber IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions BEFORE CheckOutOfBoundsParticlesNumber
+{
+  LANG: C
+  OPTIONS: global
+} "Count raytracing particles currently present in simulation"
+
+if (use_custom_bounds && extended_camera)
+{
+  SCHEDULE CheckOutOfBoundsParticlesNumber IN RaytracingX_Init AFTER CheckParticleNumber BEFORE ParticlesEUpdateCustomTimevolveK1
   {
     LANG: C
     OPTIONS: global
-  } "count particles"
-
-SCHEDULE R_CheckCamera IN ANALYTIC_METRIC_INIT BEFORE R_SetMetric
-  {
-      LANG: C
-      OPTIONS: global
-      WRITES: RaytracingX_scalars
-  } "print the particles"
-
-SCHEDULE R_ParticlesContainer_bounds_check AS R_ParticlesContainer_initial_bounds_check IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
-  {
-      LANG: C
-      OPTIONS: global
-  } "check particle bounds"
-
-  SCHEDULE R_ParticlesContainer_bounds_check IN RAYTRACING_EVOL AFTER CheckNumberOfOutOfBoundsParticles
-  {
-      LANG: C
-      OPTIONS: global
-  } "check particle bounds"
-
-if (use_custom_bounds) {
-  SCHEDULE CheckNumberOfOutOfBoundsParticles IN RAYTRACING_EVOL AFTER CheckRaytracingParticleNumber
-  {
-    LANG: C
-    OPTIONS: global
-  } "count outside specified bounds but inside grid"
+  } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
 
 if (!fast_light) {
-  SCHEDULE UpdateCustomTime IN RAYTRACING_EVOL AFTER R_ParticlesContainer_print
+  SCHEDULE UpdateCustomTime IN RaytracingX_Init AFTER CheckHorizonAndBannedRegions
   {
     LANG: C
     OPTIONS: global
     READS: RaytracingX_scalars
     WRITES: RaytracingX_scalars
-  } "update time variable associated with raytracing evolution by dt"
-
-  SCHEDULE UpdateCustomTime AS UpdateCustomTime_initial IN CCTK_POSTINITIAL AFTER R_ParticlesContainer_setup
-  {
-    LANG: C
-    OPTIONS: global
-    READS: RaytracingX_scalars
-    WRITES: RaytracingX_scalars
-  } "update time variable associated with raytracing evolution by dt"
+  } "Update time variable associated with raytracing evolution by dt"
 }
 
-SCHEDULE R_ParticlesContainer_redistribute_initial IN RAYTRACING_EVOL
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
+SCHEDULE GROUP RaytracingX_Evol AT CCTK_EVOL # ---------------------------------------------------- GROUP RaytracingX_Evol
+{
+} "Evolve raytracing particles"
 
-SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_after IN RAYTRACING_EVOL BEFORE UpdateCustomTime AFTER R_ParticlesContainer_evolvek4
-  {
-    LANG: C
-    OPTIONS: global
-  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_evolvek1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_bounds_check
-  {
-    LANG: C
-    OPTIONS: global
-    READS: ADMBaseX::metric(everywhere)
-    READS: ADMBaseX::curv(everywhere)
-    READS: ADMBaseX::lapse(everywhere)
-    READS: ADMBaseX::shift(everywhere)
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "evolve particles"
-
-#SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k1 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
-#  {
-#    LANG: C
-#    OPTIONS: global
-#  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_evolvek2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1
-  {
-    LANG: C
-    OPTIONS: global
-    READS: ADMBaseX::metric(everywhere)
-    READS: ADMBaseX::curv(everywhere)
-    READS: ADMBaseX::lapse(everywhere)
-    READS: ADMBaseX::shift(everywhere)
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "evolve particles"
-
-#SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k2 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
-#  {
-#    LANG: C
-#    OPTIONS: global
-#  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_evolvek3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek2
-  {
-    LANG: C
-    OPTIONS: global
-    READS: ADMBaseX::metric(everywhere)
-    READS: ADMBaseX::curv(everywhere)
-    READS: ADMBaseX::lapse(everywhere)
-    READS: ADMBaseX::shift(everywhere)
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "evolve particles"
-
-#SCHEDULE R_ParticlesContainer_redistribute AS R_ParticlesContainer_redistribute_k3 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
-#  {
-#    LANG: C
-#    OPTIONS: global
-#  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_evolvek4 IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3
-  {
-    LANG: C
-    OPTIONS: global
-    READS: ADMBaseX::metric(everywhere)
-    READS: ADMBaseX::curv(everywhere)
-    READS: ADMBaseX::lapse(everywhere)
-    READS: ADMBaseX::shift(everywhere)
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "evolve particles"
-
-if (AST_init && fast_light) {
-  SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "set metric to cctk_time"
-SCHEDULE R_SetMetric IN ANALYTIC_METRIC
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "set metric to cctk_time"
-
-  SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
+SCHEDULE ParticlesRedistribute AS ParticlesRedistributePrestep IN RaytracingX_Evol
 {
   LANG: C
   OPTIONS: global
-  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
-} "Copy BH positions"
+} "Redistribute raytracing particles via AMReX (in case of regridding)"
 
-SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
+SCHEDULE CheckHorizonAndBannedRegions IN RaytracingX_Evol AFTER ParticlesRedistributePrestep
 {
   LANG: C
   OPTIONS: global
-  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
-  READS: BoxInBox::positions
-  WRITES: BoxInBox::positions
-} "Change grid based on BH position"
+} "check particle bounds"
+
+SCHEDULE CheckParticleNumber IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegions BEFORE CheckOutOfBoundsParticlesNumber
+{
+  LANG: C
+  OPTIONS: global
+} "Count raytracing particles currently present in simulation"
+
+if (use_custom_bounds && extended_camera)
+{
+  SCHEDULE CheckOutOfBoundsParticlesNumber IN RaytracingX_Evol AFTER CheckParticleNumber BEFORE ParticlesEvolveK1
+  {
+    LANG: C
+    OPTIONS: global
+  } "Count raytracing particles currently outside specified bounds but inside grid bounds"
 }
+
+SCHEDULE ParticlesEvolveK1 IN RaytracingX_Evol AFTER CheckHorizonAndBannedRegions
+{
+  LANG: C
+  OPTIONS: global
+  READS: ADMBaseX::metric(everywhere)
+  READS: ADMBaseX::curv(everywhere)
+  READS: ADMBaseX::lapse(everywhere)
+  READS: ADMBaseX::shift(everywhere)
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Do the first substep of RK4 method for particle evolution"
+
+SCHEDULE ParticlesEvolveK2 IN RaytracingX_Evol AFTER ParticlesEvolveK1
+{
+  LANG: C
+  OPTIONS: global
+  READS: ADMBaseX::metric(everywhere)
+  READS: ADMBaseX::curv(everywhere)
+  READS: ADMBaseX::lapse(everywhere)
+  READS: ADMBaseX::shift(everywhere)
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Do the second substep of RK4 method for particle evolution"
+
+SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2
+{
+  LANG: C
+  OPTIONS: global
+  READS: ADMBaseX::metric(everywhere)
+  READS: ADMBaseX::curv(everywhere)
+  READS: ADMBaseX::lapse(everywhere)
+  READS: ADMBaseX::shift(everywhere)
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Do the third substep of RK4 method for particle evolution"
+
+SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK4
+{
+  LANG: C
+  OPTIONS: global
+  READS: ADMBaseX::metric(everywhere)
+  READS: ADMBaseX::curv(everywhere)
+  READS: ADMBaseX::lapse(everywhere)
+  READS: ADMBaseX::shift(everywhere)
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Do the fourth substep of RK4 method for particle evolution"
+
+if (calculate_kerr_conserved_quantities)
+{
+  SCHEDULE CalculateKerrConserved IN RaytracingX_Evol AFTER ParticlesEvolveK4 BEFORE ParticlesPrint
+  {
+    LANG: C
+    OPTIONS: global
+  } "Calculate conserved quantities for particles in Kerr spacetime and output in U0, U1, and U2"
+}
+
+if (particle_plot_every>0)
+{
+  SCHEDULE ParticlesPrint IN RaytracingX_Evol AFTER CalculateKerrConserved BEFORE ParticlesPrintFinalData
+  {
+    LANG: C
+    OPTIONS: global
+  } "Output particle data at current iteration"
+}
+
+if (output_final_data)
+{
+  SCHEDULE ParticlesPrintFinalData IN RaytracingX_Evol AFTER ParticlesPrint BEFORE ParticlesRedistributePoststep
+  {
+    LANG: C
+    OPTIONS: global
+  } "Output particle data if particle was terminated"
+}
+
+SCHEDULE ParticlesRedistribute AS ParticlesRedistributePoststep IN RaytracingX_Evol AFTER ParticlesPrint
+{
+  LANG: C
+  OPTIONS: global
+} "Redistribute raytracing particles via AMReX"
 
 if (!fast_light)
 {
-  SCHEDULE R_SetMetric IN ANALYTIC_METRIC_INIT
+  SCHEDULE UpdateCustomTime IN RaytracingX_Evol AFTER ParticlesRedistributePoststep
   {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "set metric to cctk_time"
-
-SCHEDULE R_SetMetric IN ANALYTIC_METRIC
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "set metric to cctk_time"
-
-SCHEDULE R_SetPositions IN ANALYTIC_METRIC_REGRID
-{
-  LANG: C
-  OPTIONS: global
-  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
-} "Copy BH positions"
-
-SCHEDULE R_MoveGrids IN ANALYTIC_METRIC_REGRID AFTER AST_SetPositions
-{
-  LANG: C
-  OPTIONS: global
-  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
-  READS: RaytracingX_scalars
-  READS: BoxInBox::positions
-  WRITES: BoxInBox::positions
-} "Change grid based on BH position"
-
-SCHEDULE R_SetMetric_plus_half_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek1 BEFORE R_ParticlesContainer_evolvek2
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "change metric to cctk_time+0.5*dt"
-
-SCHEDULE R_SetMetric_plus_dt IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek3 BEFORE R_ParticlesContainer_evolvek4
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "change metric to cctk_time+dt"
-
-if (reset_metric) {
-
-#SCHEDULE R_SetMetric IN RAYTRACING_EVOL BEFORE R_ParticlesContainer_evolvek1
-#  {
-#    LANG: C
-#    OPTIONS: LOCAL
-#    READS: AsterMasks::aster_mask_vc(everywhere)
-#    WRITES: ADMBaseX::metric(everywhere)
-#    WRITES: ADMBaseX::curv(everywhere)
-#    WRITES: ADMBaseX::lapse(everywhere)
-#    WRITES: ADMBaseX::shift(everywhere)
-#    WRITES: AsterMasks::aster_mask_vc(everywhere)
-#    READS: RaytracingX_scalars
-#  } "set metric to cctk_time"
-
-
-SCHEDULE R_SetMetric AS R_ResetMetric IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek4
-  {
-    LANG: C
-    OPTIONS: LOCAL
-    READS: AsterMasks::aster_mask_vc(everywhere)
-    WRITES: ADMBaseX::metric(everywhere)
-    WRITES: ADMBaseX::curv(everywhere)
-    WRITES: ADMBaseX::lapse(everywhere)
-    WRITES: ADMBaseX::shift(everywhere)
-    WRITES: AsterMasks::aster_mask_vc(everywhere)
-    READS: RaytracingX_scalars
-  } "reset metric to cctk_time"
-}
-}
-
-if (calculate_kerr_conserved_quantities) {
-    SCHEDULE R_ParticlesContainer_calculate_kerr_conserved IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolve BEFORE R_ParticlesContainer_print
-    {
-        LANG: C
-        OPTIONS: global
-    } "calculate conserved quantities for particles and output in U0, U1, and U2"
-}
-
-if ((particle_plot_every||particle_tsv_every) ) {
-    SCHEDULE R_ParticlesContainer_print IN RAYTRACING_EVOL AFTER R_ParticlesContainer_evolvek4
-    {
-        LANG: C
-        OPTIONS: global
-    } "print the particles"
-}
-
-#SCHEDULE R_ParticlesContainer_output_final_data IN RAYTRACING_EVOL AFTER UpdateCustomTime
-#  {
-#    LANG: C
-#    OPTIONS: global
-#  } "redistribute particles"
-
-SCHEDULE R_ParticlesContainer_final_cleanup at CCTK_SHUTDOWN{
     LANG: C
     OPTIONS: global
-} "cleaning everything"
+    READS: RaytracingX_scalars
+    WRITES: RaytracingX_scalars
+  } "update time variable associated with raytracing evolution by dt"
+}
+
+SCHEDULE GROUP RaytracingX_Shutdown IN CCTK_SHUTDOWN # ---------------------------------------------------- GROUP RaytracingX_SHUTDOWN
+{
+} "Set up raytracing particle initial time, check parameters, and check camera location"# ---------------------------------------------------- GROUP RaytracingX_Setup
+
+SCHEDULE ParticlesContainerCleanUp IN RaytracingX_Shutdown{
+    LANG: C
+    OPTIONS: global
+} "Free allocated memory"
 
 }

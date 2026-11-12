@@ -10,32 +10,10 @@
  * ParticlesCcontainer/ParticlesEvolution.cxx, any changes will be discussed in
  * comments starting with 'RaytracingX:' for clarity.
  */
-
-#include "RaytracingX.h"
 #include "RaytracingInitializers.hxx"
 
-#include <cctk.h>
-
-#include "BaseParticlesContainer.hxx"
-#include "RaytracingContainer.hxx"
-#include <AMReX_ParallelDescriptor.H>
-#include <CParameters.h>
-#include <AMReX_MFIter.H>
-
-#include <cstring>
 #include <driver.hxx>
 
-#include <cctk_Arguments.h>
-#include <cctk_Parameters.h>
-#include <cctk_Types.h>
-#include <cctk_core.h>
-
-#include <iostream>
-#include <loop_device.hxx>
-
-#include "AST_Spacetime_SetMetric.hxx"
-
-//RaytracingX: Uses override for particle data struct and particle container defined in RaytracingX/RaytracingContainer.hxx.
 using ParticleData = RaytracingX::RaytracingPhotonsData;
 using PC = RaytracingX::RaytracingParticlesContainer<ParticleData>;
 std::vector<std::unique_ptr<PC>> r_photons;
@@ -47,38 +25,10 @@ bool camera_out_of_grid;
 long num_photons_out_of_bounds = 0;
 CCTK_REAL coarse_dt;
 
-/**
- * \brief Initialize particles' data
- *
- * This function initializes particles' position, velocity and energy
- * distributing the particle using the methods defined inside of the
- * RaytracingPhotonsInitializers.hxx. This initialization uses the camera
- * parameters given by RaytracingX.
- */
-
-extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
+extern "C" void CheckParamaters(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
-  
-  //RaytracingX: Add debug print statement.
-  if (verbose)
-  {
-    CCTK_INFO("R_ParticlesContainer_setup");
-  }
-
-  if (!fast_light && !AST_init) {
-    CCTK_ERROR("If not using Fast Light Approximation, then AST_init must be set to True.");
-  }
-  if (!fast_light && move_every != 0) {
-    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::move_every to be zero. If fast_light is false, RaytracingX uses its own move_every=1");
-  }
-  if (!fast_light && resize_every != 0) {
-    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::resize_every to be zero as it does not support it");
-  }
-  if (!fast_light && evolve_metric_every != 0) {
-    CCTK_ERROR("RaytracingX requires AnalyticalSpacetimeX::evolve_metric_every to be zero. If fast_light is false, RaytracingX uses its own evolve_metric_every=1");
-  }
 
   assert(cctk_dim == 3);
   int gh[3];
@@ -88,12 +38,72 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
     gh,
     "ADMBaseX::alp");
   assert(MIN(MIN(gh[0], gh[1]), gh[2]) >= 3 && "RaytracingX requires ghost zone size of 3");
-  
-  //Metric m;
-  //interpolateMetricAtPoint(CCTK_PASS_CTOC, &m, 0.062791, 0.000061, -13.703892);
-  //CCTK_INFO(m.to_string().c_str());
+}
 
-  //RaytracingX: Particle skip override moved to schedule.ccl
+extern "C" void CheckCamera(CCTK_ARGUMENTS)
+{ 
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
+
+    const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
+    const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
+    const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
+
+    coarse_dt = coarse_dtfac * MIN(dx0[0], MIN(dx0[1], dx0[2]));
+
+    grid_bounds.xmin() = plo0[0] + 3*dx0[0];
+    grid_bounds.ymin() = plo0[1] + 3*dx0[1];
+    grid_bounds.zmin() = plo0[2] + 3*dx0[2];
+    grid_bounds.xmax() = phi0[0] - 3*dx0[0];
+    grid_bounds.ymax() = phi0[1] - 3*dx0[1];
+    grid_bounds.zmax() = phi0[2] - 3*dx0[2];
+
+    camera_out_of_grid = isOutOfBounds(camera_pos, grid_bounds.arr);
+    if (camera_out_of_grid) {
+      num_photons_out_of_bounds = 1;
+    }
+
+    bounds.xmin() = use_custom_bounds ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
+    bounds.ymin() = use_custom_bounds ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
+    bounds.zmin() = use_custom_bounds ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
+    bounds.xmax() = use_custom_bounds ? MIN(grid_bounds.xmax(), photon_xmax) : grid_bounds.xmax();
+    bounds.ymax() = use_custom_bounds ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
+    bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
+
+    if (use_custom_bounds) {
+      assert(photon_xmin < photon_xmax);
+      assert(photon_ymin < photon_ymax);
+      assert(photon_zmin < photon_zmax);
+    }
+
+    camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
+
+    if (camera_out_of_bounds && !extended_camera) {
+      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
+    }
+    if (camera_out_of_bounds && !camera_out_of_grid) {
+      CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
+    }
+  }
+
+  *RX_time = 0.0;
+  *RX_t0 = 0.0;
+  if (camera_out_of_grid && !fast_light) {
+    *RX_t0 = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
+  }
+  if (camera_out_of_bounds) {
+    get_starting_time(CCTK_PASS_CTOC, bounds); //errors if not pointing in correct direction
+  }
+}
+
+extern "C" void ParticlesInit(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_ARGUMENTS;
+  DECLARE_CCTK_PARAMETERS;
 
   const int tl = 0;
   const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
@@ -136,434 +146,25 @@ extern "C" void R_ParticlesContainer_setup(CCTK_ARGUMENTS)
       pc->normalize_velocity(metric, lev);
     }
   }
-  CCTK_VINFO("Photon starting time is %f.", *RX_time + AST_t0);
+  CCTK_VINFO("Photon starting time is %f.", *RX_time + *RX_t0);
 }
 
 /**
- * \brief Evolve the geodesics
- *
- * This function evolves the particles position by numerically solving the
- * geodesic equations.
+ * \brief Print out particle data.
  */
-extern "C" void R_ParticlesContainer_redistribute(CCTK_ARGUMENTS)
+extern "C" void ParticlesPrint(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
 
-  CCTK_Barrier(cctkGH);
-
-  if (output_final_data) {
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    { 
-      pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
-    }
-  }}
-
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    pc->Redistribute();
-  }
-}
-
-extern "C" void R_ParticlesContainer_redistribute_initial(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    pc->Redistribute();
-  }
-
-  CCTK_Barrier(cctkGH);
-}
-
-extern "C" void R_CheckCamera(CCTK_ARGUMENTS)
-{ 
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    const auto &patchdata = CarpetX::ghext->patchdata.at(patch);
-
-    const auto plo0 = patchdata.amrcore->Geom(0).ProbLoArray();
-    const auto phi0 = patchdata.amrcore->Geom(0).ProbHiArray();
-    const auto dx0 = patchdata.amrcore->Geom(0).CellSizeArray();
-
-    coarse_dt = coarse_dtfac * MIN(dx0[0], MIN(dx0[1], dx0[2]));
-
-    grid_bounds.xmin() = plo0[0] + 3*dx0[0];
-    grid_bounds.ymin() = plo0[1] + 3*dx0[1];
-    grid_bounds.zmin() = plo0[2] + 3*dx0[2];
-    grid_bounds.xmax() = phi0[0] - 3*dx0[0];
-    grid_bounds.ymax() = phi0[1] - 3*dx0[1];
-    grid_bounds.zmax() = phi0[2] - 3*dx0[2];
-
-    camera_out_of_grid = isOutOfBounds(camera_pos, grid_bounds.arr);
-
-    bounds.xmin() = use_custom_bounds ? MAX(grid_bounds.xmin(), photon_xmin) : grid_bounds.xmin();
-    bounds.ymin() = use_custom_bounds ? MAX(grid_bounds.ymin(), photon_ymin) : grid_bounds.ymin();
-    bounds.zmin() = use_custom_bounds ? MAX(grid_bounds.zmin(), photon_zmin) : grid_bounds.zmin();
-    bounds.xmax() = use_custom_bounds ? MIN(grid_bounds.xmax(), photon_xmax) : grid_bounds.xmax();
-    bounds.ymax() = use_custom_bounds ? MIN(grid_bounds.ymax(), photon_ymax) : grid_bounds.ymax();
-    bounds.zmax() = use_custom_bounds ? MIN(grid_bounds.zmax(), photon_zmax) : grid_bounds.zmax();
-
-    if (use_custom_bounds) {
-      assert(photon_xmin < photon_xmax);
-      assert(photon_ymin < photon_ymax);
-      assert(photon_zmin < photon_zmax);
-    }
-
-    camera_out_of_bounds = isOutOfBounds(camera_pos, bounds.arr);
-
-    if (camera_out_of_bounds && !extended_camera) {
-      CCTK_VERROR("Camera must be between (%f, %f, %f) and (%f, %f, %f).", UNPACK6V(grid_bounds.arr));
-    }
-    if (camera_out_of_bounds && !camera_out_of_grid) {
-      CCTK_VWARN(0,"Camera inside grid but outside specified bounds. Using coarse dt until all particles are inside specified bounds");
-    }
-  }
-
-  *RX_time = 0.0;
-  if (camera_out_of_grid && !fast_light) {
-    *RX_time = -get_starting_time(CCTK_PASS_CTOC, grid_bounds);
-  }
-  if (camera_out_of_bounds) {
-    get_starting_time(CCTK_PASS_CTOC, bounds); //errors if not pointing in correct direction
-  }
-}
-
-/**
- * \brief Evolve the geodesics
- *
- * This function evolves the particles position by numerically solving the
- * geodesic equations.
- */
-extern "C" void R_ParticlesContainer_evolvek1(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-
-  CCTK_Barrier(cctkGH);
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  const int tl = 0;
-  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
-  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
-  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
-  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
-  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
-  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
-  assert(gi_shift >= 0 && "Failed to get the shift group index");
-  assert(gi_metric >= 0 && "Failed to get the metric group index");
-  assert(gi_curv >= 0 && "Failed to get the curvature group index");
-  assert(gi_rho >= 0 && "Failed to get the density group index");
-
-  //CCTK_Sync(cctkGH, gi_lapse);
-  //CCTK_Sync(cctkGH, gi_shift);
-  //CCTK_Sync(cctkGH, gi_metric);
-  //CCTK_Sync(cctkGH, gi_curv);
-  //CCTK_Sync(cctkGH, gi_rho);
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    {
-      //RaytracingX: Add density to information passed to evolution function.
-      const auto &ld = pd.leveldata.at(lev);
-      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
-      const auto &gd_shift = *ld.groupdata.at(gi_shift);
-      const auto &gd_metric = *ld.groupdata.at(gi_metric);
-      const auto &gd_curv = *ld.groupdata.at(gi_curv);
-      const auto &gd_rho = *ld.groupdata.at(gi_rho);
-      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
-      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
-
-      //pc->check_horizon(lapse, lev, max_energy);
-
-      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
-      // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k1(cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + AST_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
-    }
-  }
-}
-
-/**
- * \brief Evolve the geodesics
- *
- * This function evolves the particles position by numerically solving the
- * geodesic equations.
- */
-extern "C" void R_ParticlesContainer_evolvek2(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-
-  CCTK_Barrier(cctkGH);
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  const int tl = 0;
-  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
-  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
-  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
-  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
-  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
-  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
-  assert(gi_shift >= 0 && "Failed to get the shift group index");
-  assert(gi_metric >= 0 && "Failed to get the metric group index");
-  assert(gi_curv >= 0 && "Failed to get the curvature group index");
-  assert(gi_rho >= 0 && "Failed to get the density group index");
-
-  //CCTK_Sync(cctkGH, gi_lapse);
-  //CCTK_Sync(cctkGH, gi_shift);
-  //CCTK_Sync(cctkGH, gi_metric);
-  //CCTK_Sync(cctkGH, gi_curv);
-  //CCTK_Sync(cctkGH, gi_rho);
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    {
-      //RaytracingX: Add density to information passed to evolution function.
-      const auto &ld = pd.leveldata.at(lev);
-      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
-      const auto &gd_shift = *ld.groupdata.at(gi_shift);
-      const auto &gd_metric = *ld.groupdata.at(gi_metric);
-      const auto &gd_curv = *ld.groupdata.at(gi_curv);
-      const auto &gd_rho = *ld.groupdata.at(gi_rho);
-      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
-      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
-
-      //pc->check_horizon(lapse, lev, max_energy);
-
-      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
-      // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k2(cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + AST_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
-    }
-  }
-}
-
-/**
- * \brief Evolve the geodesics
- *
- * This function evolves the particles position by numerically solving the
- * geodesic equations.
- */
-extern "C" void R_ParticlesContainer_evolvek3(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-
-  CCTK_Barrier(cctkGH);
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  const int tl = 0;
-  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
-  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
-  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
-  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
-  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
-  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
-  assert(gi_shift >= 0 && "Failed to get the shift group index");
-  assert(gi_metric >= 0 && "Failed to get the metric group index");
-  assert(gi_curv >= 0 && "Failed to get the curvature group index");
-  assert(gi_rho >= 0 && "Failed to get the density group index");
-
-  //CCTK_Sync(cctkGH, gi_lapse);
-  //CCTK_Sync(cctkGH, gi_shift);
-  //CCTK_Sync(cctkGH, gi_metric);
-  //CCTK_Sync(cctkGH, gi_curv);
-  //CCTK_Sync(cctkGH, gi_rho);
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    {
-      //RaytracingX: Add density to information passed to evolution function.
-      const auto &ld = pd.leveldata.at(lev);
-      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
-      const auto &gd_shift = *ld.groupdata.at(gi_shift);
-      const auto &gd_metric = *ld.groupdata.at(gi_metric);
-      const auto &gd_curv = *ld.groupdata.at(gi_curv);
-      const auto &gd_rho = *ld.groupdata.at(gi_rho);
-      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
-      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
-
-      //pc->check_horizon(lapse, lev, max_energy);
-
-      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
-      // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k3(cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + AST_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
-    }
-  }
-}
-
-/**
- * \brief Evolve the geodesics
- *
- * This function evolves the particles position by numerically solving the
- * geodesic equations.
- */
-extern "C" void R_ParticlesContainer_evolvek4(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-
-  CCTK_Barrier(cctkGH);
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  const int tl = 0;
-  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
-  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
-  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
-  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
-  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
-  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
-  assert(gi_shift >= 0 && "Failed to get the shift group index");
-  assert(gi_metric >= 0 && "Failed to get the metric group index");
-  assert(gi_curv >= 0 && "Failed to get the curvature group index");
-  assert(gi_rho >= 0 && "Failed to get the density group index");
-
-  //CCTK_Sync(cctkGH, gi_lapse);
-  //CCTK_Sync(cctkGH, gi_shift);
-  //CCTK_Sync(cctkGH, gi_metric);
-  //CCTK_Sync(cctkGH, gi_curv);
-  //CCTK_Sync(cctkGH, gi_rho);
-  CCTK_Barrier(cctkGH);
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    {
-      //RaytracingX: Add density to information passed to evolution function.
-      const auto &ld = pd.leveldata.at(lev);
-      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
-      const auto &gd_shift = *ld.groupdata.at(gi_shift);
-      const auto &gd_metric = *ld.groupdata.at(gi_metric);
-      const auto &gd_curv = *ld.groupdata.at(gi_curv);
-      const auto &gd_rho = *ld.groupdata.at(gi_rho);
-      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
-      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
-      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
-      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
-      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
-
-      //pc->check_horizon(lapse, lev, max_energy);
-
-      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
-      // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_k4(cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + AST_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
-    }
-  }
-}
-
-extern "C" void R_SetMetric(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  //if (num_photons == 0) { return; }
-
-  if (cctk_iteration > 0 && fast_light) { return; }
-
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time);
-}
-
-extern "C" void R_SetMetric_plus_half_dt(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  if (num_photons == 0) { return; }
-  if (cctk_iteration > 0 && fast_light) { return; }
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + 0.5*dt);
-}
-
-extern "C" void R_SetMetric_plus_dt(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_ARGUMENTS;
-  DECLARE_CCTK_PARAMETERS;
-
-  if (num_photons == 0) { return; }
-  if (cctk_iteration > 0 && fast_light) { return; }
+  //RaytracingX: Particle skip override moved to schedule.ccl.
+  const int it = cctkGH->cctk_iteration;
   
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-
-  AnalyticalSpacetimeX::SetMetricHelper(CCTK_PASS_CTOC, *RX_time + dt);
-}
-
-extern "C" void R_SetPositions(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_ARGUMENTS;
-  DECLARE_CCTK_PARAMETERS;
-
-  //if (num_photons == 0) { return; }
-  if (cctk_iteration > 0 && fast_light) { return; }
-
-  AnalyticalSpacetimeX::SetPositionsHelper(CCTK_PASS_CTOC, *RX_time);
-}
-
-extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
-{
-  DECLARE_CCTK_ARGUMENTSX_R_MoveGrids;
-  DECLARE_CCTK_PARAMETERS;
-
-  //if (num_photons == 0) { return; }
-  if (cctk_iteration > 0 && fast_light) { return; }
-
-  MoveGridsHelper(CCTK_PASS_CTOC);
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    pc->outputParticlesPlot(it, particle_plot_every, std::string(out_dir));
+    pc->outputParticlesAscii(it, particle_tsv_every, std::string(out_dir));
+  }
 }
 
 /**
@@ -572,7 +173,7 @@ extern "C" void R_MoveGrids(CCTK_ARGUMENTS)
  * This function evolves the particles position by numerically solving the
  * geodesic equations.
  */
-extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
+extern "C" void CheckHorizonAndBannedRegions(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
@@ -626,35 +227,178 @@ extern "C" void R_ParticlesContainer_bounds_check(CCTK_ARGUMENTS)
   }
 }
 
+extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
+{
+  long n_local = 0;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
+          n_local += pc->NumberOfParticlesAtLevel(lev, true, true);
+      }
+  }
+
+  long n_global = n_local;
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+
+  num_photons = n_global;
+
+  CCTK_VINFO("Found %ld particles remaining.", n_global);
+}
+
+extern "C" void CheckOutOfBoundsParticlesNumber(CCTK_ARGUMENTS)
+{
+  long n_local = 0;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
+      auto &pc = r_photons.at(patch);
+      auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
+          n_local += pc->num_particles_out_of_bounds(lev, bounds);
+      }
+  }
+
+  long n_global = n_local;
+  amrex::ParallelDescriptor::ReduceLongSum(n_global);
+
+  num_photons_out_of_bounds = n_global;
+
+  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", num_photons_out_of_bounds);
+}
+
+extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
+  *RX_time += dt;
+
+  CCTK_VINFO("Current particle time is now %f.", *RX_time + *RX_t0);
+}
+
+extern "C" void ParticlesRedistribute(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    pc->Redistribute();
+  }
+
+  CCTK_Barrier(cctkGH);
+}
+
+void EvolveKNHelper(CCTK_ARGUMENTS, const int k) {
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  CCTK_Barrier(cctkGH);
+
+  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
+
+  const int tl = 0;
+  const int gi_lapse = CCTK_GroupIndex("ADMBaseX::lapse");
+  const int gi_shift = CCTK_GroupIndex("ADMBaseX::shift");
+  const int gi_metric = CCTK_GroupIndex("ADMBaseX::metric");
+  const int gi_curv = CCTK_GroupIndex("ADMBaseX::curv");
+  const int gi_rho = CCTK_GroupIndex("HydroBaseX::rho");
+  assert(gi_lapse >= 0 && "Failed to get the lapse group index");
+  assert(gi_shift >= 0 && "Failed to get the shift group index");
+  assert(gi_metric >= 0 && "Failed to get the metric group index");
+  assert(gi_curv >= 0 && "Failed to get the curvature group index");
+  assert(gi_rho >= 0 && "Failed to get the density group index");
+
+  //CCTK_Sync(cctkGH, gi_lapse);
+  //CCTK_Sync(cctkGH, gi_shift);
+  //CCTK_Sync(cctkGH, gi_metric);
+  //CCTK_Sync(cctkGH, gi_curv);
+  //CCTK_Sync(cctkGH, gi_rho);
+  CCTK_Barrier(cctkGH);
+
+  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
+  {
+    auto &pc = r_photons.at(patch);
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    {
+      //RaytracingX: Add density to information passed to evolution function.
+      const auto &ld = pd.leveldata.at(lev);
+      const auto &gd_lapse = *ld.groupdata.at(gi_lapse);
+      const auto &gd_shift = *ld.groupdata.at(gi_shift);
+      const auto &gd_metric = *ld.groupdata.at(gi_metric);
+      const auto &gd_curv = *ld.groupdata.at(gi_curv);
+      const auto &gd_rho = *ld.groupdata.at(gi_rho);
+      const amrex::MultiFab &lapse = *gd_lapse.mfab[tl];
+      const amrex::MultiFab &shift = *gd_shift.mfab[tl];
+      const amrex::MultiFab &metric = *gd_metric.mfab[tl];
+      const amrex::MultiFab &curv = *gd_curv.mfab[tl];
+      const amrex::MultiFab &rho = *gd_rho.mfab[tl];
+
+      //pc->check_horizon(lapse, lev, max_energy);
+
+      //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
+      // along geodesic. Information for particle output on deletion also passed.
+      pc->evolve_kn(k, cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + *RX_t0, lev, max_energy, dt, (num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
+    }
+  }
+}
+
 /**
  * \brief Evolve the geodesics
  *
  * This function evolves the particles position by numerically solving the
  * geodesic equations.
- *
-extern "C" void R_ParticlesContainer_output_final_data(CCTK_ARGUMENTS)
+ */
+extern "C" void ParticlesEvolveK1(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
 
-  CCTK_Barrier(cctkGH);
+  if (num_photons == 0) { return; }
 
-  if (output_final_data) {
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
-  {
-    auto &pc = r_photons.at(patch);
-    auto &pd = CarpetX::ghext->patchdata.at(patch);
-    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
-    { 
-      pc->write_deleted_particle_data(lev, cctk_time, std::string(out_dir) + "/" + final_data_file_name);
-    }
-  }}
-
-  CCTK_Barrier(cctkGH);
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 1);
 }
-*/
 
-extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
+extern "C" void ParticlesEvolveK2(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 2);
+}
+
+extern "C" void ParticlesEvolveK3(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 3);
+}
+
+extern "C" void ParticlesEvolveK4(CCTK_ARGUMENTS)
+{
+  DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
+
+  if (num_photons == 0) { return; }
+
+  ParticlesEvolveKNHelper(CCTK_PASS_CTOC, 4);
+}
+
+extern "C" void CalculateKerrConserved(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
@@ -688,78 +432,30 @@ extern "C" void R_ParticlesContainer_calculate_kerr_conserved(CCTK_ARGUMENTS)
 }
 
 /**
- * \brief Print out particle data.
+ * \brief Evolve the geodesics
+ *
+ * This function evolves the particles position by numerically solving the
+ * geodesic equations.
  */
-extern "C" void R_ParticlesContainer_print(CCTK_ARGUMENTS)
+extern "C" void ParticlesPrintFinalData(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
+  DECLARE_CCTK_ARGUMENTS;
 
-  //RaytracingX: Particle skip override moved to schedule.ccl.
-  const int it = cctkGH->cctk_iteration;
-  
   for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch)
   {
     auto &pc = r_photons.at(patch);
-    pc->outputParticlesPlot(it, particle_plot_every, std::string(out_dir));
-    pc->outputParticlesAscii(it, particle_tsv_every, std::string(out_dir));
+    auto &pd = CarpetX::ghext->patchdata.at(patch);
+    for (int lev = 0; lev < pd.leveldata.size(); ++lev)
+    { 
+      pc->write_deleted_particle_data(lev, std::string(out_dir) + "/" + final_data_file_name);
+    }
   }
-}
+  }
 
-extern "C" int R_ParticlesContainer_final_cleanup()
+extern "C" int ParticlesContainerCleanUp()
 {
   amrex::Gpu::Device::synchronize();
   r_photons.clear();
   return 0;
-}
-
-extern "C" void CheckRaytracingParticleNumber(CCTK_ARGUMENTS)
-{
-  long n_local = 0;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
-      auto &pc = r_photons.at(patch);
-      auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          n_local += pc->NumberOfParticlesAtLevel(lev, true, true);
-      }
-  }
-
-  long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global);
-
-  num_photons = n_global;
-
-  CCTK_VINFO("Found %ld particles remaining.", n_global);
-}
-
-extern "C" void CheckNumberOfOutOfBoundsParticles(CCTK_ARGUMENTS)
-{
-  long n_local = 0;
-
-  for (int patch = 0; patch < CarpetX::ghext->num_patches(); ++patch) {
-      auto &pc = r_photons.at(patch);
-      auto &pd = CarpetX::ghext->patchdata.at(patch);
-
-      for (int lev = 0; lev < pd.leveldata.size(); ++lev) {
-          n_local += pc->num_particles_out_of_bounds(lev, bounds);
-      }
-  }
-
-  long n_global = n_local;
-  amrex::ParallelDescriptor::ReduceLongSum(n_global);
-
-  num_photons_out_of_bounds = n_global;
-
-  CCTK_VINFO("Found %ld particles remaining out of specified bounds.", num_photons_out_of_bounds);
-}
-
-extern "C" void UpdateCustomTime(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_PARAMETERS;
-  DECLARE_CCTK_ARGUMENTS;
-
-  CCTK_REAL dt = (num_photons_out_of_bounds > 0) ? coarse_dt : CCTK_DELTA_TIME;
-  *RX_time += dt;
-
-  CCTK_VINFO("Current particle time is now %f.", *RX_time + AST_t0);
 }

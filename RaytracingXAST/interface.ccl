@@ -1,0 +1,11 @@
+# Interface definition for thorn RaytracingXAST
+# ====================================================
+
+IMPLEMENTS: RaytracingXAST
+INHERETS: RaytracingX AnalyticalSpacetimeX
+
+USES INCLUDE HEADER: Photons.hxx
+USES INCLUDE HEADER: BaseParticlesContainer.hxx
+USES INCLUDE HEADER: ParticlesContainer.hxx
+
+USES INCLUDE HEADER: AST_Spacetime_SetMetric.hxx

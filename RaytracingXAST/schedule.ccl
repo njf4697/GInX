@@ -1,0 +1,111 @@
+# Schedule definition for thorn RaytracingXAST
+# ===================================================
+
+if (do_raytracing && do_raytracing_analytical)
+{
+
+SCHEDULE CheckParamatersXAST IN RaytracingX_Setup AFTER CheckParamaters BEFORE CheckCamera  # ---------------------------------------------------- GROUP RaytracingX_Setup
+{
+  LANG: C
+  OPTIONS: global
+} "Checks input parameters"
+
+SCHEDULE SetRaytracingInitialTime IN RaytracingX_Setup AFTER CheckCamera
+{
+  LANG: C
+  OPTIONS: global
+} "Checks input parameters"
+
+SCHEDULE SetMetric IN ANALYTIC_METRIC_INIT # ---------------------------------------------------- GROUP ANALYTIC_METRIC_INIT
+{
+  LANG: C
+  OPTIONS: LOCAL
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  WRITES: ADMBaseX::metric(everywhere)
+  WRITES: ADMBaseX::curv(everywhere)
+  WRITES: ADMBaseX::lapse(everywhere)
+  WRITES: ADMBaseX::shift(everywhere)
+  WRITES: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Set metric to raytracing particle time"
+
+# SetMetric is needed here even if !fast_light in case regridding occurs on initialization # ---------------------------------------------------- GROUP ANALYTIC_METRIC
+SCHEDULE SetMetric IN ANALYTIC_METRIC
+{
+  LANG: C
+  OPTIONS: LOCAL
+  READS: AsterMasks::aster_mask_vc(everywhere)
+  WRITES: ADMBaseX::metric(everywhere)
+  WRITES: ADMBaseX::curv(everywhere)
+  WRITES: ADMBaseX::lapse(everywhere)
+  WRITES: ADMBaseX::shift(everywhere)
+  WRITES: AsterMasks::aster_mask_vc(everywhere)
+  READS: RaytracingX_scalars
+} "Set metric to raytracing particle time"
+
+# SetPositions is needed here even if !fast_light in case regridding occurs on initialization
+SCHEDULE SetPositions IN ANALYTIC_METRIC_REGRID
+{
+  LANG: C
+  OPTIONS: global
+  WRITES: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
+} "Set AST BH positions based on trajectory"
+
+# MoveGrids is needed here even if !fast_light in case regridding occurs on initialization
+SCHEDULE MoveGrids IN ANALYTIC_METRIC_REGRID AFTER SetPositions
+{
+  LANG: C
+  OPTIONS: global
+  READS: AnalyticalSpacetimeX::BH_PN_Trajectories
+  READS: RaytracingX_scalars
+  READS: BoxInBox::positions
+  WRITES: BoxInBox::positions
+} "Change first and second BoxInBox refinement positions to BH positions from trajectory"
+
+if (!fast_light)
+{
+  SCHEDULE SetMetricPlusHalfDeltaTime IN RaytracingX_Evol AFTER ParticlesEvolveK1 BEFORE ParticlesEvolveK2 # ---------------------------------------------------- GROUP RaytracingX_Evol (no fast light approximation)
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
+  } "Set metric to raytracing particle time + 0.5*dt"
+
+  SCHEDULE SetMetricPlusDeltaTime IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE ParticlesEvolveK4
+  {
+    LANG: C
+    OPTIONS: LOCAL
+    READS: AsterMasks::aster_mask_vc(everywhere)
+    WRITES: ADMBaseX::metric(everywhere)
+    WRITES: ADMBaseX::curv(everywhere)
+    WRITES: ADMBaseX::lapse(everywhere)
+    WRITES: ADMBaseX::shift(everywhere)
+    WRITES: AsterMasks::aster_mask_vc(everywhere)
+    READS: RaytracingX_scalars
+  } "Set metric to raytracing particle time + dt"
+
+  if (reset_metric)
+  {
+    SCHEDULE SetMetric AS ResetMetric IN RaytracingX_Evol AFTER ParticlesEvolveK4 BEFORE UpdateCustomTime
+    {
+      LANG: C
+      OPTIONS: LOCAL
+      READS: AsterMasks::aster_mask_vc(everywhere)
+      WRITES: ADMBaseX::metric(everywhere)
+      WRITES: ADMBaseX::curv(everywhere)
+      WRITES: ADMBaseX::lapse(everywhere)
+      WRITES: ADMBaseX::shift(everywhere)
+      WRITES: AsterMasks::aster_mask_vc(everywhere)
+      READS: RaytracingX_scalars
+    } "Reset metric to raytracing particle time"
+  }
+}
+
+}

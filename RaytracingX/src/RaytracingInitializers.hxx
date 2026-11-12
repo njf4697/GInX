@@ -1,3 +1,6 @@
+#ifndef RAYTRACING_INITIALIZERS
+#define RAYTRACING_INITIALIZERS
+
 /**
  * \file RaytracingInitializers.hxx
  * \brief RaytracingContainer initialization functions.
@@ -6,14 +9,9 @@
  * based on camera parameters.
  */
 #include "RaytracingX.h"
-
-#include <cctk.h>
-
-#include <AMReX_MFIter.H>
-#include "AMReX_GpuDevice.H"
-#include "AMReX_ParallelDescriptor.H"
-#include "BaseParticleContainer.hxx"
 #include "RaytracingContainer.hxx"
+
+#include "AMReX_GpuDevice.H"
 
 #define DEG2RAD 0.01745329251
 
@@ -51,9 +49,6 @@
                                                          const bool calculate_kerr_conserved_quantities = (int_params[2] == 1);                                                              \
                                                          const CCTK_REAL starting_time = real_params[38];                                                                                    \
                                                          const bool fast_light = (int_params[4] == 1);                                                  
-
-#ifndef RAYTRACING_INITIALIZERS
-#define RAYTRACING_INITIALIZERS
 
 template <typename StructType, typename ParticleTile>
 void fill_photon_data_standard_camera(ParticleTile& particle_tile, const CCTK_INT local_particle_id, const CCTK_INT next_id, const CCTK_INT* int_params, const CCTK_REAL* real_params, const int local_offset) {

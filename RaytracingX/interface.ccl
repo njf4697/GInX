@@ -8,6 +8,7 @@ public:
 
 CCTK_REAL RaytracingX_scalars type=SCALAR
 {
+  RX_t0
   RX_time
 } "RaytracingX-related scalar quantities"
 
@@ -16,8 +17,6 @@ USES INCLUDE HEADER: BaseParticlesContainer.hxx
 USES INCLUDE HEADER: ParticlesContainer.hxx
 USES INCLUDE HEADER: loop_device.hxx
 USES INCLUDE HEADER: driver.hxx
-
-USES INCLUDE HEADER: AST_Spacetime_SetMetric.hxx
 
 CCTK_INT FUNCTION DriverInterpolate(
   CCTK_POINTER_TO_CONST IN cctkGH,
@@ -34,8 +33,3 @@ CCTK_INT FUNCTION DriverInterpolate(
   CCTK_INT ARRAY IN output_array_types,
   CCTK_POINTER ARRAY IN output_arrays)
 REQUIRES FUNCTION DriverInterpolate
-
-void FUNCTION CallScheduleGroup(
-  CCTK_POINTER IN cctkGH,
-  CCTK_STRING IN groupname)
-REQUIRES FUNCTION CallScheduleGroup

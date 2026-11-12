@@ -338,18 +338,20 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
         amrex::ParallelFor(np, [=] AMREX_GPU_DEVICE(int i) noexcept
                            {
       SKIP_DELETED_PARTICLES
-
+      
+      amrex::GpuArray<CCTK_REAL, 9> U;
+      amrex::GpuArray<CCTK_REAL, 9> k;
       if (k_n == 1)
       {
-        const amrex::GpuArray<CCTK_REAL, 9> U = {
+        U = {
           particles[i].pos(0), particles[i].pos(1), particles[i].pos(2),
           vels_x[i],           vels_y[i],           vels_z[i],
           ln_energy[i], tau[i], 0.0};
-        amrex::GpuArray<CCTK_REAL, 9> k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        k = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
       }
       else {
-        const amrex::GpuArray<CCTK_REAL, 9> U = {U0[i], U1[i], U2[i], U3[i], U4[i], U5[i], U6[i], U7[i], 0.0};
-        amrex::GpuArray<CCTK_REAL, 9> k = {k0[i], k1[i], k2[i], k3[i], k4[i], k5[i], k6[i], k7[i], 0.0};
+        U = {U0[i], U1[i], U2[i], U3[i], U4[i], U5[i], U6[i], U7[i], 0.0};
+        k = {k0[i], k1[i], k2[i], k3[i], k4[i], k5[i], k6[i], k7[i], 0.0};
       }
 
       amrex::GpuArray<CCTK_REAL, 9> U_tmp = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -405,7 +407,7 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
       k7[i] = k[7];
 
       if (k_n != 4) {
-        continue;
+        return;
       }
 
       time[i] += dt;

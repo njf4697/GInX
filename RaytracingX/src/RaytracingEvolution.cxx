@@ -353,7 +353,7 @@ void ParticlesEvolveKNHelper(CCTK_ARGUMENTS, const int k) {
 
       //RaytracingX: Add density to information used in evolution function. Also uses an override for the evolution function that evolves optical depth
       // along geodesic. Information for particle output on deletion also passed.
-      pc->evolve_kn(k, cctk_iteration, lapse, shift, metric, curv, rho, *RX_time + *RX_t0, lev, max_energy, *RX_dt, (*num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
+      pc->evolve_kn(k, cctk_iteration, lapse, shift, metric, curv, rho, lev, max_energy, *RX_dt, (*num_photons_out_of_bounds > 0) ? grid_bounds : bounds);
     }
   }
 }

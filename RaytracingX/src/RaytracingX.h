@@ -68,6 +68,83 @@ struct PhotonBounds {
     const CCTK_REAL& zmax() const { return arr[5]; }
     };
 
+namespace RaytracingX
+{
+    struct RaytracingPhotonsData : public GInX::PhotonsData
+    {
+        /**
+         * \brief RaytracingPhotonsData struct definition.
+         *
+         * This struct is used to extend the BaseParticlesContainer particle data structure, which itself extends the default AMReX particle data structure (see BaseParticlesContainer.hxx)
+         * to include information necessary for raytracing calculation and output/debugging purposes.
+         */
+
+        enum
+        {
+            //evolution variables
+            vx = 0,          /** Velocity lower index on the x direction.*/
+            vy,              /** Velocity lower index on the y direction.*/
+            vz,              /** Velocity lower index on the z direction.*/
+            ln_E,            /** Ln of the photon's Energy.*/
+            tau,             /** Optical depth value. */
+
+            //other variables used for debug and image generation purposes.
+            pixel_number,    /** Number used to match particle to corresponding pixel in the image. Defined as a real since BaseParticleContainer does not have options for int parameters, unless defined at runtime, in which case they will not print with WriteAsciiFil */
+            deletion_reason, /** Number used as debug information for why a particle was deleted. See struct DelReason for values. Also a real despite valid values being restricted to ints for some same reason as pixel number. */
+            time,            /** Current time for the particle. Used to output time of particle deletion. */
+            p_upt,           /** $p^t$ for the particle, used to determine if particle approaches sufficiently close to BH. */
+
+            //store initial state values ($U$) and intermediate RK4 values ($k$) for use in RK4, needed because of the split RK4 implementation
+            //translation from indices to their associated variable is given in struct Uidx.
+            //later, $U$ and $k$ are defined to have an extra entry. This is for bookkeeping of deletion_reason during RK4 substeps only, and is not saved between itreations, hence why it is excluded here.
+            U0, U1, U2, U3, U4, U5, U6, U7, /** if calculate_kerr_conserved=True */
+            k0, k1, k2, k3, k4, k5, k6, k7, /** Only the most recent $k$ is stored, so between steps $k$=$k_4$. */
+
+            n_attributes, /**< Total number of attributes*/
+        };
+    };
+
+    /**
+     * \brief Uidx enum definition.
+    *
+    * This struct is used to translate variable names in the U and k data structures used in the RK4 calculation.
+    */
+    enum Uidx
+    {
+        x = 0,
+        y,
+        z,
+        vx,
+        vy,
+        vz,
+        lnE,
+        tau,
+        del_rsn
+    };
+
+    /**
+     * \brief DelReason enum definition.
+    *
+    * This struct is used to translate potential deletion reason names into corresponding indices.
+    */
+    struct DelReason
+    {
+        static constexpr CCTK_REAL XHI = -1;
+        static constexpr CCTK_REAL XLO = -2;
+        static constexpr CCTK_REAL YHI = -3;
+        static constexpr CCTK_REAL YLO = -4;
+        static constexpr CCTK_REAL ZHI = -5;
+        static constexpr CCTK_REAL ZLO = -6;
+        static constexpr CCTK_REAL HORIZON = -7;
+        static constexpr CCTK_REAL PHOTOSPHERE = -8;
+        static constexpr CCTK_REAL BANNED_REGION_OFFSET = -9;
+        static constexpr CCTK_REAL FAILED_INTERP = -996;
+        static constexpr CCTK_REAL UNSTABLE = -997;
+        static constexpr CCTK_REAL NONFINITE = -998;
+        static constexpr CCTK_REAL DEFAULT = -999;
+    };
+}
+
 struct Metric { //struct that contains information about the metric interpolated at a point
     CCTK_REAL alpha;
     CCTK_REAL beta_x, beta_y, beta_z; //g_{tx}, g_{ty}, g_{tz}

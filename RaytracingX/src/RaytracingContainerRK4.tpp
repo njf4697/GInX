@@ -56,17 +56,15 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     const int iteration,
     const int index,
     const amrex::GpuArray<CCTK_REAL, 9> &u,
-    const CCTK_REAL &t,
     amrex::Array4<CCTK_REAL const> const &lapse,
     const amrex::Array4<CCTK_REAL const> &shift,
     const amrex::Array4<CCTK_REAL const> &metric,
     const amrex::Array4<CCTK_REAL const> &curv,
     const amrex::Array4<CCTK_REAL const> &rho,
-    const CCTK_REAL dt,
     const amrex::GpuArray<double, 3> &dx,
     const int lev,
-    const amrex::GpuArray<double, 3> &plo,
-    const amrex::GpuArray<double, 3> &phi,
+    const amrex::GpuArray<double, 3> &plo0,
+    const amrex::GpuArray<double, 3> &phi0,
     const amrex::GpuArray<int, 3> &lower_valid_bounds,
     const amrex::GpuArray<int, 3> &upper_valid_bounds)
 {
@@ -74,9 +72,9 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     // RaytracingX: Add space for optical depth variable.
     amrex::GpuArray<CCTK_REAL, 9> rhs = {0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
-    const long int i0 = get_interpolation_center(u[0], plo[0], phi[0], dx[0]);
-    const long int j0 = get_interpolation_center(u[1], plo[1], phi[1], dx[1]);
-    const long int k0 = get_interpolation_center(u[2], plo[2], phi[2], dx[2]);
+    const long int i0 = get_interpolation_center(u[0], plo0[0], phi0[0], dx[0]);
+    const long int j0 = get_interpolation_center(u[1], plo0[1], phi0[1], dx[1]);
+    const long int k0 = get_interpolation_center(u[2], plo0[2], phi0[2], dx[2]);
 
     if (!(interp_index_is_in_bounds(i0, j0, k0, lower_valid_bounds, upper_valid_bounds))) {
         rhs[Uidx::del_rsn] = DelReason::FAILED_INTERP;
@@ -87,29 +85,29 @@ RaytracingParticlesContainer<StructType>::compute_rhs(
     CCTK_REAL lapse_x;
     amrex::GpuArray<CCTK_REAL, 3> d_lapse_x;
     GInX::d_interpolate_array<5>(lapse_x, d_lapse_x, lapse, i0, j0, k0, u[0], u[1],
-                                 u[2], dx, plo);
+                                 u[2], dx, plo0);
 
     // Interpolate shift & partial shift at \vect{x}
     amrex::GpuArray<CCTK_REAL, 3> shift_x;
     amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 3>, 3> d_shift_x;
     GInX::d_interpolate_array<5>(shift_x, d_shift_x, shift, i0, j0, k0, u[0], u[1],
-                                 u[2], dx, plo);
+                                 u[2], dx, plo0);
 
     // Interpolate metric & partial metric at \vect{x}
     amrex::GpuArray<CCTK_REAL, 6> gamma_x;
     amrex::GpuArray<amrex::GpuArray<CCTK_REAL, 6>, 3> d_gamma_x;
     GInX::d_interpolate_array<5>(gamma_x, d_gamma_x, metric, i0, j0, k0, u[0], u[1],
-                                 u[2], dx, plo);
+                                 u[2], dx, plo0);
 
     // Interpolate Curvature at \vect{x}
     amrex::GpuArray<CCTK_REAL, 6> curv_x;
-    GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo);
+    GInX::interpolate_array<5>(curv_x, curv, i0, j0, k0, u[0], u[1], u[2], dx, plo0);
 
     // RaytracingX: Interpolate density for optical depth calculation.
     //  Interpolate rho at \vect{x}
     CCTK_REAL rho_x;
     GInX::interpolate_array<5>(rho_x, rho, i0, j0, k0, u[0], u[1],
-                                 u[2], dx, plo);
+                                 u[2], dx, plo0);
 
     //lapse_x = 1;
     //d_lapse_x[0] = 0;
@@ -269,7 +267,6 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
     const amrex::MultiFab &metric,
     const amrex::MultiFab &curv,
     const amrex::MultiFab &rho,
-    const CCTK_REAL &global_time,
     const int &lev,
     const CCTK_REAL max_energy,
     const CCTK_REAL dt,
@@ -282,8 +279,6 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
     const auto phi0 = this->Geom(0).ProbHiArray();
 
     const auto dx = this->Geom(lev).CellSizeArray();
-    const auto dx0 = this->Geom(0).CellSizeArray();
-    const auto plo = this->Geom(lev).ProbLoArray();
 
     const CCTK_REAL m = this->mass;
 

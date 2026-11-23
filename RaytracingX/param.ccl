@@ -62,42 +62,42 @@ CCTK_REAL max_energy "Maximum photon energy defining event horizon" STEERABLE = 
 CCTK_REAL horizontal_fov "Horizontal field of view (in degrees)" STEERABLE = ALWAYS
 {
     (0.:180.) :: "Any real number 0<vertical_fov<180"
-} 45.
+} REQUIRED
 
 CCTK_REAL vertical_fov "Vertical field of view (in degrees)" STEERABLE = ALWAYS
 {
     (0.:180.) :: "Any real number 0<vertical_fov<180"
-} 45.
+} REQUIRED
 
 INT num_pixels_width "Number of pixels across image width" STEERABLE = ALWAYS
 {
     (0:* :: "Any positive integer"
-} 500
+} REQUIRED
 
 INT num_pixels_height "Number of pixels across image height" STEERABLE = ALWAYS
 {
     (0:* :: "Any positive integer"
-} 500
+} REQUIRED
 
 CCTK_REAL camera_pos[3] "Camera Position (in units of M)" STEERABLE = ALWAYS
 {
     *:* :: "Any real number"
-} 0.0
+} REQUIRED
 
 CCTK_REAL camera_vel[3] "Camera velocity" STEERABLE = ALWAYS
 {
     *:* :: "Any real number"
-} 0.0
+} REQUIRED
 
 CCTK_REAL camera_point[3] "Camera pointing direction" STEERABLE = ALWAYS
 {
     *:* :: "Any real number"
-} 0.0
+} REQUIRED
 
 CCTK_REAL camera_up[3] "Camera upwards direction" STEERABLE = ALWAYS
 {
     *:* :: "Any real number"
-} 0.0
+} REQUIRED
 
 BOOLEAN verbose "Print additional output"  STEERABLE=ALWAYS
 {

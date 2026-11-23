@@ -1,3 +1,10 @@
+/**
+ * \brief RaytracingContainerMacros.hxx
+ * 
+ * This file defines macros used in the RaytracingContainer class to define operations used multiple times
+ * to limit stretches of identical code.
+ */
+
 #ifndef RAYTRACINGCONTAINERMACROS
 #define RAYTRACINGCONTAINERMACROS
 
@@ -13,7 +20,6 @@
                                           (gamma[G3_xx] * gamma[G3_zz] - gamma[G3_xz] * gamma[G3_xz]) * inv_det_gamma, \
                                           (gamma[G3_xz] * gamma[G3_xy] - gamma[G3_xx] * gamma[G3_yz]) * inv_det_gamma, \
                                           (gamma[G3_xx] * gamma[G3_yy] - gamma[G3_xy] * gamma[G3_xy]) * inv_det_gamma}
-
 
 #define SPATIAL_INNER_PRODUCT(V_down, inv_gamma) V_down[0] * V_down[0] * inv_gamma[G3_xx] +       \
                                                  V_down[1] * V_down[1] * inv_gamma[G3_yy] +       \

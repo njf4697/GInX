@@ -166,7 +166,7 @@ SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2 BEFORE Pa
   READS: RaytracingX_int_scalars
 } "Do the third substep of RK4 method for particle evolution"
 
-SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3
+SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE CalculateKerrConserved
 {
   LANG: C
   OPTIONS: global

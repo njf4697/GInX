@@ -1,12 +1,33 @@
+/**
+ * \file InterpolateMetric.cxx
+ * 
+ * \brief Defines methods to get the value of the metric.
+ * 
+ * Finds metric data used for the photon initialization. Uses the struct \ref Metric defined in \ref RaytracingX.h.
+ * \ref interpolateMetricAtPoint() is used most of the time, while \ref fillMetric() is only used when using the
+ * \ref extended_camera parameter and the camera is positioned outside the grid.
+ */
+
 #include "RaytracingX.h"
 #include <vector>
 #include <array>
 #include <mpi.h>
 
 /**
- * \brief This function wraps DriverInterpolate to interpolate the metric quantities at the camera.
+ * \brief Interpolates metric at a given point
  * 
- * @param metric_at_point An empty Metric object that will be filled in with the appropriate data.
+ * This function wraps
+ * \link https://einsteintoolkit.org/thornguide/CarpetX/CarpetX/documentation.html#x1-290009 DriverInterpolate \endlink
+ * to interpolate the metric quantities at a given point. Only used in camera initialization, but is a useful
+ * debugging tool.
+ * 
+ * @param metric_at_point An empty \ref Metric object that will be filled in with the appropriate data.
+ * @param x The $x$ position of the point at which to interpolate the metric. Usually \ref camera_pos "camera_pos[0]"
+ * unless used for debugging.
+ * @param y The $y$ position of the point at which to interpolate the metric. Usually \ref camera_pos "camera_pos[1]"
+ * unless used for debugging.
+ * @param z The $z$ position of the point at which to interpolate the metric. Usually \ref camera_pos "camera_pos[2]"
+ * unless used for debugging.
  */
 void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z) {
     DECLARE_CCTK_ARGUMENTS
@@ -16,7 +37,7 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
       CCTK_INFO("interpolateMetricAtPoint");
     }
 
-    //Only call interpolation on one processor.
+    //only call interpolation on one processor for the single point.
     const int nPoints = (CCTK_MyProc(cctkGH) == 0) ? 1 : 0;
 
     std::array<std::vector<CCTK_REAL>, 3> location_;
@@ -24,6 +45,7 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     location_[1].push_back(y);
     location_[2].push_back(z);
 
+    //only interpolating at 1 point, so only size for one point
     std::array<std::vector<CCTK_REAL>, 10> metric_;
     metric_[0].resize(1);
     metric_[1].resize(1);
@@ -36,11 +58,11 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     metric_[8].resize(1);
     metric_[9].resize(1);
     
-    // Interpolation coordinates
+    //interpolation coordinates
     const void *interpCoords[3] = {
         location_[0].data(), location_[1].data(), location_[2].data()};
 
-    // Interpolated variables
+    //interpolated variables
     const CCTK_INT nInputArrays = 10;
     const CCTK_INT inputArrayIndices[nInputArrays] = {
         CCTK_VarIndex("ADMBaseX::alp"), 
@@ -51,7 +73,7 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     CCTK_POINTER outputArrays[nInputArrays] = {metric_[0].data(), metric_[1].data(), metric_[2].data(), metric_[3].data(), metric_[4].data(),
                                                metric_[5].data(), metric_[6].data(), metric_[7].data(), metric_[8].data(), metric_[9].data()};
 
-    // DriverInterpolate arguments that aren't currently used
+    //DriverInterpolate arguments that aren't currently implemented
     const int coordSystemHandle = 0;
     const CCTK_INT interpCoordsTypeCode = 0;
     const CCTK_INT outputArrayTypes[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -97,6 +119,7 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
                 MPI_COMM_WORLD);
     }
 
+    //fill metric object with interpolated values
     metric_at_point->alpha = metric_[0].data()[0];
     metric_at_point->beta_xup = metric_[1].data()[0];
     metric_at_point->beta_yup = metric_[2].data()[0];
@@ -107,17 +130,6 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     metric_at_point->g_yy = metric_[7].data()[0];
     metric_at_point->g_yz = metric_[8].data()[0];
     metric_at_point->g_zz = metric_[9].data()[0];
-
-    //metric_at_point->alpha = 1.0;
-    //metric_at_point->beta_xup = 0.0;
-    //metric_at_point->beta_yup = 0.0;
-    //metric_at_point->beta_zup = 0.0;
-    //metric_at_point->g_xx = 1.0;
-    //metric_at_point->g_xy = 0.0;
-    //metric_at_point->g_xz = 0.0;
-    //metric_at_point->g_yy = 1.0;
-    //metric_at_point->g_yz = 0.0;
-    //metric_at_point->g_zz = 1.0;
 
     //\beta_i = \gamma_ij*\beta^j
     metric_at_point->beta_x = metric_at_point->beta_xup*metric_at_point->g_xx + metric_at_point->beta_yup*metric_at_point->g_xy + metric_at_point->beta_zup*metric_at_point->g_xz;
@@ -130,6 +142,11 @@ void interpolateMetricAtPoint(CCTK_ARGUMENTS, Metric* metric_at_point, CCTK_REAL
     metric_at_point->fillInverseMetric(); //get g^{\mu\nu}
 } 
 
+/**
+ * \brief Fills metric with flat spacetime values
+ * 
+ * @param metric_at_point An empty \ref Metric object that will be filled in with the appropriate data.
+ */
 void fillMetricFlat(CCTK_ARGUMENTS, Metric* metric_at_point) {
     DECLARE_CCTK_ARGUMENTS
     DECLARE_CCTK_PARAMETERS

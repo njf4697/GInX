@@ -123,7 +123,7 @@ namespace RaytracingX
          * \see interpolate_array()
          */
         AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE CCTK_ATTRIBUTE_ALWAYS_INLINE
-        static bool interp_index_is_in_bounds(x
+        static bool interp_index_is_in_bounds(
             const long i0,
             const long j0,
             const long k0,

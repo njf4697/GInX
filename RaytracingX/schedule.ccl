@@ -200,7 +200,7 @@ if (particle_tsv_every>0)
 
 if (output_final_data)
 {
-  SCHEDULE ParticlesPrintFinalData IN RaytracingX_Evol AFTER ParticlesEvolveK4 AFTER ParticlesPrintFinalData AFTER ParticlesPrint BEFORE ParticlesRedistributePoststep
+  SCHEDULE ParticlesPrintFinalData IN RaytracingX_Evol AFTER ParticlesEvolveK4 AFTER ParticlesPrint BEFORE ParticlesRedistributePoststep
   {
     LANG: C
     OPTIONS: global

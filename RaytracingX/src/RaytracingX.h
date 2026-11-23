@@ -5,6 +5,9 @@
 #include "util_Table.h"
 #include <math.h>
 
+//ParticlesContainer thorn
+#include "Photons.hxx"
+
 #ifndef RAYTRACINGX
 #define RAYTRACINGX
 

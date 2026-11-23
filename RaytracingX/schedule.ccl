@@ -166,7 +166,7 @@ SCHEDULE ParticlesEvolveK3 IN RaytracingX_Evol AFTER ParticlesEvolveK2 BEFORE Pa
   READS: RaytracingX_int_scalars
 } "Do the third substep of RK4 method for particle evolution"
 
-SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE CalculateKerrConserved
+SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE CalculateKerrConserved BEFORE ParticlesPrint BEFORE ParticlesPrintFinalData
 {
   LANG: C
   OPTIONS: global
@@ -181,7 +181,7 @@ SCHEDULE ParticlesEvolveK4 IN RaytracingX_Evol AFTER ParticlesEvolveK3 BEFORE Ca
 
 if (calculate_kerr_conserved_quantities)
 {
-  SCHEDULE CalculateKerrConserved IN RaytracingX_Evol AFTER ParticlesEvolveK4 BEFORE ParticlesPrint
+  SCHEDULE CalculateKerrConserved IN RaytracingX_Evol AFTER ParticlesEvolveK4 BEFORE ParticlesPrint BEFORE ParticlesPrintFinalData
   {
     LANG: C
     OPTIONS: global
@@ -190,7 +190,7 @@ if (calculate_kerr_conserved_quantities)
 
 if (particle_tsv_every>0)
 {
-  SCHEDULE ParticlesPrint IN RaytracingX_Evol AFTER CalculateKerrConserved BEFORE ParticlesPrintFinalData
+  SCHEDULE ParticlesPrint IN RaytracingX_Evol AFTER ParticlesEvolveK4 AFTER CalculateKerrConserved BEFORE ParticlesPrintFinalData
   {
     LANG: C
     OPTIONS: global
@@ -200,7 +200,7 @@ if (particle_tsv_every>0)
 
 if (output_final_data)
 {
-  SCHEDULE ParticlesPrintFinalData IN RaytracingX_Evol AFTER ParticlesPrint BEFORE ParticlesRedistributePoststep
+  SCHEDULE ParticlesPrintFinalData IN RaytracingX_Evol AFTER ParticlesEvolveK4 AFTER ParticlesPrintFinalData AFTER ParticlesPrint BEFORE ParticlesRedistributePoststep
   {
     LANG: C
     OPTIONS: global
@@ -208,7 +208,7 @@ if (output_final_data)
   } "Output particle data if particle was terminated"
 }
 
-SCHEDULE ParticlesRedistribute AS ParticlesRedistributePoststep IN RaytracingX_Evol AFTER ParticlesPrint
+SCHEDULE ParticlesRedistribute AS ParticlesRedistributePoststep IN RaytracingX_Evol AFTER ParticlesPrint AFTER ParticlesPrintFinalData AFTER ParticlesEvolveK4
 {
   LANG: C
   OPTIONS: global

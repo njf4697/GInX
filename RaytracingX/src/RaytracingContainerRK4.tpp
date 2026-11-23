@@ -369,8 +369,8 @@ void RaytracingParticlesContainer<StructType>::evolve_kn(
         return;
       }
       
-      k = self->compute_rhs(iteration, index[i], U_tmp, rk_fac1[k_n]*dt, lapse_array, shift_array, metric_array,
-                            curv_array, rho_array, dt, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds);
+      k = self->compute_rhs(iteration, index[i], U_tmp, lapse_array, shift_array, metric_array,
+                            curv_array, rho_array, dx, lev, plo0, phi0, lower_valid_bounds, upper_valid_bounds);
       
       particles[i].pos(0) += rk_fac2[k_n] * dt * k[Uidx::x];
       particles[i].pos(1) += rk_fac2[k_n] * dt * k[Uidx::y];
